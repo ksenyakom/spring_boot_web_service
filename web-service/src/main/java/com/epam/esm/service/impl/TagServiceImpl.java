@@ -40,6 +40,9 @@ public class TagServiceImpl implements TagService {
     @Override
     public void save(Tag tag) throws ServiceException {
         try {
+            if (tag.getId() != null) {
+                throw new ServiceException("You can not choose id for tag", "29");
+            }
             if (tagDao.checkIfExist(tag.getName())) {
                 throw new ServiceException(String.format("Tag with name = %s already exist", tag.getName()), "19");
             }

@@ -21,6 +21,7 @@
 26 - Can not update list of tags id for GiftCertificate (id = %s)
 27 - No fields to change found for GiftSertificate
 28 - Tag with name = %s does not exist
+29 - You can not choose id for tag
 
 30 - There is no autoincremented index after trying to add record into table `tag`
 31 - "There is no autoincremented index after trying to add record into table `gift_certificate`"
