@@ -9,7 +9,6 @@ import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,14 +31,14 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    @Nullable
+    @NonNull
     public GiftCertificate findById(Integer id) throws ServiceException {
         try {
             GiftCertificate certificate = giftCertificateDao.read(id);
             if (certificate != null) {
                 readTagName(certificate.getTags());
             }
-            return certificate;
+            return certificate; // TODO что ему не нравится????
         } catch (DaoException e) {
             throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
         }
@@ -161,4 +160,5 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 .collect(Collectors.toList());
         readTagName(tags);
     }
+
 }

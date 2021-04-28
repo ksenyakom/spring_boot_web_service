@@ -6,6 +6,7 @@ import com.epam.esm.service.ServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -26,7 +27,18 @@ public class ExceptionInterceptor {
                 .build();
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public @ResponseBody JsonResult<Entity> otherError(final HttpMessageNotReadableException e) {
+        logger.error("Error message:{}", e.getMessage(), e);
+        return new JsonResult.Builder<>()
+                .withSuccess(false)
+                .withMessage("Message can not be read.Please, check fields and values.")
+                .build();
+    }
+
     @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public @ResponseBody JsonResult<Entity> otherError(final RuntimeException e) {
         logger.error("Error message:{}", e.getMessage(), e);
         return new JsonResult.Builder<>()

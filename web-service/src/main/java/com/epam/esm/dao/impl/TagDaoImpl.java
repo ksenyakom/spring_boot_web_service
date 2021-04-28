@@ -84,10 +84,10 @@ public class TagDaoImpl implements TagDao {
     @Override
     public void readIdByName(Tag tag) throws DaoException {
         try {
-            List<Integer> result = jdbcTemplate.query(READ_BY_NAME, new BeanPropertyRowMapper<>(Integer.class), tag.getName());
-            if (!result.isEmpty()) {
-                tag.setId(result.get(0));
-            }
+            Integer id = jdbcTemplate.queryForObject(READ_BY_NAME, Integer.class, tag.getName());
+            tag.setId(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new DaoException(String.format("Tag with name = %s does not exist", tag.getName()), "28", e);
         } catch (DataAccessException e) {
             throw new DaoException(String.format("Can not check if tag with name = %s exist", tag.getName()), "19", e);
         }

@@ -3,6 +3,7 @@ package com.epam.esm.facade.impl;
 import com.epam.esm.dto.JsonResult;
 import com.epam.esm.facade.GiftCertificateFacade;
 import com.epam.esm.model.GiftCertificate;
+import com.epam.esm.service.CopyFields;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.search.impl.SearchByNameAndTagName;
 import com.epam.esm.service.sort.SortGiftCertificateService;
@@ -19,10 +20,12 @@ import java.util.List;
 public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
 
     private final GiftCertificateService giftCertificateService;
+    private final CopyFields copyFields;
 
     @Autowired
-    public GiftCertificateFacadeImpl(GiftCertificateService giftCertificateService) {
+    public GiftCertificateFacadeImpl(GiftCertificateService giftCertificateService, CopyFields copyFields) {
         this.giftCertificateService = giftCertificateService;
+        this.copyFields = copyFields;
     }
 
     @NonNull
@@ -41,6 +44,17 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
         return new JsonResult.Builder<GiftCertificate>()
                 .withSuccess(true)
                 .withResult(Collections.singletonList(certificate))
+                .build();
+    }
+
+    @Override
+    public JsonResult<GiftCertificate> partUpdate(GiftCertificate certificate) {
+        GiftCertificate actual = giftCertificateService.findById(certificate.getId());
+        copyFields.copyNotEmptyFields(actual,certificate);
+        giftCertificateService.save(actual);
+        return new JsonResult.Builder<GiftCertificate>()
+                .withSuccess(true)
+                .withResult(Collections.singletonList(actual))
                 .build();
     }
 

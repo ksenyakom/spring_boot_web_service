@@ -33,7 +33,7 @@ public interface GiftCertificateDao {
     @NotNull
     Integer create(@NotNull GiftCertificate entity) throws DaoException;
 
-    @Nullable
+    @NotNull
     GiftCertificate read(@NotNull Integer id) throws DaoException;
 
     void update(@NotNull GiftCertificate entity) throws DaoException;

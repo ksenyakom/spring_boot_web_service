@@ -36,5 +36,8 @@ public interface GiftCertificateFacade {
 
     @NonNull
     JsonResult<GiftCertificate> getAllCertificates();
+
+    @NonNull
+    JsonResult<GiftCertificate> partUpdate(GiftCertificate certificate);
 }
 

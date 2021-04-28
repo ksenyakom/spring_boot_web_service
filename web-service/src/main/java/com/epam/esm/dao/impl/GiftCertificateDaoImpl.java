@@ -2,6 +2,7 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.DaoException;
 import com.epam.esm.dao.GiftCertificateDao;
+import com.epam.esm.model.Certificate;
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.Tag;
 import org.apache.logging.log4j.LogManager;
@@ -97,11 +98,11 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    @Nullable
+    @NonNull
     public GiftCertificate read(@NonNull Integer id) throws DaoException {
         try {
             List<GiftCertificate> certificates = jdbcTemplate.query(READ, ROW_MAPPER, id);
-            if (certificates.isEmpty()) {
+            if (certificates.isEmpty() || certificates.get(0) == null) {
                 throw new DaoException(String.format("GiftCertificate with id = %s not found.", id), "404");
             }
             readTagsForCertificate(certificates.get(0));

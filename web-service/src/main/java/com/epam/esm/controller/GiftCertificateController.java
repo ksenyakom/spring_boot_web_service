@@ -29,7 +29,11 @@ public class GiftCertificateController {
     private Validator giftCertificateValidator;
 
     @Autowired
-    @Qualifier("searchGiftCertificateValidator")
+    @Qualifier("giftCertificatePartValidator")
+    private Validator giftCertificatePartValidator;
+
+    @Autowired
+    @Qualifier("giftCertificateSearchValidator")
     private Validator searchValidator;
 
 
@@ -54,7 +58,7 @@ public class GiftCertificateController {
         return giftCertificateFacade.save(certificate);
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public JsonResult<GiftCertificate> update(@RequestBody GiftCertificate certificate, BindingResult result,
                                               @PathVariable("id") int id) {
         certificate.setId(id);
@@ -64,6 +68,18 @@ public class GiftCertificateController {
         }
 
         return giftCertificateFacade.save(certificate);
+    }
+
+    @PatchMapping("/{id}")
+    public JsonResult<GiftCertificate> partUpdate(@RequestBody GiftCertificate certificate, BindingResult result,
+                                                  @PathVariable("id") int id) {
+        certificate.setId(id);
+        giftCertificatePartValidator.validate(certificate, result);
+        if (result.hasErrors()) {
+            throw new ServiceException(message(result), "20");
+        }
+
+        return giftCertificateFacade.partUpdate(certificate);
     }
 
     @DeleteMapping("/{id}")
@@ -87,13 +103,12 @@ public class GiftCertificateController {
         return jsonResult;
     }
 
-
     private String message(BindingResult result) {
         StringBuilder sb = new StringBuilder();
         result.getFieldErrors()
                 .forEach(fieldError -> sb.append(" ")
                         .append(fieldError.getField()).append(": ")
-                        .append(fieldError.getCode()).append(";"));
+                        .append(fieldError.getCode()).append("."));
 
         return sb.toString();
     }

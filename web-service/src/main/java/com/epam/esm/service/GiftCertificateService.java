@@ -1,5 +1,6 @@
 package com.epam.esm.service;
 
+import com.epam.esm.dao.DaoException;
 import com.epam.esm.model.GiftCertificate;
 
 import java.util.List;
@@ -48,4 +49,7 @@ public interface GiftCertificateService {
      * @throws ServiceException if any exception occur while receiving data.
      */
     List<GiftCertificate> findByNameAndTagName(String name, String tagName);
+
+
+
 }

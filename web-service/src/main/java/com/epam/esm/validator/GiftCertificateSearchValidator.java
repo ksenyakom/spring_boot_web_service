@@ -10,7 +10,9 @@ import org.springframework.validation.Validator;
  * Validator for search parameters for GiftCertificate class.
  */
 @Service
-public class SearchGiftCertificateValidator implements Validator {
+public class GiftCertificateSearchValidator implements Validator {
+    private static final int MAX_LENGTH = 255;
+
     @Override
     public boolean supports(@NonNull Class<?> aClass) {
         return SearchParams.class.equals(aClass);
@@ -19,18 +21,16 @@ public class SearchGiftCertificateValidator implements Validator {
     @Override
     public void validate(@NonNull Object o, @NonNull Errors errors) {
         SearchParams searchParams = (SearchParams) o;
-
-        int maxLength = 255;
         String sortByName = searchParams.getSortByName();
         String sortByDate = searchParams.getSortByDate();
         String name = searchParams.getName();
         String tagName = searchParams.getTagName();
 
-        if (name != null && name.length() > maxLength) {
+        if (name != null && name.length() > MAX_LENGTH) {
             errors.rejectValue("name", "invalid length", "Name: invalid length");
         }
 
-        if (tagName != null && tagName.length() > maxLength) {
+        if (tagName != null && tagName.length() > MAX_LENGTH) {
             errors.rejectValue("tagName", "invalid length", "TagName: invalid length");
         }
 
