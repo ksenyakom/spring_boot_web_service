@@ -26,7 +26,6 @@ import java.util.List;
 public class TagDaoImpl implements TagDao {
     private static Logger logger = LogManager.getLogger(TagDaoImpl.class);
 
-
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired

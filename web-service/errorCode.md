@@ -27,3 +27,6 @@
 31 - "There is no autoincremented index after trying to add record into table `gift_certificate`"
 
 404 - Not found
+
+51 - Can not read User (id = %s)
+52 - Can not read all Users

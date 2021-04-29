@@ -20,8 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class TagDaoImplTest {
     private static EmbeddedDatabase embeddedDatabase;
 
-    private static JdbcTemplate jdbcTemplate;
-
     private static TagDao tagDao;
 
     @BeforeAll
@@ -31,7 +29,7 @@ class TagDaoImplTest {
                 .setType(EmbeddedDatabaseType.H2)
                 .build();
 
-        jdbcTemplate = new JdbcTemplate(embeddedDatabase);
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(embeddedDatabase);
 
         tagDao = new TagDaoImpl(jdbcTemplate);
     }

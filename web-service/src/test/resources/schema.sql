@@ -1,3 +1,15 @@
+CREATE TABLE `user`
+(
+    `id`        INT     NOT NULL AUTO_INCREMENT,
+    `name`      VARCHAR(255) NOT NULL,
+    `surname`   VARCHAR(255) NOT NULL,
+    `age`		TINYINT ,
+    `email`     VARCHAR(255) NOT NULL,
+    `is_active` BOOL DEFAULT true,
+    CONSTRAINT PK_user PRIMARY KEY (`id`),
+    CONSTRAINT UC_user UNIQUE (email)
+);
+
 CREATE TABLE `gift_certificate`
 (
     `id`               INTEGER        NOT NULL AUTO_INCREMENT,

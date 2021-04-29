@@ -21,6 +21,7 @@ import static org.mockito.BDDMockito.given;
 class TagFacadeImplTest {
     @Mock
     TagService tagService;
+
     TagFacade tagFacade;
 
     @BeforeEach

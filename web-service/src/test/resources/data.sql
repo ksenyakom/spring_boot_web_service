@@ -1,3 +1,12 @@
+insert into `user`
+    (id, name, surname, age, email, is_active)
+    VALUES
+    (1, 'Tais', 'Afinskaya', 17, 'tais@mail.ru', true),
+    (2, 'Alexander', 'the Great', 25, 'makedonsky@mail.ru', true),
+    (3, 'Ptolemy', 'Soter', 23, 'ptolemy@yandex.ru', true),
+    (4, 'Ivan', 'Efremov', 64,'ivan@gmail.com', true);
+
+
 insert into `tag`
     (`id`, `name`)
 values (1, 'beauty'),
