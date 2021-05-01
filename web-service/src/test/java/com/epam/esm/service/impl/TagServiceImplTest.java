@@ -78,15 +78,12 @@ class TagServiceImplTest {
     @Test
     void save() throws DaoException {
         Tag tag = new Tag();
-        String tagName = "beauty";
-        tag.setName(tagName);
         int id = 1;
         given(tagDao.create(tag)).willReturn(id);
         tagService.save(tag);
 
         assertAll(() -> {
                     assertEquals(id, tag.getId());
-                    assertEquals(tagName, tag.getName());
                 }
         );
     }

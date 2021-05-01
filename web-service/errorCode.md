@@ -24,9 +24,14 @@
 29 - You can not choose id for tag
 
 30 - There is no autoincremented index after trying to add record into table `tag`
-31 - "There is no autoincremented index after trying to add record into table `gift_certificate`"
-
+31 - There is no autoincremented index after trying to add record into table `gift_certificate`
+32 - There is no autoincremented index after trying to add record into table `user_order`
 404 - Not found
 
 51 - Can not read User (id = %s)
 52 - Can not read all Users
+
+61 - Can not read Order
+63 - Can not update Order (id = %s)
+64 - Can not delete Order (id = %s)
+65 - Can not read all Orders

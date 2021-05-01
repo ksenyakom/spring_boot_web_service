@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -151,11 +152,12 @@ class GiftCertificateDaoImplTest {
 
     @Order(1)
     @Test
-    void testReadAll() {
+    void testReadAll() throws DaoException {
+        List<GiftCertificate> certificates = giftCertificateDao.readAllActive();
         assertAll("Should read all lines",
                 () -> {
-                    assertNotNull(giftCertificateDao.readAllActive());
-                    assertEquals(3, giftCertificateDao.readAllActive().size());
+                    assertNotNull(certificates);
+                    assertEquals(3, certificates.size());
                 });
     }
 }

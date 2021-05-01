@@ -69,11 +69,12 @@ class TagDaoImplTest {
     }
 
     @Test
-    void readAll() {
+    void readAll() throws DaoException {
+        List<Tag> tags = tagDao.readAll();
         assertAll("Should read all lines",
                 () -> {
-                    assertNotNull(tagDao.readAll());
-                    assertEquals(6, tagDao.readAll().size());
+                    assertNotNull(tags);
+                    assertEquals(6,tags.size());
                 });
     }
 

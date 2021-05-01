@@ -35,10 +35,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public GiftCertificate findById(Integer id) throws ServiceException {
         try {
             GiftCertificate certificate = giftCertificateDao.read(id);
-            if (certificate != null) {
-                readTagName(certificate.getTags());
-            }
-            return certificate; // TODO что ему не нравится????
+            readTagName(certificate.getTags());
+            return certificate;
         } catch (DaoException e) {
             throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
         }

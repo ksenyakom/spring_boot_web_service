@@ -80,7 +80,7 @@ public class GiftCertificate extends Certificate {
         if (!super.equals(o)) return false;
         GiftCertificate that = (GiftCertificate) o;
         return duration == that.duration &&
-                price.compareTo(that.price) == 0 &&
+                (price == null ? Objects.equals(price, that.price) : price.compareTo(that.price) == 0) &&
                 Objects.equals(lastUpdateDate, that.lastUpdateDate) &&
                 Objects.equals(isActive, that.isActive);
     }

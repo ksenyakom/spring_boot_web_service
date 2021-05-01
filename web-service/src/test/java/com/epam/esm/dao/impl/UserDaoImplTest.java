@@ -12,6 +12,8 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserDaoImplTest {
@@ -76,11 +78,12 @@ class UserDaoImplTest {
     }
 
     @Test
-    void readAll() {
+    void readAll() throws DaoException {
+        List<User> users = userDao.readAll();
         assertAll("Should read all lines",
                 () -> {
-                    assertNotNull(userDao.readAll());
-                    assertEquals(4, userDao.readAll().size());
+                    assertNotNull(users);
+                    assertEquals(4, users.size());
                 });
     }
 }

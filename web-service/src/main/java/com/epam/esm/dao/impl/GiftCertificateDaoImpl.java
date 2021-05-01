@@ -2,7 +2,6 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.DaoException;
 import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.model.Certificate;
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.Tag;
 import org.apache.logging.log4j.LogManager;
@@ -17,8 +16,11 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
+import javax.validation.constraints.NotNull;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +31,6 @@ import java.util.stream.Collectors;
 @Repository
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static Logger logger = LogManager.getLogger(GiftCertificateDaoImpl.class);
-
 
     private JdbcTemplate jdbcTemplate;
 
@@ -111,6 +112,40 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         } catch (DataAccessException e) {
             throw new DaoException(String.format("Can not read GiftCertificate (id = %s).", id), "02", e);
         }
+    }
+
+    @Override
+    @NonNull
+    public void read(@NonNull GiftCertificate certificate) throws DaoException {
+        try {
+            List<GiftCertificate> certificates = jdbcTemplate.query(READ, (ResultSet resultSet, int rowNum) -> {
+                certificate.setId(resultSet.getInt("id"));
+                certificate.setName(resultSet.getString("name"));
+                certificate.setDescription(resultSet.getString("description"));
+                Timestamp createDate = resultSet.getTimestamp("create_date");
+                certificate.setCreateDate(createDate == null ? null : createDate.toLocalDateTime());
+                Timestamp lastUpdateDate = resultSet.getTimestamp("last_update_date");
+                certificate.setLastUpdateDate(lastUpdateDate == null ? null : lastUpdateDate.toLocalDateTime());
+                certificate.setPrice(resultSet.getBigDecimal("price"));
+                certificate.setDuration(resultSet.getInt("duration"));
+                certificate.setIsActive(resultSet.getBoolean("is_active"));
+                return certificate;
+            }, certificate.getId());
+            if (certificates.isEmpty() || certificates.get(0) == null) {
+                throw new DaoException(String.format("GiftCertificate with id = %s not found.", certificate.getId()), "404");
+            }
+            readTagsForCertificate(certificates.get(0));
+        } catch (DataAccessException e) {
+            throw new DaoException(String.format("Can not read GiftCertificate (id = %s).", certificate.getId()), "02", e);
+        }
+    }
+
+    @Override
+    public @NotNull void read(@NotNull List<GiftCertificate> certificates) throws DaoException {
+        for (GiftCertificate certificate: certificates) {
+            read(certificate);
+        }
+        readTagsForCertificate(certificates);
     }
 
     @Override

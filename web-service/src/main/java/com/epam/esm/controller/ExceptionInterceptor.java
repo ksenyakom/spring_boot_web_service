@@ -37,7 +37,7 @@ public class ExceptionInterceptor {
 
         String message = "Message can not be read.Please, check fields and values." + e.getMessage();
         if (e.getCause().getClass() == UnrecognizedPropertyException.class) {
-            message = String.format("Message can not be read. Unrecognized property : %s.", ((UnrecognizedPropertyException) e.getCause()).getPropertyName());
+            message = String.format(e.getMessage()+"Message can not be read. Unrecognized property : %s.", ((UnrecognizedPropertyException) e.getCause()).getPropertyName());
         }
         return new JsonResult.Builder<>()
                 .withSuccess(false)

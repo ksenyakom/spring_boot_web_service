@@ -36,6 +36,12 @@ public interface GiftCertificateDao {
     @NotNull
     GiftCertificate read(@NotNull Integer id) throws DaoException;
 
+    @NotNull
+    void read(@NotNull GiftCertificate certificate) throws DaoException;
+
+    @NotNull
+    void read(@NotNull List<GiftCertificate> certificates) throws DaoException;
+
     void update(@NotNull GiftCertificate entity) throws DaoException;
 
     void delete(@NotNull Integer id) throws DaoException;

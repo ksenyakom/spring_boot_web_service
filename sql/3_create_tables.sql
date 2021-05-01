@@ -2,10 +2,10 @@ USE `gift_db`;
 
 CREATE TABLE `user`
 (
-    `id`        INT     NOT NULL AUTO_INCREMENT,
+    `id`        INT          NOT NULL AUTO_INCREMENT,
     `name`      VARCHAR(255) NOT NULL,
     `surname`   VARCHAR(255) NOT NULL,
-    `age`		TINYINT,
+    `age`       TINYINT,
     `email`     VARCHAR(255) NOT NULL,
     `is_active` BOOL DEFAULT true,
     CONSTRAINT PK_user PRIMARY KEY (`id`),
@@ -21,7 +21,7 @@ CREATE TABLE `gift_certificate`
     `duration`         SMALLINT       NOT NULL,
     `create_date`      TIMESTAMP      NOT NULL,
     `last_update_date` TIMESTAMP,
-    `is_active`        BOOL,
+    `is_active`        BOOL DEFAULT true,
     CONSTRAINT PK_gift_certificate PRIMARY KEY (`id`)
 );
 
@@ -46,4 +46,21 @@ CREATE TABLE `certificate_tag`
         ON UPDATE CASCADE
         ON DELETE RESTRICT,
     CONSTRAINT UC_certificate_tag UNIQUE (certificate_id, tag_id)
+);
+
+CREATE TABLE `user_order`
+(
+    `id`             INT            NOT NULL AUTO_INCREMENT,
+    `user_id`        INT,
+    `certificate_id` INT,
+    `price`          DECIMAL(10, 2) NOT NULL,
+    `create_date`    TIMESTAMP      NOT NULL,
+    `is_active`      BOOL DEFAULT true,
+    CONSTRAINT PK_order PRIMARY KEY (`id`),
+    CONSTRAINT FK_order_c_id FOREIGN KEY (`certificate_id`) REFERENCES gift_certificate (`id`)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+    CONSTRAINT FK_order_u_id FOREIGN KEY (`user_id`) REFERENCES user (`id`)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
 );

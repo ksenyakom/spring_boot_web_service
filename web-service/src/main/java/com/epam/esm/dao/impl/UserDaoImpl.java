@@ -23,7 +23,6 @@ public class UserDaoImpl implements UserDao {
     private static final String READ = "SELECT * FROM user WHERE id = ? ";
     private static final String READ_ALL = "SELECT * FROM user WHERE is_active = true";
 
-
     @Autowired
     public UserDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;

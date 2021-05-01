@@ -74,15 +74,9 @@ class GiftCertificateServiceImplTest {
         assertThrows(ServiceException.class, () -> service.findAll());
     }
 
-    @ParameterizedTest
-    @CsvSource({
-            "Visiting CosmoCaixa, Scientific museum in Barcelona, 49, 90"
-    })
-    void save(ArgumentsAccessor arguments) throws DaoException {
-        GiftCertificate giftCertificate = new GiftCertificate(arguments.getString(0),
-                arguments.getString(1),
-                arguments.get(2, BigDecimal.class),
-                arguments.getInteger(3));
+    @Test
+    void save() throws DaoException {
+        GiftCertificate giftCertificate = new GiftCertificate();
         int id = 1;
         given(dao.create(giftCertificate)).willReturn(id);
         service.save(giftCertificate);
