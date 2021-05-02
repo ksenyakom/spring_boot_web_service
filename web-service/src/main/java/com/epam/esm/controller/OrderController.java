@@ -11,7 +11,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 
 /**
  * Controller class for Order
@@ -21,15 +20,10 @@ import java.util.Optional;
 public class OrderController {
     @Autowired
     private OrderFacade orderFacade;
-//
-//    @Autowired
-//    @Qualifier("orderValidator")
-//    private Validator orderValidator;
-//
-//    @Autowired
-//    @Qualifier("giftCertificateSearchValidator")
-//    private Validator searchValidator;
 
+    @Autowired
+    @Qualifier("orderValidator")
+    private Validator orderValidator;
 
     @GetMapping()
     public JsonResult<Order> index() {
@@ -44,7 +38,7 @@ public class OrderController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public JsonResult<Order> create(@RequestBody Order order, BindingResult result) {
-        //orderValidator.validate(order, result);
+        orderValidator.validate(order, result);
         if (result.hasErrors()) {
             throw new ServiceException(message(result), "20");
         }
@@ -56,7 +50,7 @@ public class OrderController {
     public JsonResult<Order> update(@RequestBody Order order, BindingResult result,
                                               @PathVariable("id") int id) {
         order.setId(id);
-      //  orderValidator.validate(order, result);
+        orderValidator.validate(order, result);
         if (result.hasErrors()) {
             throw new ServiceException(message(result), "20");
         }
