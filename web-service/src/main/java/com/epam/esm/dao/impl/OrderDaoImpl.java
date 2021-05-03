@@ -12,6 +12,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import javax.validation.constraints.NotNull;
@@ -40,6 +41,7 @@ public class OrderDaoImpl implements OrderDao {
     private static final String UPDATE = "UPDATE user_order SET user_id = ?, certificate_id = ?,price = ?, create_date = ? WHERE id = ?";
     private static final String DELETE = "UPDATE user_order SET is_active = false WHERE id = ? AND is_active = true";
     private static final String READ_ALL_ACTIVE = "SELECT * FROM user_order  WHERE is_active = true";
+    private static final String READ_BY_USER = "SELECT id, certificate_id, price, create_date FROM user_order  WHERE is_active = true AND user_id = ?";
 
     @Override
     public @NotNull Integer create(@NotNull Order order) throws DaoException {
@@ -175,6 +177,37 @@ public class OrderDaoImpl implements OrderDao {
             return orders;
         } catch (DataAccessException e) {
             throw new DaoException("Can not read all Orders", "65", e);
+        }
+    }
+
+    @Override
+    public List<Order> readByUser(@NonNull User user) throws DaoException {
+        Map<Integer, GiftCertificate> certificateMap= new HashMap<>();
+
+        try {
+            List<Order> orders = jdbcTemplate.query(READ_BY_USER, (resultSet, i) -> {
+                Order order = new Order();
+                order.setUser(user);
+                order.setId(resultSet.getInt("id"));
+
+                int id = resultSet.getInt("certificate_id");
+                GiftCertificate certificate = certificateMap.merge(id, new GiftCertificate(id), (oldValue, newValue) -> oldValue);
+                order.setCertificate(certificate);
+
+                Timestamp createDate = resultSet.getTimestamp("create_date");
+                order.setCreateDate(createDate == null ? null : createDate.toLocalDateTime());
+
+                order.setPrice(resultSet.getBigDecimal("price"));
+                order.setActive(true);
+                return order;
+            }, user.getId());
+            if (orders.isEmpty()) {
+                throw new DaoException(String.format("No Orders was found in database for user id = %s", user.getId()), "404");
+            }
+
+            return orders;
+        } catch (DataAccessException e) {
+            throw new DaoException(String.format("Can not read Orders for user id = %s", user.getId()), "66", e);
         }
     }
 }

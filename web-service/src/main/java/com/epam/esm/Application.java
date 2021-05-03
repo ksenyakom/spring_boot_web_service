@@ -1,5 +1,6 @@
 package com.epam.esm;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,5 +26,6 @@ public class Application implements ApplicationListener<ApplicationReadyEvent> {
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+	//	objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 	}
 }

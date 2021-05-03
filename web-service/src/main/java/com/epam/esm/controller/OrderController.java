@@ -4,12 +4,16 @@ import com.epam.esm.dto.JsonResult;
 import com.epam.esm.facade.OrderFacade;
 import com.epam.esm.model.Order;
 import com.epam.esm.service.ServiceException;
+import com.epam.esm.validator.FieldNameValidator;
+import com.epam.esm.validator.OrderFieldNameValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 
 /**
@@ -25,6 +29,10 @@ public class OrderController {
     @Qualifier("orderValidator")
     private Validator orderValidator;
 
+    @Autowired
+    @Qualifier("orderFieldNameValidator")
+    private FieldNameValidator fieldNameValidator;
+
     @GetMapping()
     public JsonResult<Order> index() {
         return orderFacade.getAllOrders();
@@ -35,6 +43,17 @@ public class OrderController {
         return orderFacade.getOrder(id);
     }
 
+    @GetMapping("/{id}/fields")
+    public JsonResult<Order> showFields(@PathVariable("id") int id, @RequestParam("fields") String fields) {
+        Set<String> fieldsToFind = fieldNameValidator.validate(fields);
+        return orderFacade.getOrder(id, fieldsToFind);
+    }
+
+    @GetMapping("/search")
+    public JsonResult<Order> search(@RequestParam("userId") int userId) {
+        JsonResult<Order> result = orderFacade.search(userId);
+        return result;
+    }
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public JsonResult<Order> create(@RequestBody Order order, BindingResult result) {

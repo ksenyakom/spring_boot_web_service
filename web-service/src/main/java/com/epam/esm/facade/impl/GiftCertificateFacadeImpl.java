@@ -5,7 +5,7 @@ import com.epam.esm.facade.GiftCertificateFacade;
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.service.CopyFields;
 import com.epam.esm.service.GiftCertificateService;
-import com.epam.esm.service.search.impl.SearchByNameAndTagName;
+import com.epam.esm.service.search.impl.SearchGiftCertificateByNameAndTagName;
 import com.epam.esm.service.sort.SortGiftCertificateService;
 import com.epam.esm.service.sort.impl.SortByNameAndDate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +70,7 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
     @Override
     @NonNull
     public JsonResult<GiftCertificate> search(@Nullable String name, @Nullable String tagName) {
-        SearchByNameAndTagName searchCertificate = new SearchByNameAndTagName(name, tagName);
+        SearchGiftCertificateByNameAndTagName searchCertificate = new SearchGiftCertificateByNameAndTagName(name, tagName);
         List<GiftCertificate> certificateList = searchCertificate.search(giftCertificateService);
         String massage = certificateList.isEmpty()
                 ? "No GiftCertificates found for search parameters."

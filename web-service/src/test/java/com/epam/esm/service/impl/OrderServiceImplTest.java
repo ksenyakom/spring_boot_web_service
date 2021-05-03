@@ -3,6 +3,7 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dao.*;
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.Order;
+import com.epam.esm.service.FillOrderFields;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.ServiceException;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,13 +31,15 @@ class OrderServiceImplTest {
     private GiftCertificateDao giftCertificateDao;
     @Mock
     private TagDao tagDao;
+    @Mock
+    private FillOrderFields fillOrderFields;
 
 
     private OrderService orderService;
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderServiceImpl(orderDao, userDao, giftCertificateDao, tagDao);
+        orderService = new OrderServiceImpl(orderDao, userDao, giftCertificateDao, tagDao, fillOrderFields);
     }
 
     @Test

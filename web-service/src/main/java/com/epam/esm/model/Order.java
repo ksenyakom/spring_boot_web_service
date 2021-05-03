@@ -1,15 +1,18 @@
 package com.epam.esm.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Order extends Entity {
     private User user;
     private GiftCertificate certificate;
     private LocalDateTime createDate;
     private BigDecimal price;
-    private boolean isActive;
+    private Boolean isActive;
 
     public Order() {}
 
@@ -24,11 +27,11 @@ public class Order extends Entity {
         this.price = price;
     }
 
-    public boolean isActive() {
+    public Boolean isActive() {
         return isActive;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         isActive = active;
     }
 

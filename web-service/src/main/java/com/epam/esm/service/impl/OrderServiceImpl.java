@@ -2,6 +2,7 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.*;
 import com.epam.esm.model.*;
+import com.epam.esm.service.FillOrderFields;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,12 +26,15 @@ public class OrderServiceImpl implements OrderService {
 
     private final TagDao tagDao;
 
+    private final FillOrderFields fillOrderFields;
+
     @Autowired
-    public OrderServiceImpl(OrderDao orderDao, UserDao userDao, GiftCertificateDao giftCertificateDao, TagDao tagDao) {
+    public OrderServiceImpl(OrderDao orderDao, UserDao userDao, GiftCertificateDao giftCertificateDao, TagDao tagDao, FillOrderFields fillOrderFields) {
         this.orderDao = orderDao;
         this.userDao = userDao;
         this.giftCertificateDao = giftCertificateDao;
         this.tagDao = tagDao;
+        this.fillOrderFields = fillOrderFields;
     }
 
     @Override
@@ -49,9 +54,43 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public Order findById(int id, Set<String> fieldsToFind)  {
+        try {
+            Order order = orderDao.read(id);
+            Order orderToReturn = fillOrderFields.fill(order, fieldsToFind);
+
+            if (order.getCertificate() != null) {
+                giftCertificateDao.read(order.getCertificate());
+                readTags(order.getCertificate().getTags());
+            }
+            if (order.getUser() != null) {
+                userDao.read(order.getUser());
+            }
+
+            return orderToReturn;
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
+        }
+    }
+
+    @Override
     public List<Order> findAll() throws ServiceException {
         try {
             List<Order> orders = orderDao.readAllActive();
+            readUsers(orders);
+            readCertificates(orders);
+            readOrderTags(orders);
+
+            return orders;
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
+        }
+    }
+
+    @Override
+    public List<Order> findByUser(User user) throws ServiceException {
+        try {
+            List<Order> orders = orderDao.readByUser(user);
             readUsers(orders);
             readCertificates(orders);
             readOrderTags(orders);
@@ -98,7 +137,6 @@ public class OrderServiceImpl implements OrderService {
         for (User user : users) {
             userDao.read(user);
         }
-
     }
 
     private void readCertificates(List<Order> orders) throws DaoException {
@@ -121,10 +159,11 @@ public class OrderServiceImpl implements OrderService {
         List<Tag> tags = orders.stream()
                 .map(Order::getCertificate)
                 .filter(Objects::nonNull)
-                .flatMap(certificate -> certificate.getTags().stream() )
+                .flatMap(certificate -> certificate.getTags().stream())
                 .distinct()
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
         readTags(tags);
     }
+
 }

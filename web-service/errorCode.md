@@ -35,3 +35,5 @@
 63 - Can not update Order (id = %s)
 64 - Can not delete Order (id = %s)
 65 - Can not read all Orders
+66 - Can not read Orders for user id = %s
+67 - Unrecognized field : %s

@@ -6,7 +6,7 @@ import com.epam.esm.service.search.SearchGiftCertificateService;
 
 import java.util.List;
 
-public class SearchByNameAndTagName implements SearchGiftCertificateService {
+public class SearchGiftCertificateByNameAndTagName implements SearchGiftCertificateService {
     /**
      * Name or part name of GiftCertificate.
      */
@@ -16,7 +16,7 @@ public class SearchByNameAndTagName implements SearchGiftCertificateService {
      */
     private final String tagName;
 
-    public SearchByNameAndTagName(String name, String tagName) {
+    public SearchGiftCertificateByNameAndTagName(String name, String tagName) {
         this.name = name;
         this.tagName = tagName;
     }

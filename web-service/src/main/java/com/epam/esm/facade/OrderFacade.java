@@ -1,5 +1,6 @@
 package com.epam.esm.facade;
 
+import com.epam.esm.dao.DaoException;
 import com.epam.esm.dto.JsonResult;
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.Order;
@@ -7,6 +8,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import java.util.List;
+import java.util.Set;
 
 public interface OrderFacade {
     @NonNull
@@ -18,7 +20,12 @@ public interface OrderFacade {
     @NonNull
     JsonResult<Order> delete(int id);
 
-     @NonNull
+    @NonNull
     JsonResult<Order> getAllOrders();
 
+    @NonNull
+    JsonResult<Order> search(int userId);
+
+    @NonNull
+    JsonResult<Order> getOrder(int id, Set<String> fieldsToFind);
 }

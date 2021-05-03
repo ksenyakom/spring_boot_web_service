@@ -41,6 +41,5 @@ public interface OrderDao {
 
     void delete(@NotNull Integer id) throws DaoException;
 
-
-
+    List<Order> readByUser(User user) throws DaoException;
 }
