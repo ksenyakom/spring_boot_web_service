@@ -1,13 +1,17 @@
 package com.epam.esm.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.util.Objects;
 
+@JsonInclude(value = JsonInclude.Include.NON_DEFAULT)
 public class User extends Entity {
     private String name;
     private String surname;
     private int age;
     private String email;
-    private boolean isActive;
+    private Boolean isActive;
 
     public User() {
     }
@@ -16,7 +20,7 @@ public class User extends Entity {
         super(id);
     }
 
-    public User(Integer id, String name, String surname, int age, String email, boolean isActive) {
+    public User(Integer id, String name, String surname, int age, String email, Boolean isActive) {
         super(id);
         this.name = name;
         this.surname = surname;
@@ -58,11 +62,11 @@ public class User extends Entity {
         this.email = email;
     }
 
-    public boolean isActive() {
+    public Boolean isActive() {
         return isActive;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         isActive = active;
     }
 

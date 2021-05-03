@@ -1,12 +1,14 @@
 package com.epam.esm.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class GiftCertificate extends Certificate {
 
     private BigDecimal price;
@@ -16,7 +18,7 @@ public class GiftCertificate extends Certificate {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private LocalDateTime lastUpdateDate;
 
-    private boolean isActive;
+    private Boolean isActive;
 
     private List<Tag> tags;
 
@@ -65,11 +67,11 @@ public class GiftCertificate extends Certificate {
         this.lastUpdateDate = lastUpdateDate;
     }
 
-    public boolean getIsActive() {
+    public Boolean getIsActive() {
         return isActive;
     }
 
-    public void setIsActive(boolean isActive) {
+    public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
     }
 

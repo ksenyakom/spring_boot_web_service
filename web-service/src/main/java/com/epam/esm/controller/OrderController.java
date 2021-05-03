@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 
 /**
  * Controller class for Order
@@ -40,10 +43,13 @@ public class OrderController {
 
     @GetMapping("/{id}")
     public JsonResult<Order> show(@PathVariable("id") int id) {
-        return orderFacade.getOrder(id);
+        JsonResult<Order> jsonResult =  orderFacade.getOrder(id);
+        jsonResult.add(linkTo(methodOn(OrderController.class).show(id)).withSelfRel());
+        jsonResult.add(linkTo(methodOn(OrderController.class).delete(id)).withRel("delete"));
+        return jsonResult;
     }
 
-    @GetMapping("/{id}/fields")
+    @GetMapping(value = "/{id}", params = {"fields"})
     public JsonResult<Order> showFields(@PathVariable("id") int id, @RequestParam("fields") String fields) {
         Set<String> fieldsToFind = fieldNameValidator.validate(fields);
         return orderFacade.getOrder(id, fieldsToFind);
@@ -52,6 +58,10 @@ public class OrderController {
     @GetMapping("/search")
     public JsonResult<Order> search(@RequestParam("userId") int userId) {
         JsonResult<Order> result = orderFacade.search(userId);
+        for (Order order: result.getResult()) {
+            result.add(linkTo(methodOn(OrderController.class).show(order.getId())).withRel("order"));
+            result.add(linkTo(methodOn(GiftCertificateController.class).show(order.getCertificate().getId())).withRel("certificate"));
+        }
         return result;
     }
     @PostMapping()

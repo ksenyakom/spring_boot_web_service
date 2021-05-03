@@ -91,9 +91,7 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> findByUser(User user) throws ServiceException {
         try {
             List<Order> orders = orderDao.readByUser(user);
-            readUsers(orders);
-            readCertificates(orders);
-            readOrderTags(orders);
+            readCertificatesNames(orders);
 
             return orders;
         } catch (DaoException e) {
@@ -148,6 +146,19 @@ public class OrderServiceImpl implements OrderService {
 
         giftCertificateDao.read(certificates);
     }
+
+    private void readCertificatesNames(List<Order> orders) throws DaoException {
+        List<GiftCertificate> certificates = orders.stream()
+                .map(Order::getCertificate)
+                .distinct()
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        for (GiftCertificate certificate: certificates) {
+            giftCertificateDao.readName(certificate);
+        }
+    }
+
+
 
     private void readTags(List<Tag> tags) throws DaoException {
         for (Tag tag : tags) {

@@ -3,6 +3,7 @@ package com.epam.esm.dao;
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.Tag;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotNull;
@@ -38,6 +39,9 @@ public interface GiftCertificateDao {
 
     @NotNull
     void read(@NotNull GiftCertificate certificate) throws DaoException;
+
+    @NonNull
+    void readName(@NonNull GiftCertificate certificate) throws DaoException;
 
     @NotNull
     void read(@NotNull List<GiftCertificate> certificates) throws DaoException;

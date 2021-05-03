@@ -1,8 +1,10 @@
 package com.epam.esm.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class Tag extends Entity {
 
     @NotEmpty(message = "empty field")

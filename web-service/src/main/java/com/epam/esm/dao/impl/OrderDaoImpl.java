@@ -103,7 +103,6 @@ public class OrderDaoImpl implements OrderDao {
                 Timestamp createDate = resultSet.getTimestamp("create_date");
                 order.setCreateDate(createDate == null ? null : createDate.toLocalDateTime());
                 order.setPrice(resultSet.getBigDecimal("price"));
-                order.setActive(resultSet.getBoolean("is_active"));
                 return order;
             }, order.getId());
             if (orders.isEmpty()) {
@@ -167,7 +166,6 @@ public class OrderDaoImpl implements OrderDao {
                 order.setCreateDate(createDate == null ? null : createDate.toLocalDateTime());
 
                 order.setPrice(resultSet.getBigDecimal("price"));
-                order.setActive(resultSet.getBoolean("is_active"));
                 return order;
             });
             if (orders.isEmpty()) {
@@ -198,7 +196,6 @@ public class OrderDaoImpl implements OrderDao {
                 order.setCreateDate(createDate == null ? null : createDate.toLocalDateTime());
 
                 order.setPrice(resultSet.getBigDecimal("price"));
-                order.setActive(true);
                 return order;
             }, user.getId());
             if (orders.isEmpty()) {

@@ -21,7 +21,6 @@ public interface OrderDao {
         Timestamp createDate = resultSet.getTimestamp("create_date");
         order.setCreateDate(createDate == null ? null : createDate.toLocalDateTime());
         order.setPrice(resultSet.getBigDecimal("price"));
-        order.setActive(resultSet.getBoolean("is_active"));
         return order;
     };
 

@@ -1,6 +1,7 @@
 package com.epam.esm.dto;
 
 import com.epam.esm.model.Entity;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ import java.util.List;
  *
  * @param <T> - type of model, containing in the result
  */
-public class JsonResult<T extends Entity> {
+public class JsonResult<T extends Entity> extends RepresentationModel<JsonResult<T>> {
     private boolean success;
     private String errorCode;
     private String message;

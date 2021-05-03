@@ -41,6 +41,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     private static final String CREATE = "INSERT INTO gift_certificate (name, description, price, duration, create_date, is_active) values(?,?,?,?,?,?)";
     private static final String READ = "SELECT * FROM gift_certificate WHERE id = ?";
+    private static final String READ_NAME = "SELECT name FROM gift_certificate WHERE id = ?";
     private static final String UPDATE = "UPDATE gift_certificate SET name = ?, description = ?,price = ?, duration = ?, last_update_date = ? WHERE id = ?";
     private static final String DELETE = "UPDATE gift_certificate SET is_active = false WHERE id = ? AND is_active = true";
     private static final String READ_ALL_ACTIVE = "SELECT * FROM gift_certificate  WHERE is_active = true";
@@ -135,6 +136,22 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
                 throw new DaoException(String.format("GiftCertificate with id = %s not found.", certificate.getId()), "404");
             }
             readTagsForCertificate(certificates.get(0));
+        } catch (DataAccessException e) {
+            throw new DaoException(String.format("Can not read GiftCertificate (id = %s).", certificate.getId()), "02", e);
+        }
+    }
+
+    @Override
+    @NonNull
+    public void readName(@NonNull GiftCertificate certificate) throws DaoException {
+        try {
+            List<GiftCertificate> certificates = jdbcTemplate.query(READ_NAME, (ResultSet resultSet, int rowNum) -> {
+                certificate.setName(resultSet.getString("name"));
+                return certificate;
+            }, certificate.getId());
+            if (certificates.isEmpty() || certificates.get(0) == null) {
+                throw new DaoException(String.format("GiftCertificate with id = %s not found.", certificate.getId()), "404");
+            }
         } catch (DataAccessException e) {
             throw new DaoException(String.format("Can not read GiftCertificate (id = %s).", certificate.getId()), "02", e);
         }
