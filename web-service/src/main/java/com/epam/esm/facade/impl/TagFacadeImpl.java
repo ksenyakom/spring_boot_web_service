@@ -30,6 +30,15 @@ public class TagFacadeImpl implements TagFacade {
     }
 
     @Override
+    public JsonResult<Tag> getBestBuyerMostWidelyTag() {
+        Tag tag = tagService.findBestBuyerMostWidelyTag();
+        return new JsonResult.Builder<Tag>()
+                .withSuccess(true)
+                .withResult(Collections.singletonList(tag))
+                .build();
+    }
+
+    @Override
     public JsonResult<Tag> save(Tag tag) {
         tagService.save(tag);
         return new JsonResult.Builder<Tag>()

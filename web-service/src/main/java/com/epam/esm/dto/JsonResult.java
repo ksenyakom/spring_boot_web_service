@@ -1,6 +1,8 @@
 package com.epam.esm.dto;
 
 import com.epam.esm.model.Entity;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
@@ -11,13 +13,23 @@ import java.util.List;
  *
  * @param <T> - type of model, containing in the result
  */
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class JsonResult<T extends Entity> extends RepresentationModel<JsonResult<T>> {
     private boolean success;
     private String errorCode;
     private String message;
     private List<T> result;
+    private Metadata metadata;
 
     private JsonResult() {
+    }
+
+    public Metadata getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Metadata metadata) {
+        this.metadata = metadata;
     }
 
     public boolean isSuccess() {
@@ -76,6 +88,11 @@ public class JsonResult<T extends Entity> extends RepresentationModel<JsonResult
 
         public Builder<T> withResult(List<T> result) {
             jsonResult.result = result;
+            return this;
+        }
+
+        public Builder<T> withMetadata(Metadata metadata){
+            jsonResult.metadata = metadata;
             return this;
         }
 

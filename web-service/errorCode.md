@@ -26,6 +26,10 @@
 30 - There is no autoincremented index after trying to add record into table `tag`
 31 - There is no autoincremented index after trying to add record into table `gift_certificate`
 32 - There is no autoincremented index after trying to add record into table `user_order`
+
+33 - Can't count giftCertificates
+34 - No tags for search found
+
 404 - Not found
 
 51 - Can not read User (id = %s)

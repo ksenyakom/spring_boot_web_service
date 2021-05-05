@@ -118,6 +118,21 @@ public class TagDaoImpl implements TagDao {
         }
 
     }
+    private static final String READ_MOST_WIDELY_USED_TAG = "SELECT count(tag_id) AS total, tag_id AS id FROM certificate_tag AS t JOIN user_order AS o ON t.certificate_id = o.certificate_id WHERE o.user_id = ? GROUP BY t.tag_id ORDER BY total LIMIT 1";
+
+    @Override
+    public Tag readUsersMostWidelyTag(Integer id) throws DaoException {
+        try {
+            List<Tag> tags = jdbcTemplate.query(READ_MOST_WIDELY_USED_TAG, new BeanPropertyRowMapper<>(Tag.class), id);
+            if (tags.isEmpty()) {
+                throw new DaoException(String.format("Tag for user id = %s not found.", id), "404");
+            }
+            read(tags.get(0));
+            return tags.get(0);
+        } catch (DataAccessException e) {
+            throw new DaoException(String.format("Can not read Tag for user id = %s", id), "", e);
+        }
+    }
 
     @Override
     public void delete(@NotNull Integer id) throws DaoException {
@@ -137,9 +152,6 @@ public class TagDaoImpl implements TagDao {
     public List<Tag> readAll() throws DaoException {
         try {
             List<Tag> tags = jdbcTemplate.query(READ_ALL, new BeanPropertyRowMapper<>(Tag.class));
-            if (tags.isEmpty()) {
-                throw new DaoException("No tags found in database", "404");
-            }
             return tags;
         } catch (DataAccessException e) {
             throw new DaoException("Can not read all Tag", "15", e);

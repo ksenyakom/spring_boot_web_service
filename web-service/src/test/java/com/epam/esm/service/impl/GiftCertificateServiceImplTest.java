@@ -6,17 +6,12 @@ import com.epam.esm.dao.TagDao;
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.ServiceException;
-import com.epam.esm.service.impl.GiftCertificateServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,17 +56,17 @@ class GiftCertificateServiceImplTest {
         List<GiftCertificate> certificates = new ArrayList<>();
         certificates.add(new GiftCertificate());
         certificates.add(new GiftCertificate());
-        given(dao.readAllActive()).willReturn(certificates);
-        List<GiftCertificate> actual = service.findAll();
+        given(dao.readAllActive(anyInt(), anyInt())).willReturn(certificates);
+        List<GiftCertificate> actual = service.findAll(anyInt(), anyInt());
 
         assertEquals(2, actual.size());
     }
 
     @Test
     void findAllException() throws DaoException {
-        given(dao.readAllActive()).willThrow(DaoException.class);
+        given(dao.readAllActive(anyInt(), anyInt())).willThrow(DaoException.class);
 
-        assertThrows(ServiceException.class, () -> service.findAll());
+        assertThrows(ServiceException.class, () -> service.findAll(anyInt(), anyInt()));
     }
 
     @Test

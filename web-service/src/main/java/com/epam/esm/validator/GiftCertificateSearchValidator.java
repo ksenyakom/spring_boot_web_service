@@ -24,31 +24,31 @@ public class GiftCertificateSearchValidator implements Validator {
         String sortByName = searchParams.getSortByName();
         String sortByDate = searchParams.getSortByDate();
         String name = searchParams.getName();
-        String tagName = searchParams.getTagName();
+        String tagPartName = searchParams.getTagPartName();
 
-        if (name != null && name.length() > MAX_LENGTH) {
-            errors.rejectValue("name", "invalid length", "Name: invalid length");
+        if (name != null && (name.length() > MAX_LENGTH || name.isEmpty())) {
+            errors.rejectValue("name", "invalid length");
         }
 
-        if (tagName != null && tagName.length() > MAX_LENGTH) {
-            errors.rejectValue("tagName", "invalid length", "TagName: invalid length");
+        if (tagPartName != null && (tagPartName.length() > MAX_LENGTH || tagPartName.isEmpty())) {
+            errors.rejectValue("tagPartName", "invalid length");
         }
 
-        if (sortByDate != null && !(isAscending(sortByDate) || isDescenging(sortByDate))) {
-            errors.rejectValue("sortByDate", "invalid value", "sortByDate: invalid value. Can be asc or desc");
+        if (sortByDate != null && !(isAscending(sortByDate) || isDescending(sortByDate))) {
+            errors.rejectValue("sortByDate", "invalid value. Can be asc or desc");
         }
 
-
-        if (sortByName != null && !(isAscending(sortByName) || isDescenging(sortByName))) {
-            errors.rejectValue("sortByName", "invalid value", "sortByName: invalid value. Can be asc or desc");
+        if (sortByName != null && !(isAscending(sortByName) || isDescending(sortByName))) {
+            errors.rejectValue("sortByName", "invalid value. Can be asc or desc");
         }
+
     }
 
     private boolean isAscending(String sortByDate) {
         return sortByDate.equalsIgnoreCase("asc");
     }
 
-    private boolean isDescenging(String sortByDate) {
+    private boolean isDescending(String sortByDate) {
         return sortByDate.equalsIgnoreCase("desc");
     }
 

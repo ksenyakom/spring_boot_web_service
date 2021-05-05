@@ -153,7 +153,7 @@ class GiftCertificateDaoImplTest {
     @Order(1)
     @Test
     void testReadAll() throws DaoException {
-        List<GiftCertificate> certificates = giftCertificateDao.readAllActive();
+        List<GiftCertificate> certificates = giftCertificateDao.readAllActive(1, 5);
         assertAll("Should read all lines",
                 () -> {
                     assertNotNull(certificates);

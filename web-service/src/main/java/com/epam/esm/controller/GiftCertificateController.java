@@ -4,7 +4,9 @@ import com.epam.esm.dto.JsonResult;
 import com.epam.esm.facade.GiftCertificateFacade;
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.SearchParams;
+import com.epam.esm.model.Tag;
 import com.epam.esm.service.ServiceException;
+import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -12,7 +14,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 /**
  * Controller class for GiftCertificate
@@ -23,6 +30,9 @@ public class GiftCertificateController {
 
     @Autowired
     private GiftCertificateFacade giftCertificateFacade;
+
+    @Autowired
+    private TagService tagService;
 
     @Autowired
     @Qualifier("giftCertificateValidator")
@@ -38,8 +48,12 @@ public class GiftCertificateController {
 
 
     @GetMapping()
-    public JsonResult<GiftCertificate> index() {
-        return giftCertificateFacade.getAllCertificates();
+    public JsonResult<GiftCertificate> index(@RequestParam(value = "page", defaultValue = "1") int page,
+                                             @RequestParam(value = "perPage", defaultValue = "5") int perPage,
+                                             @RequestParam(value = "includeMetadata", required = false, defaultValue = "false") boolean includeMetadata) {
+        //TODO validation
+        JsonResult<GiftCertificate> jsonResult = giftCertificateFacade.getAllCertificates(page, perPage, includeMetadata);
+        return jsonResult;
     }
 
     @GetMapping("/{id}")
@@ -96,9 +110,21 @@ public class GiftCertificateController {
         }
 
         JsonResult<GiftCertificate> jsonResult =
-                giftCertificateFacade.search(searchParams.getName(), searchParams.getTagName());
+                giftCertificateFacade.search(searchParams.getName(), searchParams.getTagPartName());
         Optional.ofNullable(jsonResult.getResult()).ifPresent(certificates ->
                 giftCertificateFacade.sort(searchParams.getSortByName(), searchParams.getSortByDate(), certificates));
+
+        return jsonResult;
+    }
+
+    @GetMapping(value = "/search", params = {"tags"})
+    public JsonResult<GiftCertificate> searchByTags(@RequestParam("tags") String tags) {
+        if (tags == null || tags.isEmpty()) {
+            throw new ServiceException("No tags for search found", "");
+        }
+        List<Tag> tagsList = Arrays.stream(tags.split(",")).map(name -> new Tag(name)).collect(Collectors.toList());
+        tagService.findByName(tagsList);
+        JsonResult<GiftCertificate> jsonResult = giftCertificateFacade.search(tagsList);
 
         return jsonResult;
     }

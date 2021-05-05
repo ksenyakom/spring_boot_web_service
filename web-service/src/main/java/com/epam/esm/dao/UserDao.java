@@ -15,7 +15,6 @@ public interface UserDao {
         user.setSurname(resultSet.getString("surname"));
         user.setEmail(resultSet.getString("email"));
         user.setAge(resultSet.getInt("age"));
-        user.setActive(resultSet.getBoolean("is_active"));
         return user;
     };
 
@@ -25,4 +24,5 @@ public interface UserDao {
 
     List<User> readAll() throws DaoException;
 
+    User readBestBuyer() throws DaoException;
 }

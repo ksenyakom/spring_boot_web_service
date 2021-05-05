@@ -15,4 +15,7 @@ public interface TagFacade {
     JsonResult<Tag> delete(int id);
 
     JsonResult<Tag> getAllTags();
+
+    JsonResult<Tag> getBestBuyerMostWidelyTag();
+
 }

@@ -2,6 +2,7 @@ package com.epam.esm.facade;
 
 import com.epam.esm.dto.JsonResult;
 import com.epam.esm.model.GiftCertificate;
+import com.epam.esm.model.Tag;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
@@ -22,6 +23,11 @@ public interface GiftCertificateFacade {
     @NonNull
     JsonResult<GiftCertificate> delete(int id);
 
+    @NonNull
+    JsonResult<GiftCertificate> getAllCertificates(int page, int size, boolean include);
+
+    @NonNull
+    JsonResult<GiftCertificate> partUpdate(GiftCertificate certificate);
     /**
      * Searches GiftCertificate by name and tag name.
      *
@@ -34,10 +40,7 @@ public interface GiftCertificateFacade {
 
     void sort(@Nullable String sortByName, @Nullable String sortByDate, @NonNull List<GiftCertificate> certificates);
 
-    @NonNull
-    JsonResult<GiftCertificate> getAllCertificates();
 
-    @NonNull
-    JsonResult<GiftCertificate> partUpdate(GiftCertificate certificate);
+    JsonResult<GiftCertificate> search(List<Tag> tagsList);
 }
 

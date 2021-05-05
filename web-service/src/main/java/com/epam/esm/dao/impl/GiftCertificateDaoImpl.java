@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -44,7 +45,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static final String READ_NAME = "SELECT name FROM gift_certificate WHERE id = ?";
     private static final String UPDATE = "UPDATE gift_certificate SET name = ?, description = ?,price = ?, duration = ?, last_update_date = ? WHERE id = ?";
     private static final String DELETE = "UPDATE gift_certificate SET is_active = false WHERE id = ? AND is_active = true";
-    private static final String READ_ALL_ACTIVE = "SELECT * FROM gift_certificate  WHERE is_active = true";
+    private static final String READ_ALL_ACTIVE = "SELECT * FROM gift_certificate  WHERE is_active = true LIMIT ?, ?";
+    private static final String COUNT_ALL_ACTIVE = "SELECT count(*) FROM gift_certificate  WHERE is_active = true";
     private static final String READ_BY_NAME = "SELECT * FROM gift_certificate WHERE name LIKE CONCAT('%', ?, '%')";
 
     private static final String READ_BY_TAG_ID = "SELECT name, description, price, duration, create_date,  last_update_date, is_active, certificate_id as id FROM gift_certificate `c` join `certificate_tag` `t` on c.id = t.certificate_id  WHERE t.tag_id = ?";
@@ -129,7 +131,6 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
                 certificate.setLastUpdateDate(lastUpdateDate == null ? null : lastUpdateDate.toLocalDateTime());
                 certificate.setPrice(resultSet.getBigDecimal("price"));
                 certificate.setDuration(resultSet.getInt("duration"));
-                certificate.setIsActive(resultSet.getBoolean("is_active"));
                 return certificate;
             }, certificate.getId());
             if (certificates.isEmpty() || certificates.get(0) == null) {
@@ -167,17 +168,24 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     @Override
     @NonNull
-    public List<GiftCertificate> readAllActive() throws DaoException {
+    public List<GiftCertificate> readAllActive(int page, int size) throws DaoException {
         try {
-            List<GiftCertificate> certificates = jdbcTemplate.query(READ_ALL_ACTIVE, ROW_MAPPER);
-            if (certificates.isEmpty()) {
-                throw new DaoException("No GiftCertificate found in database", "404");
-            }
+            List<GiftCertificate> certificates = jdbcTemplate.query(READ_ALL_ACTIVE, ROW_MAPPER, (page - 1) * size, size );
             readTagsForCertificate(certificates);
-
             return certificates;
         } catch (DataAccessException e) {
             throw new DaoException("Can not read all GiftCertificates", "05", e);
+        }
+    }
+
+    @Override
+    @NonNull
+    public Integer countAllActive() throws DaoException {
+        try {
+            Integer count = jdbcTemplate.queryForObject(COUNT_ALL_ACTIVE, Integer.class);
+            return count == null? 0 : count;
+        }  catch (DataAccessException e) {
+            throw new DaoException("Can't count active giftCertificates.", "33");
         }
     }
 

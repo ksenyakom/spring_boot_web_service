@@ -32,7 +32,7 @@ public class SearchGiftCertificateByNameAndTagName implements SearchGiftCertific
             case 3:
                 return giftCertificateService.findByNameAndTagName(name, tagName);
             default:
-                return giftCertificateService.findAll();
+                return giftCertificateService.findAll(1, 1); //TODO page, size
         }
     }
 

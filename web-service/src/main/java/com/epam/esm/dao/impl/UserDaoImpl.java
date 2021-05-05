@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -50,11 +51,10 @@ public class UserDaoImpl implements UserDao {
                 user.setSurname(resultSet.getString("surname"));
                 user.setEmail(resultSet.getString("email"));
                 user.setAge(resultSet.getInt("age"));
-                user.setActive(resultSet.getBoolean("is_active"));
                 return user;
             }, user.getId());
 
-            if ( users.isEmpty()) {
+            if (users.isEmpty()) {
                 throw new DaoException(String.format("User with id = %s not found.", user.getId()), "404");
             }
 
@@ -73,6 +73,27 @@ public class UserDaoImpl implements UserDao {
             return users;
         } catch (DataAccessException e) {
             throw new DaoException("Can not read all Users", "52", e);
+        }
+    }
+
+
+    private static final String READ_MAX_SUM_USER = "SELECT user_id, sum(price) AS sum_amount FROM user_order GROUP BY  user_id ORDER BY sum_amount DESC LIMIT 1";
+
+    @Override
+    @Nullable
+    public User readBestBuyer() throws DaoException {
+        try {
+            List<User> user = jdbcTemplate.query(READ_MAX_SUM_USER, (resultSet, i) -> {
+                User user1 = new User();
+                user1.setId(resultSet.getInt("user_id"));
+                return user1;
+            });
+            if (user.isEmpty()) {
+                return null;
+            }
+            return user.get(0);
+        } catch (DataAccessException e) {
+            throw new DaoException("Can not read user with max sum", "?", e);
         }
     }
 }

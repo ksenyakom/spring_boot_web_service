@@ -34,4 +34,6 @@ public interface TagDao {
      * @throws DaoException if any exception occur while receiving data.
      */
     List<Tag> readByPartName(String tagName) throws DaoException;
+
+    Tag readUsersMostWidelyTag(Integer id) throws DaoException;
 }

@@ -2,7 +2,6 @@ package com.epam.esm.facade.impl;
 
 import com.epam.esm.dto.JsonResult;
 import com.epam.esm.facade.GiftCertificateFacade;
-import com.epam.esm.facade.impl.GiftCertificateFacadeImpl;
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.service.CopyFields;
 import com.epam.esm.service.GiftCertificateService;
@@ -15,8 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -75,8 +73,8 @@ class GiftCertificateFacadeImplTest {
 
     @Test
     void getAllCertificates() {
-        given(giftCertificateService.findAll()).willReturn(new ArrayList<>());
-        JsonResult<GiftCertificate> jsonResult = giftCertificateFacade.getAllCertificates();
+        given(giftCertificateService.findAll(anyInt(), anyInt())).willReturn(new ArrayList<>());
+        JsonResult<GiftCertificate> jsonResult = giftCertificateFacade.getAllCertificates(anyInt(), anyInt(), anyBoolean());
 
         assertAll(() -> {
             assertNotNull(jsonResult.getResult());

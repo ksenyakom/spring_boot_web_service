@@ -15,4 +15,8 @@ public interface TagService {
     void save(Tag entity) throws ServiceException;
 
     void delete(Integer id) throws ServiceException;
+
+    Tag findBestBuyerMostWidelyTag()throws ServiceException;
+
+    void findByName(List<Tag> tagsList)throws ServiceException;
 }

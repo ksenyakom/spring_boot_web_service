@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,12 +45,32 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    @NonNull
-    public List<GiftCertificate> findAll() throws ServiceException {
+    public List<GiftCertificate> findByTagId(Tag tag) {
         try {
-            List<GiftCertificate> certificates = giftCertificateDao.readAllActive();
+            List<GiftCertificate> certificates = giftCertificateDao.readByTags(Collections.singletonList(tag));
+            return certificates;
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
+        }
+    }
+
+    @Override
+    @NonNull
+    public List<GiftCertificate> findAll(int page, int size) throws ServiceException {
+        try {
+            List<GiftCertificate> certificates = giftCertificateDao.readAllActive(page, size);
             readTagNames(certificates);
             return certificates;
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
+        }
+    }
+
+    @Override
+    @NonNull
+    public Integer countAll() throws ServiceException {
+        try {
+            return  giftCertificateDao.countAllActive();
         } catch (DaoException e) {
             throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
         }
@@ -150,13 +172,18 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         }
     }
 
-    private void readTagNames(List<GiftCertificate> certificates) throws DaoException {
-        List<Tag> tags = certificates.stream()
-                .filter(certificate -> certificate.getTags() != null)
-                .flatMap(certificate -> certificate.getTags().stream())
-                .distinct()
-                .collect(Collectors.toList());
-        readTagName(tags);
+    @Override
+    public void readTagNames(List<GiftCertificate> certificates)  {
+        try {
+            List<Tag> tags = certificates.stream()
+                    .filter(certificate -> certificate.getTags() != null)
+                    .flatMap(certificate -> certificate.getTags().stream())
+                    .distinct()
+                    .collect(Collectors.toList());
+            readTagName(tags);
+        }catch (DaoException e) {
+            throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
+        }
     }
 
 }

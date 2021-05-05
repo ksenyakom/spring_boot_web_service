@@ -4,7 +4,6 @@ import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.Tag;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotNull;
 import java.sql.ResultSet;
@@ -27,7 +26,6 @@ public interface GiftCertificateDao {
         giftCertificate.setLastUpdateDate(lastUpdateDate == null ? null : lastUpdateDate.toLocalDateTime());
         giftCertificate.setPrice(resultSet.getBigDecimal("price"));
         giftCertificate.setDuration(resultSet.getInt("duration"));
-        giftCertificate.setIsActive(resultSet.getBoolean("is_active"));
         return giftCertificate;
     };
 
@@ -51,7 +49,10 @@ public interface GiftCertificateDao {
     void delete(@NotNull Integer id) throws DaoException;
 
     @NotNull
-    List<GiftCertificate> readAllActive() throws DaoException;
+    List<GiftCertificate> readAllActive(int page, int size) throws DaoException;
+
+    @NonNull
+    Integer countAllActive() throws DaoException;
 
     /**
      * Reads GiftCertificates by tags.

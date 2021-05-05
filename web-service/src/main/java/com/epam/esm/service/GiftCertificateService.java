@@ -2,6 +2,8 @@ package com.epam.esm.service;
 
 import com.epam.esm.dao.DaoException;
 import com.epam.esm.model.GiftCertificate;
+import com.epam.esm.model.Tag;
+import org.springframework.lang.NonNull;
 
 import java.util.List;
 
@@ -12,7 +14,10 @@ import java.util.List;
 public interface GiftCertificateService {
     GiftCertificate findById(Integer id) throws ServiceException;
 
-    List<GiftCertificate> findAll() throws ServiceException;
+    List<GiftCertificate> findAll(int page, int size) throws ServiceException;
+
+    @NonNull
+    Integer countAll() throws ServiceException;
 
     void save(GiftCertificate entity) throws ServiceException;
 
@@ -51,5 +56,7 @@ public interface GiftCertificateService {
     List<GiftCertificate> findByNameAndTagName(String name, String tagName);
 
 
+    List<GiftCertificate> findByTagId(Tag tag);
 
+    void readTagNames(List<GiftCertificate> certificates) ;
 }

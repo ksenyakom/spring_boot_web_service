@@ -4,18 +4,18 @@ public class SearchParams {
 
     private String name;
 
-    private String tagName;
+    private String tagPartName;
 
     private String sortByName;
 
     private String sortByDate;
 
-    public String getTagName() {
-        return tagName;
+    public String getTagPartName() {
+        return tagPartName;
     }
 
-    public void setTagName(String tagName) {
-        this.tagName = tagName;
+    public void setTagPartName(String tagPartName) {
+        this.tagPartName = tagPartName;
     }
 
     public String getSortByName() {

@@ -2,6 +2,7 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.DaoException;
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.dao.UserDao;
 import com.epam.esm.model.Tag;
 import com.epam.esm.service.ServiceException;
 import com.epam.esm.service.TagService;
@@ -25,12 +26,14 @@ class TagServiceImplTest {
 
     @Mock
     private TagDao tagDao;
+    @Mock
+    private UserDao userDao;
 
     private TagService tagService;
 
     @BeforeEach
     void setUp() {
-        tagService = new TagServiceImpl(tagDao);
+        tagService = new TagServiceImpl(tagDao, userDao);
     }
 
     @Test
