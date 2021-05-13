@@ -29,7 +29,7 @@
 
 33 - Can't count giftCertificates
 34 - No tags for search found
-
+35 - Can not read certificates by name and tag
 404 - Not found
 
 51 - Can not read User (id = %s)

@@ -15,34 +15,11 @@ import java.util.List;
  */
 public interface GiftCertificateDao {
 
-    RowMapper<GiftCertificate> ROW_MAPPER = (ResultSet resultSet, int rowNum) -> {
-        GiftCertificate giftCertificate = new GiftCertificate();
-        giftCertificate.setId(resultSet.getInt("id"));
-        giftCertificate.setName(resultSet.getString("name"));
-        giftCertificate.setDescription(resultSet.getString("description"));
-        Timestamp createDate = resultSet.getTimestamp("create_date");
-        giftCertificate.setCreateDate(createDate == null ? null : createDate.toLocalDateTime());
-        Timestamp lastUpdateDate = resultSet.getTimestamp("last_update_date");
-        giftCertificate.setLastUpdateDate(lastUpdateDate == null ? null : lastUpdateDate.toLocalDateTime());
-        giftCertificate.setPrice(resultSet.getBigDecimal("price"));
-        giftCertificate.setDuration(resultSet.getInt("duration"));
-        return giftCertificate;
-    };
-
     @NotNull
     Integer create(@NotNull GiftCertificate entity) throws DaoException;
 
     @NotNull
     GiftCertificate read(@NotNull Integer id) throws DaoException;
-
-    @NotNull
-    void read(@NotNull GiftCertificate certificate) throws DaoException;
-
-    @NonNull
-    void readName(@NonNull GiftCertificate certificate) throws DaoException;
-
-    @NotNull
-    void read(@NotNull List<GiftCertificate> certificates) throws DaoException;
 
     void update(@NotNull GiftCertificate entity) throws DaoException;
 

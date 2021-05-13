@@ -1,7 +1,7 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.JsonResult;
-import com.epam.esm.model.Entity;
+import com.epam.esm.model.Model;
 import com.epam.esm.service.ServiceException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import org.apache.logging.log4j.LogManager;
@@ -20,7 +20,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(ServiceException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public @ResponseBody
-    JsonResult<Entity> serviceError(final ServiceException e) {
+    JsonResult<Model> serviceError(final ServiceException e) {
         logger.error("Error code:{}. Error message:{}", e.getErrorCode(), e.getMessage(), e);
         return new JsonResult.Builder<>()
                 .withSuccess(false)
@@ -32,7 +32,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public @ResponseBody
-    JsonResult<Entity> messageNotReadable(final HttpMessageNotReadableException e) {
+    JsonResult<Model> messageNotReadable(final HttpMessageNotReadableException e) {
         logger.error(e);
 
         String message = "Message can not be read.Please, check fields and values." + e.getMessage();
@@ -48,7 +48,7 @@ public class ExceptionInterceptor {
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public @ResponseBody
-    JsonResult<Entity> otherError(final RuntimeException e) {
+    JsonResult<Model> otherError(final RuntimeException e) {
         logger.error(e);
         return new JsonResult.Builder<>()
                 .withSuccess(false)

@@ -26,6 +26,5 @@ public class Application implements ApplicationListener<ApplicationReadyEvent> {
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
-	//	objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 	}
 }

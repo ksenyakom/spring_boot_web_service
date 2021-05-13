@@ -90,7 +90,7 @@ public class OrderValidator implements Validator {
             if (certificate.getCreateDate() != null) {
                 errors.rejectValue("certificate.createDate", MUST_BE_EMPTY);
             }
-            if (certificate.getIsActive()) {
+            if (certificate.getActive()) {
                 errors.rejectValue("certificate.isActive", MUST_BE_EMPTY);
             }
         }

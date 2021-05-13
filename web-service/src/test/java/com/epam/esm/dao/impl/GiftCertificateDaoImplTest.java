@@ -35,7 +35,7 @@ class GiftCertificateDaoImplTest {
                 .build();
 
         JdbcTemplate jdbcTemplate = new JdbcTemplate(embeddedDatabase);
-        giftCertificateDao = new GiftCertificateDaoImpl(jdbcTemplate);
+     //   giftCertificateDao = new GiftCertificateDaoImpl(jdbcTemplate);
     }
 
     @AfterAll
@@ -66,7 +66,7 @@ class GiftCertificateDaoImplTest {
                     assertEquals(0, giftCertificate.getPrice().compareTo(actual.getPrice()));
                     assertEquals(giftCertificate.getDuration(), actual.getDuration());
                     assertNotNull(actual.getCreateDate());
-                    assertTrue(actual.getIsActive());
+                    assertTrue(actual.getActive());
                     assertNull(actual.getLastUpdateDate());
                 });
         giftCertificateDao.delete(id);
@@ -124,7 +124,7 @@ class GiftCertificateDaoImplTest {
                     assertEquals(giftCertificate.getDuration(), actual.getDuration());
                     assertEquals(giftCertificate.getCreateDate(), actual.getCreateDate());
                     assertNotNull(actual.getLastUpdateDate());
-                    assertTrue(actual.getIsActive());
+                    assertTrue(actual.getActive());
                 });
     }
 
@@ -146,7 +146,7 @@ class GiftCertificateDaoImplTest {
 
         assertAll(() -> {
             assertNotNull(actual);
-            assertFalse(actual.getIsActive());
+            assertFalse(actual.getActive());
         });
     }
 

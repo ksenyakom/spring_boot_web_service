@@ -42,7 +42,7 @@ public class OrderServiceImpl implements OrderService {
         try {
             Order order = orderDao.read(id);
             userDao.read(order.getUser());
-            giftCertificateDao.read(order.getCertificate());
+            order.setCertificate(giftCertificateDao.read(order.getCertificate().getId()));
             if (order.getCertificate() != null) {
                 readTags(order.getCertificate().getTags());
             }
@@ -60,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
             Order orderToReturn = fillOrderFields.fill(order, fieldsToFind);
 
             if (order.getCertificate() != null) {
-                giftCertificateDao.read(order.getCertificate());
+                order.setCertificate(giftCertificateDao.read(order.getCertificate().getId()));
                 readTags(order.getCertificate().getTags());
             }
             if (order.getUser() != null) {
@@ -144,7 +144,7 @@ public class OrderServiceImpl implements OrderService {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        giftCertificateDao.read(certificates);
+     //   giftCertificateDao.read(certificates);
     }
 
     private void readCertificatesNames(List<Order> orders) throws DaoException {
@@ -154,7 +154,7 @@ public class OrderServiceImpl implements OrderService {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
         for (GiftCertificate certificate: certificates) {
-            giftCertificateDao.readName(certificate);
+         //   giftCertificateDao.readName(certificate);
         }
     }
 

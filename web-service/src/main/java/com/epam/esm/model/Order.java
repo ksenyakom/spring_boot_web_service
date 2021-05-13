@@ -7,7 +7,8 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Order extends Entity {
+public class Order extends Model {
+    private Integer id;
     private User user;
     private GiftCertificate certificate;
     private LocalDateTime createDate;
@@ -17,7 +18,7 @@ public class Order extends Entity {
     public Order() {}
 
     public Order(Integer id) {
-        super(id);
+        this.id = id;
     }
 
     public Order(User user, GiftCertificate certificate, LocalDateTime createDate, BigDecimal price) {
@@ -25,6 +26,14 @@ public class Order extends Entity {
         this.certificate = certificate;
         this.createDate = createDate;
         this.price = price;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Boolean isActive() {

@@ -58,5 +58,4 @@ public interface GiftCertificateService {
 
     List<GiftCertificate> findByTagId(Tag tag);
 
-    void readTagNames(List<GiftCertificate> certificates) ;
 }
