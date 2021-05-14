@@ -23,7 +23,6 @@ public class SearchGiftCertificateByTags implements SearchGiftCertificateService
         if (!tags.isEmpty()) {
             certificates.removeIf(certificate ->!certificate.getTags().containsAll(tags));
         }
-        service.readTagNames(certificates);
         return certificates;
     }
 }

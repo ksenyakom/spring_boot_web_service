@@ -22,8 +22,10 @@ public class TagController {
     private TagFacade tagFacade;
 
     @GetMapping()
-    public JsonResult<Tag> index() throws ServiceException {
-        return tagFacade.getAllTags();
+    public JsonResult<Tag> index(@RequestParam(value = "page", defaultValue = "1") int page,
+                                 @RequestParam(value = "perPage", defaultValue = "5") int perPage,
+                                 @RequestParam(value = "includeMetadata", required = false, defaultValue = "true") boolean includeMetadata) throws ServiceException {
+        return tagFacade.getAllTags(page, perPage, includeMetadata);
     }
 
     @GetMapping("/{id}")

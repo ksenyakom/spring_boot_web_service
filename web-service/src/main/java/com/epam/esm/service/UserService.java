@@ -7,5 +7,7 @@ import java.util.List;
 public interface UserService {
     User findById(Integer id) throws ServiceException;
 
-    List<User> findAll() throws ServiceException;
+    List<User> findAll(int page, int size) throws ServiceException;
+
+    int countAll();
 }

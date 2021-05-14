@@ -7,15 +7,20 @@ import java.util.List;
 import java.util.Set;
 
 public interface OrderService {
-    Order findById(Integer id) throws ServiceException;
-
-    List<Order> findAll() throws ServiceException;
 
     void save(Order entity) throws ServiceException;
 
-    void delete(Integer id) throws ServiceException;
+    Order findById(Integer id) throws ServiceException;
 
-    List<Order> findByUser(User user) throws ServiceException;
+    List<Order> findAll(int page, int size) throws ServiceException;
+
+    List<Order> findByUser(User user, int page, int size) throws ServiceException;
 
     Order findById(int id, Set<String> fieldsToFind) throws ServiceException;
+
+    void delete(Integer id) throws ServiceException;
+
+    int countAll();
+
+    int countByUser(User user);
 }

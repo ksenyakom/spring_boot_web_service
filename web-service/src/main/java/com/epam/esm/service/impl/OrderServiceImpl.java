@@ -19,54 +19,31 @@ import java.util.stream.Collectors;
 @Service
 public class OrderServiceImpl implements OrderService {
     private final OrderDao orderDao;
-
     private final UserDao userDao;
-
-    private final GiftCertificateDao giftCertificateDao;
-
-    private final TagDao tagDao;
 
     private final FillOrderFields fillOrderFields;
 
     @Autowired
-    public OrderServiceImpl(OrderDao orderDao, UserDao userDao, GiftCertificateDao giftCertificateDao, TagDao tagDao, FillOrderFields fillOrderFields) {
+    public OrderServiceImpl(OrderDao orderDao, UserDao userDao, FillOrderFields fillOrderFields) {
         this.orderDao = orderDao;
         this.userDao = userDao;
-        this.giftCertificateDao = giftCertificateDao;
-        this.tagDao = tagDao;
         this.fillOrderFields = fillOrderFields;
     }
 
     @Override
     public Order findById(Integer id) throws ServiceException {
         try {
-            Order order = orderDao.read(id);
-            userDao.read(order.getUser());
-            order.setCertificate(giftCertificateDao.read(order.getCertificate().getId()));
-            if (order.getCertificate() != null) {
-                readTags(order.getCertificate().getTags());
-            }
-
-            return order;
+            return orderDao.read(id);
         } catch (DaoException e) {
             throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
         }
     }
 
     @Override
-    public Order findById(int id, Set<String> fieldsToFind)  {
+    public Order findById(int id, Set<String> fieldsToFind) {
         try {
             Order order = orderDao.read(id);
             Order orderToReturn = fillOrderFields.fill(order, fieldsToFind);
-
-            if (order.getCertificate() != null) {
-                order.setCertificate(giftCertificateDao.read(order.getCertificate().getId()));
-                readTags(order.getCertificate().getTags());
-            }
-            if (order.getUser() != null) {
-                userDao.read(order.getUser());
-            }
-
             return orderToReturn;
         } catch (DaoException e) {
             throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
@@ -74,26 +51,37 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> findAll() throws ServiceException {
+    public List<Order> findAll(int page, int size) throws ServiceException {
         try {
-            List<Order> orders = orderDao.readAllActive();
-            readUsers(orders);
-            readCertificates(orders);
-            readOrderTags(orders);
-
-            return orders;
+            return orderDao.readAllActive(page, size);
         } catch (DaoException e) {
             throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
         }
     }
 
     @Override
-    public List<Order> findByUser(User user) throws ServiceException {
+    public int countAll() {
         try {
-            List<Order> orders = orderDao.readByUser(user);
-            readCertificatesNames(orders);
+            return orderDao.countAllActive();
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
+        }
+    }
 
-            return orders;
+    @Override
+    public int countByUser(User user) {
+        try {
+            return orderDao.countActiveByUser(user);
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
+        }
+    }
+
+    @Override
+    public List<Order> findByUser(User user, int page, int size) throws ServiceException {
+        try {
+            userDao.read(user.getId());
+            return orderDao.readByUser(user, page, size);
         } catch (DaoException e) {
             throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
         }
@@ -106,7 +94,7 @@ public class OrderServiceImpl implements OrderService {
 
             if (order.getId() == null) {
                 order.setCreateDate(LocalDateTime.now(ZoneOffset.UTC));
-                order.setId(orderDao.create(order));
+                orderDao.create(order);
             } else {
                 orderDao.update(order);
             }
@@ -123,58 +111,6 @@ public class OrderServiceImpl implements OrderService {
         } catch (DaoException e) {
             throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
         }
-    }
-
-    private void readUsers(List<Order> orders) throws DaoException {
-        List<User> users = orders.stream()
-                .map(Order::getUser)
-                .distinct()
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-
-        for (User user : users) {
-            userDao.read(user);
-        }
-    }
-
-    private void readCertificates(List<Order> orders) throws DaoException {
-        List<GiftCertificate> certificates = orders.stream()
-                .map(Order::getCertificate)
-                .distinct()
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-
-     //   giftCertificateDao.read(certificates);
-    }
-
-    private void readCertificatesNames(List<Order> orders) throws DaoException {
-        List<GiftCertificate> certificates = orders.stream()
-                .map(Order::getCertificate)
-                .distinct()
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-        for (GiftCertificate certificate: certificates) {
-         //   giftCertificateDao.readName(certificate);
-        }
-    }
-
-
-
-    private void readTags(List<Tag> tags) throws DaoException {
-        for (Tag tag : tags) {
-            tagDao.read(tag);
-        }
-    }
-
-    private void readOrderTags(List<Order> orders) throws DaoException {
-        List<Tag> tags = orders.stream()
-                .map(Order::getCertificate)
-                .filter(Objects::nonNull)
-                .flatMap(certificate -> certificate.getTags().stream())
-                .distinct()
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-        readTags(tags);
     }
 
 }

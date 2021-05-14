@@ -1,9 +1,11 @@
 package com.epam.esm.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.util.Map;
 
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class Metadata extends RepresentationModel<Metadata> {
     private int page;
     private int perPage;

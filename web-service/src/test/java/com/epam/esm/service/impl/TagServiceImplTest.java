@@ -65,38 +65,29 @@ class TagServiceImplTest {
         List<Tag> tags = new ArrayList<>();
         tags.add(new Tag());
         tags.add(new Tag());
-        given(tagDao.readAll()).willReturn(tags);
-        List<Tag> actual = tagService.findAll();
+        given(tagDao.readAll(anyInt(), anyInt())).willReturn(tags);
+        List<Tag> actual = tagService.findAll(anyInt(), anyInt());
 
         assertEquals(2, actual.size());
     }
 
     @Test
     void findAllException() throws DaoException {
-        given(tagDao.readAll()).willThrow(DaoException.class);
+        given(tagDao.readAll(anyInt(), anyInt())).willThrow(DaoException.class);
 
-        assertThrows(ServiceException.class, () -> tagService.findAll());
+        assertThrows(ServiceException.class, () -> tagService.findAll(anyInt(), anyInt()));
     }
 
     @Test
     void save() throws DaoException {
         Tag tag = new Tag();
         int id = 1;
-        given(tagDao.create(tag)).willReturn(id);
         tagService.save(tag);
 
         assertAll(() -> {
                     assertEquals(id, tag.getId());
                 }
         );
-    }
-
-    @Test
-    void saveException() throws DaoException {
-        given(tagDao.create(any(Tag.class))).willThrow(DaoException.class);
-        Tag tag = new Tag();
-
-        assertThrows(ServiceException.class, () -> tagService.save(tag));
     }
 
 }

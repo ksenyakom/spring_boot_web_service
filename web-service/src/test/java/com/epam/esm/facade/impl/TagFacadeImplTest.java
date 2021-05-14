@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 
@@ -62,8 +63,8 @@ class TagFacadeImplTest {
 
     @Test
     void getAllTags() {
-        given(tagService.findAll()).willReturn(new ArrayList<>());
-        JsonResult<Tag> jsonResult = tagFacade.getAllTags();
+        given(tagService.findAll(anyInt(), anyInt())).willReturn(new ArrayList<>());
+        JsonResult<Tag> jsonResult = tagFacade.getAllTags(anyInt(), anyInt(), anyBoolean());
 
         assertAll(() -> {
             assertNotNull(jsonResult.getResult());

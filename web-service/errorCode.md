@@ -30,6 +30,11 @@
 33 - Can't count giftCertificates
 34 - No tags for search found
 35 - Can not read certificates by name and tag
+36 - Can't count active users
+37 - Can't count active orders
+38- Can't count tags
+39 - Can not read user with max sum
+40 - Can not read Tag for user id = %s
 404 - Not found
 
 51 - Can not read User (id = %s)
@@ -41,3 +46,4 @@
 65 - Can not read all Orders
 66 - Can not read Orders for user id = %s
 67 - Unrecognized field : %s
+68 - Can not count orders for user

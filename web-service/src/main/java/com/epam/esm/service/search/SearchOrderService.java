@@ -9,4 +9,5 @@ import java.util.List;
 
 public interface SearchOrderService {
     List<Order> search(OrderService service);
+    int getTotalFound();
 }

@@ -29,9 +29,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findAll() throws ServiceException {
+    public List<User> findAll(int page, int size) throws ServiceException {
         try {
-            return userDao.readAll();
+            return userDao.readAll(page,size);
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
+        }
+    }
+
+    @Override
+    public int countAll() {
+        try {
+            return userDao.countAllActive();
         } catch (DaoException e) {
             throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
         }

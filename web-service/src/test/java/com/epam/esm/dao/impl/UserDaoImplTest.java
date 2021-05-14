@@ -30,7 +30,7 @@ class UserDaoImplTest {
 
         JdbcTemplate jdbcTemplate = new JdbcTemplate(embeddedDatabase);
 
-        userDao = new UserDaoImpl(jdbcTemplate);
+        userDao = new UserDaoImpl();
     }
 
     @AfterAll
@@ -60,26 +60,9 @@ class UserDaoImplTest {
         assertThrows(DaoException.class, () -> userDao.read(notExistingId));
     }
 
-
-    @Test
-    void testRead() throws DaoException {
-        int id = 2;
-        User user = new User(id);
-        userDao.read(user);
-        assertAll(() -> {
-            assertNotNull(user);
-            assertEquals("Alexander", user.getName());
-            assertEquals("the Great", user.getSurname());
-            assertEquals("makedonsky@mail.ru", user.getEmail());
-            assertEquals(25, user.getAge());
-            assertEquals(id, user.getId());
-            assertTrue(user.isActive());
-        });
-    }
-
     @Test
     void readAll() throws DaoException {
-        List<User> users = userDao.readAll();
+        List<User> users = userDao.readAll(1,5);
         assertAll("Should read all lines",
                 () -> {
                     assertNotNull(users);

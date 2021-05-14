@@ -50,7 +50,7 @@ public class GiftCertificateController {
     @GetMapping()
     public JsonResult<GiftCertificate> index(@RequestParam(value = "page", defaultValue = "1") int page,
                                              @RequestParam(value = "perPage", defaultValue = "5") int perPage,
-                                             @RequestParam(value = "includeMetadata", required = false, defaultValue = "false") boolean includeMetadata) {
+                                             @RequestParam(value = "includeMetadata", required = false, defaultValue = "true") boolean includeMetadata) {
         //TODO validation
         JsonResult<GiftCertificate> jsonResult = giftCertificateFacade.getAllCertificates(page, perPage, includeMetadata);
         return jsonResult;

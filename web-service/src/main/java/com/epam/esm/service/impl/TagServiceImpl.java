@@ -10,6 +10,7 @@ import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class TagServiceImpl implements TagService {
         this.tagDao = tagDao;
         this.userDao = userDao;
     }
+
 
     @Override
     public Tag findById(Integer id) throws ServiceException {
@@ -45,9 +47,18 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<Tag> findAll() throws ServiceException {
+    public List<Tag> findAll(int page, int size) throws ServiceException {
         try {
-            return tagDao.readAll();
+            return tagDao.readAll(page, size);
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
+        }
+    }
+
+    @Override
+    public int countAll() {
+        try {
+            return tagDao.countAll();
         } catch (DaoException e) {
             throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
         }
@@ -69,6 +80,7 @@ public class TagServiceImpl implements TagService {
         }
     }
 
+    @Transactional
     @Override
     public void save(Tag tag) throws ServiceException {
         try {
@@ -78,12 +90,13 @@ public class TagServiceImpl implements TagService {
             if (tagDao.checkIfExist(tag.getName())) {
                 throw new ServiceException(String.format("Tag with name = %s already exist", tag.getName()), "19");
             }
-            tag.setId(tagDao.create(tag));
+            tagDao.create(tag);
         } catch (DaoException e) {
             throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
         }
     }
 
+    @Transactional
     @Override
     public void delete(Integer id) throws ServiceException {
         try {

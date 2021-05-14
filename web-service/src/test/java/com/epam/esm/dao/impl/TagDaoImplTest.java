@@ -31,7 +31,7 @@ class TagDaoImplTest {
 
         JdbcTemplate jdbcTemplate = new JdbcTemplate(embeddedDatabase);
 
-        tagDao = new TagDaoImpl(jdbcTemplate);
+        tagDao = new TagDaoImpl();
     }
 
     @AfterAll
@@ -43,7 +43,7 @@ class TagDaoImplTest {
     void create() throws DaoException {
         Tag tag = new Tag();
         tag.setName("education");
-        tag.setId(tagDao.create(tag));
+        tagDao.create(tag);
         Tag actual = tagDao.read(tag.getId());
 
         assertEquals(tag, actual);
@@ -70,7 +70,7 @@ class TagDaoImplTest {
 
     @Test
     void readAll() throws DaoException {
-        List<Tag> tags = tagDao.readAll();
+        List<Tag> tags = tagDao.readAll(1, 5);
         assertAll("Should read all lines",
                 () -> {
                     assertNotNull(tags);
@@ -78,12 +78,12 @@ class TagDaoImplTest {
                 });
     }
 
-    @Test
-    void readCertificateByTag() throws DaoException {
-        int id = 1;
-        List<GiftCertificate> certificates = tagDao.readCertificateByTag(id);
-        assertEquals(2, certificates.size());
-    }
+//    @Test
+//    void readCertificateByTag() throws DaoException {
+//        int id = 1;
+//        List<GiftCertificate> certificates = tagDao.readCertificateByTag(id);
+//        assertEquals(2, certificates.size());
+//    }
 
     @Test
     void readByName() throws DaoException {

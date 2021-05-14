@@ -1,16 +1,27 @@
 package com.epam.esm.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
 @JsonInclude(value = JsonInclude.Include.NON_DEFAULT)
 public class User extends Model {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+
     private String name;
+
     private String surname;
+
     private int age;
+
     private String email;
+
+    @Column(name = "is_active")
     private Boolean isActive;
 
     public User() {
@@ -69,6 +80,7 @@ public class User extends Model {
         this.email = email;
     }
 
+    @JsonIgnore
     public Boolean isActive() {
         return isActive;
     }

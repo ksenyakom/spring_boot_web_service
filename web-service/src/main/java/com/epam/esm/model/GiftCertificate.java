@@ -1,6 +1,7 @@
 package com.epam.esm.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
@@ -120,6 +121,7 @@ public class GiftCertificate extends Model {
         this.createDate = createDate;
     }
 
+    @JsonIgnore
     public Boolean getActive() {
         return isActive;
     }

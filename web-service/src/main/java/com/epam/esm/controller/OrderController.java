@@ -37,15 +37,16 @@ public class OrderController {
     private FieldNameValidator fieldNameValidator;
 
     @GetMapping()
-    public JsonResult<Order> index() {
-        return orderFacade.getAllOrders();
+    public JsonResult<Order> index(@RequestParam(value = "page", defaultValue = "1") int page,
+                                   @RequestParam(value = "perPage", defaultValue = "5") int perPage,
+                                   @RequestParam(value = "includeMetadata", required = false, defaultValue = "false") boolean includeMetadata) {
+        return orderFacade.getAllOrders(page, perPage, includeMetadata);
     }
 
     @GetMapping("/{id}")
     public JsonResult<Order> show(@PathVariable("id") int id) {
         JsonResult<Order> jsonResult =  orderFacade.getOrder(id);
-        jsonResult.add(linkTo(methodOn(OrderController.class).show(id)).withSelfRel());
-        jsonResult.add(linkTo(methodOn(OrderController.class).delete(id)).withRel("delete"));
+
         return jsonResult;
     }
 
@@ -56,12 +57,12 @@ public class OrderController {
     }
 
     @GetMapping("/search")
-    public JsonResult<Order> search(@RequestParam("userId") int userId) {
-        JsonResult<Order> result = orderFacade.search(userId);
-        for (Order order: result.getResult()) {
-            result.add(linkTo(methodOn(OrderController.class).show(order.getId())).withRel("order"));
-            result.add(linkTo(methodOn(GiftCertificateController.class).show(order.getCertificate().getId())).withRel("certificate"));
-        }
+    public JsonResult<Order> search(@RequestParam("userId") int userId,
+                                    @RequestParam(value = "page", defaultValue = "1") int page,
+                                    @RequestParam(value = "perPage", defaultValue = "5") int perPage,
+                                    @RequestParam(value = "includeMetadata", required = false, defaultValue = "true") boolean includeMetadata) {
+        JsonResult<Order> result = orderFacade.search(userId, page, perPage, includeMetadata);
+
         return result;
     }
     @PostMapping()

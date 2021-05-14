@@ -2,6 +2,7 @@ package com.epam.esm.dao;
 
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.Tag;
+import org.springframework.lang.NonNull;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ import java.util.List;
  */
 public interface TagDao {
 
-    Integer create(Tag tag) throws DaoException;
+    void create(Tag tag) throws DaoException;
 
     boolean checkIfExist(String name) throws DaoException;
 
@@ -18,13 +19,13 @@ public interface TagDao {
 
     Tag read(Integer id) throws DaoException;
 
-    void read(Tag tag) throws DaoException;
-
     void delete(Integer id) throws DaoException;
 
-    List<Tag> readAll() throws DaoException;
+    List<Tag> readAll(int page, int size) throws DaoException;
 
-    List<GiftCertificate> readCertificateByTag(Integer id) throws DaoException;
+    @NonNull
+    Integer countAll() throws DaoException;
+
 
     /**
      * Reads Tag by name.

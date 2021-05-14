@@ -8,21 +8,12 @@ import java.util.List;
 
 public interface UserDao {
 
-    RowMapper<User> ROW_MAPPER = (ResultSet resultSet, int rowNum) -> {
-        User user = new User();
-        user.setId(resultSet.getInt("id"));
-        user.setName(resultSet.getString("name"));
-        user.setSurname(resultSet.getString("surname"));
-        user.setEmail(resultSet.getString("email"));
-        user.setAge(resultSet.getInt("age"));
-        return user;
-    };
-
     User read(Integer id) throws DaoException;
 
-    void read(User user) throws DaoException;
-
-    List<User> readAll() throws DaoException;
+    List<User> readAll(int page, int size) throws DaoException;
 
     User readBestBuyer() throws DaoException;
+
+    int countAllActive() throws DaoException;
+
 }

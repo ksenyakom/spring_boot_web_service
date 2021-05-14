@@ -10,13 +10,16 @@ import java.util.List;
 public interface TagService {
     Tag findById(Integer id) throws ServiceException;
 
-    List<Tag> findAll() throws ServiceException;
-
     void save(Tag entity) throws ServiceException;
 
     void delete(Integer id) throws ServiceException;
 
+    List<Tag> findAll(int page, int size) throws ServiceException;
+
     Tag findBestBuyerMostWidelyTag()throws ServiceException;
 
     void findByName(List<Tag> tagsList)throws ServiceException;
+
+    int countAll();
+
 }

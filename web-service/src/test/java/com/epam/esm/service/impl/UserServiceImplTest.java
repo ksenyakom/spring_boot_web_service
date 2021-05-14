@@ -56,16 +56,16 @@ class UserServiceImplTest {
         List<User> users = new ArrayList<>();
         users.add(new User());
         users.add(new User());
-        given(userDao.readAll()).willReturn(users);
-        List<User> actual = userService.findAll();
+        given(userDao.readAll(anyInt(), anyInt())).willReturn(users);
+        List<User> actual = userService.findAll(anyInt(), anyInt());
 
         assertEquals(2, actual.size());
     }
 
     @Test
     void findAllException() throws DaoException {
-        given(userDao.readAll()).willThrow(DaoException.class);
+        given(userDao.readAll(anyInt(), anyInt())).willThrow(DaoException.class);
 
-        assertThrows(ServiceException.class, () -> userService.findAll());
+        assertThrows(ServiceException.class, () -> userService.findAll(anyInt(), anyInt()));
     }
 }

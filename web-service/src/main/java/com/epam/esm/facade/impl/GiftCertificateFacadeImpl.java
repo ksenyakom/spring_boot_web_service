@@ -130,7 +130,7 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
             Metadata metadata = new Metadata.Builder()
                     .withPage(page)
                     .withPerPage(perPage)
-                    .withPageCount(totalFound / perPage + 1)
+                    .withPageCount(totalFound / perPage + (totalFound % perPage == 0? 0 : 1))
                     .withTotalCount(totalFound)
                     .build();
             int pageCount = metadata.getPageCount();

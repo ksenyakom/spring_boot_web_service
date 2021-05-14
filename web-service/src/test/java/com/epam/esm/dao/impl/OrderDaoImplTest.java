@@ -33,7 +33,7 @@ class OrderDaoImplTest {
 
         JdbcTemplate jdbcTemplate = new JdbcTemplate(embeddedDatabase);
 
-        orderDao = new OrderDaoImpl(jdbcTemplate);
+        orderDao = new OrderDaoImpl();
     }
 
     @AfterAll
@@ -46,8 +46,8 @@ class OrderDaoImplTest {
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         Order order = new Order(new User(1), new GiftCertificate(1), now, new BigDecimal(100));
 
-        int id = orderDao.create(order);
-        Order actual = orderDao.read(id);
+        orderDao.create(order);
+        Order actual = orderDao.read(order.getId());
 
         assertAll("GiftCertificates should be equal",
                 () -> {
@@ -58,7 +58,7 @@ class OrderDaoImplTest {
                     assertNotNull(actual.getCreateDate());
                     assertTrue(actual.isActive());
                 });
-        orderDao.delete(id);
+        orderDao.delete(order.getId());
     }
 
     @Test
@@ -78,9 +78,7 @@ class OrderDaoImplTest {
     @Test
     void testRead() throws DaoException {
         int id = 2;
-        Order order = new Order(id);
-
-        orderDao.read(order);
+        Order order =  orderDao.read(id);
         assertAll(() -> {
             assertNotNull(order);
             assertEquals(id, order.getId());
@@ -136,7 +134,7 @@ class OrderDaoImplTest {
     @org.junit.jupiter.api.Order(1)
     @Test
     void readAllActive() throws DaoException {
-        List<Order> orders = orderDao.readAllActive();
+        List<Order> orders = orderDao.readAllActive(1,5);
         assertAll("Should read all lines",
                 () -> {
                     assertNotNull(orders);

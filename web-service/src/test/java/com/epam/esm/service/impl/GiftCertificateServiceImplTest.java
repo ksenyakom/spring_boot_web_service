@@ -73,7 +73,6 @@ class GiftCertificateServiceImplTest {
     void save() throws DaoException {
         GiftCertificate giftCertificate = new GiftCertificate();
         int id = 1;
-        given(dao.create(giftCertificate)).willReturn(id);
         service.save(giftCertificate);
 
         assertAll(() -> {
@@ -82,11 +81,5 @@ class GiftCertificateServiceImplTest {
         });
     }
 
-    @Test
-    void saveException() throws DaoException {
-        given(dao.create(any(GiftCertificate.class))).willThrow(DaoException.class);
-        GiftCertificate certificate = new GiftCertificate();
 
-        assertThrows(ServiceException.class, () -> service.save(certificate));
-    }
 }

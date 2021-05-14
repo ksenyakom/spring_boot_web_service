@@ -16,7 +16,7 @@ import java.util.List;
 public interface GiftCertificateDao {
 
     @NotNull
-    Integer create(@NotNull GiftCertificate entity) throws DaoException;
+    void create(@NotNull GiftCertificate entity) throws DaoException;
 
     @NotNull
     GiftCertificate read(@NotNull Integer id) throws DaoException;
@@ -49,7 +49,7 @@ public interface GiftCertificateDao {
      * @throws DaoException if any exception occur while receiving data.
      */
     @NotNull
-    List<GiftCertificate> readByName(@NotNull String name) throws DaoException;
+    List<GiftCertificate> readByPartName(@NotNull String name) throws DaoException;
 
     /**
      * Reads GiftCertificates by name and tag.

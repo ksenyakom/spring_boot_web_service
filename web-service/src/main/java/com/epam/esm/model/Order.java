@@ -1,21 +1,38 @@
 package com.epam.esm.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@Entity(name = "user_order")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Order extends Model {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "certificate_id")
     private GiftCertificate certificate;
+
+    @Column(name = "create_date")
     private LocalDateTime createDate;
+
     private BigDecimal price;
+
+    @Column(name = "is_active")
     private Boolean isActive;
 
-    public Order() {}
+    public Order() {
+    }
 
     public Order(Integer id) {
         this.id = id;
@@ -36,6 +53,7 @@ public class Order extends Model {
         this.id = id;
     }
 
+    @JsonIgnore
     public Boolean isActive() {
         return isActive;
     }

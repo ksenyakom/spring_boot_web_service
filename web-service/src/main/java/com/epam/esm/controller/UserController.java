@@ -7,10 +7,7 @@ import com.epam.esm.model.Tag;
 import com.epam.esm.model.User;
 import com.epam.esm.service.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Controller class for User
@@ -22,8 +19,11 @@ public class UserController {
     private UserFacade userFacade;
 
     @GetMapping()
-    public JsonResult<User> index() throws ServiceException {
-        return userFacade.getAllUsers();
+    public JsonResult<User> index(@RequestParam(value = "page", defaultValue = "1") int page,
+                                  @RequestParam(value = "perPage", defaultValue = "5") int perPage,
+                                  @RequestParam(value = "includeMetadata", required = false, defaultValue = "false") boolean includeMetadata)
+            throws ServiceException {
+        return userFacade.getAllUsers(page, perPage, includeMetadata);
     }
 
     @GetMapping("/{id}")

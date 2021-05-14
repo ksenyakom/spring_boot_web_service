@@ -20,6 +20,7 @@ import java.util.List;
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
+
     private final GiftCertificateDao giftCertificateDao;
 
     private final TagDao tagDao;
@@ -101,7 +102,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (tagDao.checkIfExist(tag.getName())) {
             tagDao.readIdByName(tag);
         } else {
-            tag.setId(tagDao.create(tag));
+            tagDao.create(tag);
         }
     }
 
@@ -130,7 +131,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @NonNull
     public List<GiftCertificate> findByName(@NonNull String name) {
         try {
-            return giftCertificateDao.readByName(name);
+            return giftCertificateDao.readByPartName(name);
         } catch (DaoException e) {
             throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
         }

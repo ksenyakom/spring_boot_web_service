@@ -27,9 +27,6 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @PersistenceContext
     private EntityManager em;
 
-    @Autowired
-    public GiftCertificateDaoImpl() {}
-
     private static final String READ_BY_NAME_AND_TAG_ID = "SELECT name, description, price, duration, create_date,  last_update_date, is_active, certificate_id as id FROM gift_certificate c join certificate_tag t on c.id = t.certificate_id  WHERE c.name LIKE CONCAT('%', ?, '%') AND t.tag_id = ? AND is_active = true";
     private static final String READ_BY_TAG_ID =
             "SELECT name, description, price, duration, create_date,  last_update_date, is_active, certificate_id as id FROM gift_certificate c join certificate_tag t on c.id = t.certificate_id  WHERE t.tag_id = ? AND is_active = true";
@@ -37,11 +34,10 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     @Override
     @NonNull
-    public Integer create(@NonNull GiftCertificate certificate) throws DaoException {
+    public void create(@NonNull GiftCertificate certificate) throws DaoException {
         try {
             em.persist(certificate);
             logger.debug("New certificate created with id={}", certificate.getId());
-            return certificate.getId();
         } catch (PersistenceException e) {
             throw new DaoException(String.format("Can not create new GiftCertificate. Name = %s ", certificate.getName()), "01", e);
         }
@@ -68,8 +64,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         Query query = em.createQuery(jpql);
         query.setFirstResult((page - 1) * size);
         query.setMaxResults(size);
-        List<GiftCertificate> certificates = query.getResultList();
-        return certificates;
+        return query.getResultList();
     }
 
     @Override
@@ -103,7 +98,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     @Override
     @NonNull
-    public List<GiftCertificate> readByName(@NonNull String name) throws DaoException {
+    public List<GiftCertificate> readByPartName(@NonNull String name) throws DaoException {
         try {
             String jpql = "SELECT c FROM gift_certificate c WHERE c.name LIKE CONCAT('%', :name, '%')";
             Query query = em.createQuery(jpql);
@@ -137,7 +132,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             read(certificate.getId());
             em.merge(certificate);
             logger.debug("Certificate was updated with id={}", certificate.getId());
-        } catch (DataAccessException e) {
+        } catch (PersistenceException e) {
             throw new DaoException(String.format("Can not update GiftCertificate (id = %s)", certificate.getId()), "03", e);
         }
     }

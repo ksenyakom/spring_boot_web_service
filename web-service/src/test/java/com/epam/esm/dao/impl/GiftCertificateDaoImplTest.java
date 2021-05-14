@@ -8,7 +8,6 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -34,8 +33,7 @@ class GiftCertificateDaoImplTest {
                 .setType(EmbeddedDatabaseType.H2)
                 .build();
 
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(embeddedDatabase);
-     //   giftCertificateDao = new GiftCertificateDaoImpl(jdbcTemplate);
+        giftCertificateDao = new GiftCertificateDaoImpl();
     }
 
     @AfterAll
@@ -55,8 +53,8 @@ class GiftCertificateDaoImplTest {
         LocalDateTime localDateTime = LocalDateTime.now(ZoneOffset.UTC);
         giftCertificate.setCreateDate(localDateTime);
 
-        int id = giftCertificateDao.create(giftCertificate);
-        GiftCertificate actual = giftCertificateDao.read(id);
+        giftCertificateDao.create(giftCertificate);
+        GiftCertificate actual = giftCertificateDao.read(giftCertificate.getId());
 
         assertAll("GiftCertificates should be equal",
                 () -> {
@@ -69,14 +67,14 @@ class GiftCertificateDaoImplTest {
                     assertTrue(actual.getActive());
                     assertNull(actual.getLastUpdateDate());
                 });
-        giftCertificateDao.delete(id);
+        giftCertificateDao.delete(giftCertificate.getId());
     }
 
     @Test
     void readByName() throws DaoException {
         String name = "cut";
 
-        assertEquals(1, giftCertificateDao.readByName(name).size());
+        assertEquals(1, giftCertificateDao.readByPartName(name).size());
     }
 
     @Test

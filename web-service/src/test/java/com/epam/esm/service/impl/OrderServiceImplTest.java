@@ -34,12 +34,11 @@ class OrderServiceImplTest {
     @Mock
     private FillOrderFields fillOrderFields;
 
-
     private OrderService orderService;
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderServiceImpl(orderDao, userDao, giftCertificateDao, tagDao, fillOrderFields);
+        orderService = new OrderServiceImpl(orderDao, userDao, fillOrderFields);
     }
 
     @Test
@@ -64,39 +63,29 @@ class OrderServiceImplTest {
         List<Order> orders = new ArrayList<>();
         orders.add(new Order());
         orders.add(new Order());
-        given(orderDao.readAllActive()).willReturn(orders);
-        List<Order> actual = orderService.findAll();
+        given(orderDao.readAllActive(anyInt(), anyInt())).willReturn(orders);
+        List<Order> actual = orderService.findAll(anyInt(), anyInt());
 
         assertEquals(2, actual.size());
     }
 
     @Test
     void findAllException() throws DaoException {
-        given(orderDao.readAllActive()).willThrow(DaoException.class);
+        given(orderDao.readAllActive(anyInt(), anyInt())).willThrow(DaoException.class);
 
-        assertThrows(ServiceException.class, () -> orderService.findAll());
+        assertThrows(ServiceException.class, () -> orderService.findAll(anyInt(), anyInt()));
     }
 
     @Test
     void save() throws DaoException {
         Order order = new Order();
         int id = 1;
-        given(orderDao.create(order)).willReturn(id);
         orderService.save(order);
 
         assertAll(() -> {
             assertEquals(id, order.getId());
             assertNotNull(order.getCreateDate());
         });
-    }
-
-    @Test
-    void saveException() throws DaoException {
-        Order order = new Order();
-        given(orderDao.create(order)).willThrow(DaoException.class);
-
-
-        assertThrows(ServiceException.class, () -> orderService.save(order));
     }
 
 }
