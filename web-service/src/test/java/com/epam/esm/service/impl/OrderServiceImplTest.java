@@ -76,16 +76,4 @@ class OrderServiceImplTest {
         assertThrows(ServiceException.class, () -> orderService.findAll(anyInt(), anyInt()));
     }
 
-    @Test
-    void save() throws DaoException {
-        Order order = new Order();
-        int id = 1;
-        orderService.save(order);
-
-        assertAll(() -> {
-            assertEquals(id, order.getId());
-            assertNotNull(order.getCreateDate());
-        });
-    }
-
 }

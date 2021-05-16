@@ -73,8 +73,8 @@ class GiftCertificateFacadeImplTest {
 
     @Test
     void getAllCertificates() {
-        given(giftCertificateService.findAll(anyInt(), anyInt())).willReturn(new ArrayList<>());
-        JsonResult<GiftCertificate> jsonResult = giftCertificateFacade.getAllCertificates(anyInt(), anyInt(), anyBoolean());
+        given(giftCertificateService.findAll(1, 5)).willReturn(new ArrayList<>());
+        JsonResult<GiftCertificate> jsonResult = giftCertificateFacade.getAllCertificates(1, 5,true);
 
         assertAll(() -> {
             assertNotNull(jsonResult.getResult());

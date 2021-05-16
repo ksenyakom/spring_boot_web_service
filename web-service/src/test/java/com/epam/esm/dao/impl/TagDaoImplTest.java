@@ -1,43 +1,32 @@
 package com.epam.esm.dao.impl;
 
+import com.epam.esm.config.H2JpaConfig;
+import com.epam.esm.config.TestConfig;
 import com.epam.esm.dao.DaoException;
 import com.epam.esm.dao.TagDao;
-import com.epam.esm.dao.impl.TagDaoImpl;
-import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.Tag;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {H2JpaConfig.class, TestConfig.class})
+@Transactional
+@Sql({"/data.sql"})
 class TagDaoImplTest {
-    private static EmbeddedDatabase embeddedDatabase;
 
-    private static TagDao tagDao;
-
-    @BeforeAll
-    public static void setUp() {
-        embeddedDatabase = new EmbeddedDatabaseBuilder()
-                .addDefaultScripts()
-                .setType(EmbeddedDatabaseType.H2)
-                .build();
-
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(embeddedDatabase);
-
-        tagDao = new TagDaoImpl();
-    }
-
-    @AfterAll
-    public static void tearDown() {
-        embeddedDatabase.shutdown();
-    }
+    @Autowired
+    private TagDao tagDao;
 
     @Test
     void create() throws DaoException {
@@ -58,6 +47,8 @@ class TagDaoImplTest {
     @Test
     void createException() {
         Tag emptyTag = new Tag();
+
+        assertNotNull(emptyTag.getId());
         assertThrows(DaoException.class, () -> tagDao.create(emptyTag));
     }
 
@@ -70,20 +61,13 @@ class TagDaoImplTest {
 
     @Test
     void readAll() throws DaoException {
-        List<Tag> tags = tagDao.readAll(1, 5);
+        List<Tag> tags = tagDao.readAll(1, 6);
         assertAll("Should read all lines",
                 () -> {
                     assertNotNull(tags);
-                    assertEquals(6,tags.size());
+                    assertEquals(6, tags.size());
                 });
     }
-
-//    @Test
-//    void readCertificateByTag() throws DaoException {
-//        int id = 1;
-//        List<GiftCertificate> certificates = tagDao.readCertificateByTag(id);
-//        assertEquals(2, certificates.size());
-//    }
 
     @Test
     void readByName() throws DaoException {

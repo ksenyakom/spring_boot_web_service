@@ -63,8 +63,8 @@ class TagFacadeImplTest {
 
     @Test
     void getAllTags() {
-        given(tagService.findAll(anyInt(), anyInt())).willReturn(new ArrayList<>());
-        JsonResult<Tag> jsonResult = tagFacade.getAllTags(anyInt(), anyInt(), anyBoolean());
+        given(tagService.findAll(1, 5)).willReturn(new ArrayList<>());
+        JsonResult<Tag> jsonResult = tagFacade.getAllTags(1, 5, true);
 
         assertAll(() -> {
             assertNotNull(jsonResult.getResult());

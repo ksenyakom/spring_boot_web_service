@@ -24,16 +24,6 @@ public class TagDaoImpl implements TagDao {
     @PersistenceContext
     private EntityManager em;
 
-    private static final String CREATE = "INSERT INTO tag (name) values(?)";
-    private static final String READ = "SELECT * FROM tag WHERE id = ?";
-    private static final String READ_BY_PART_NAME = "SELECT * FROM tag WHERE name  LIKE CONCAT('%', ?, '%')";
-    private static final String READ_NAME = "SELECT name FROM tag WHERE id = ?";
-    private static final String DELETE = "DELETE FROM tag WHERE id = ?";
-    private static final String READ_ALL = "SELECT * FROM tag";
-    private static final String READ_CERTIFICATES_BY_TAG = "SELECT * FROM certificate_tag where tag_id = ?";
-    private static final String CHECK_IF_EXIST = "SELECT 1 FROM tag WHERE name=?";
-    private static final String READ_BY_NAME = "SELECT id FROM tag WHERE name=?";
-
     @Override
     @NotNull
     public void create(@NotNull Tag tag) throws DaoException {

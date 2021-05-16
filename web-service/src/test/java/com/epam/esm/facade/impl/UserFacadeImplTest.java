@@ -43,8 +43,8 @@ class UserFacadeImplTest {
 
     @Test
     void getAllUsers() {
-        given(userService.findAll(anyInt(), anyInt())).willReturn(new ArrayList<>());
-        JsonResult<User> jsonResult = userFacade.getAllUsers(anyInt(), anyInt(), anyBoolean());
+        given(userService.findAll(1, 5)).willReturn(new ArrayList<>());
+        JsonResult<User> jsonResult = userFacade.getAllUsers(1, 5, true);
 
         assertAll(() -> {
             assertNotNull(jsonResult.getResult());

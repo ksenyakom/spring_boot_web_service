@@ -69,17 +69,4 @@ class GiftCertificateServiceImplTest {
         assertThrows(ServiceException.class, () -> service.findAll(anyInt(), anyInt()));
     }
 
-    @Test
-    void save() throws DaoException {
-        GiftCertificate giftCertificate = new GiftCertificate();
-        int id = 1;
-        service.save(giftCertificate);
-
-        assertAll(() -> {
-            assertEquals(id, giftCertificate.getId());
-            assertNotNull(giftCertificate.getCreateDate());
-        });
-    }
-
-
 }

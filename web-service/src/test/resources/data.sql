@@ -23,16 +23,16 @@ VALUES (1, 'Haircut', 'Any haircut with styling', 100, 30, '2021-03-30T18:31:42'
        (3, 'Swimming pool', 'Visiting swimming pool with sauna', 15, 10, '2021-03-15T18:31:42', true);
 
 INSERT INTO `certificate_tag`
-    (`id`, `certificate_id`, `tag_id`)
-VALUES (1, 1, 1),
-       (2, 1, 3),
-       (3, 2, 1),
-       (4, 2, 2),
-       (5, 3, 4),
-       (6, 3, 5);
+    (`certificate_id`, `tag_id`)
+VALUES (1, 1),
+       (1, 3),
+       (2, 1),
+       (2, 2),
+       (3, 4),
+       (3, 5);
 
 INSERT INTO user_order
-    (user_id, certificate_id, price, create_date)
-VALUES (1, 1, 5, '2021-03-30T18:31:42.111'),
-       (2, 2, 10, '2021-04-15T21:21:49.222'),
-       (3, 3, 15, '2021-04-25T11:02:11.331')
+    (id, user_id, certificate_id, price, create_date, is_active)
+VALUES (1, 1, 1, 5, '2021-03-30T18:31:42.111',true),
+       (2, 2, 2, 10, '2021-04-15T21:21:49.222',true),
+       (3, 3, 3, 15, '2021-04-25T11:02:11.331',true)

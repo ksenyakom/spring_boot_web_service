@@ -78,16 +78,4 @@ class TagServiceImplTest {
         assertThrows(ServiceException.class, () -> tagService.findAll(anyInt(), anyInt()));
     }
 
-    @Test
-    void save() throws DaoException {
-        Tag tag = new Tag();
-        int id = 1;
-        tagService.save(tag);
-
-        assertAll(() -> {
-                    assertEquals(id, tag.getId());
-                }
-        );
-    }
-
 }

@@ -9,22 +9,28 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 
 
 @SpringBootApplication
-public class Application implements ApplicationListener<ApplicationReadyEvent> {
+@PropertySources({
+		@PropertySource("classpath:application.properties"),
+		@PropertySource("classpath:application-test.properties")
+})
+public class Application {
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
 
-
-	@Qualifier("jacksonObjectMapper")
-	@Autowired
-	private ObjectMapper objectMapper;
-
-	@Override
-	public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
-		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
-	}
+//implements ApplicationListener<ApplicationReadyEvent>
+//	@Qualifier("jacksonObjectMapper")
+//	@Autowired
+//	private ObjectMapper objectMapper;
+//
+//	@Override
+//	public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
+//		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+//	}
 }

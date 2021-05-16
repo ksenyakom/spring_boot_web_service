@@ -1,16 +1,25 @@
 package com.epam.esm.dao.impl;
 
+import com.epam.esm.config.H2JpaConfig;
+import com.epam.esm.config.TestConfig;
 import com.epam.esm.dao.DaoException;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.Tag;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.core.AutoConfigureCache;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -20,30 +29,18 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {H2JpaConfig.class, TestConfig.class})
+@Transactional
+@Sql({"/data.sql"})
 class GiftCertificateDaoImplTest {
-    private static EmbeddedDatabase embeddedDatabase;
 
-    private static GiftCertificateDao giftCertificateDao;
-
-    @BeforeAll
-    public static void setUp() {
-        embeddedDatabase = new EmbeddedDatabaseBuilder()
-                .addDefaultScripts()
-                .setType(EmbeddedDatabaseType.H2)
-                .build();
-
-        giftCertificateDao = new GiftCertificateDaoImpl();
-    }
-
-    @AfterAll
-    public static void tearDown() {
-        embeddedDatabase.shutdown();
-    }
+    @Autowired
+    private GiftCertificateDao giftCertificateDao;
 
     @ParameterizedTest
     @CsvSource({
-            "Visiting CosmoCaixa, Scientific museum in Barcelona, 49, 90"
+            "Visiting CosmoCaixa, Scientific museum in Barcelona, 49, 90, true"
     })
     void createRead(ArgumentsAccessor arguments) throws DaoException {
         GiftCertificate giftCertificate = new GiftCertificate(arguments.getString(0),
@@ -52,6 +49,7 @@ class GiftCertificateDaoImplTest {
                 arguments.getInteger(3));
         LocalDateTime localDateTime = LocalDateTime.now(ZoneOffset.UTC);
         giftCertificate.setCreateDate(localDateTime);
+        giftCertificate.setActive(arguments.getBoolean(4));
 
         giftCertificateDao.create(giftCertificate);
         GiftCertificate actual = giftCertificateDao.read(giftCertificate.getId());
@@ -135,20 +133,14 @@ class GiftCertificateDaoImplTest {
         assertThrows(DaoException.class, () -> giftCertificateDao.update(giftCertificate));
     }
 
-    @Order(2)
     @Test
-    void delete() throws DaoException {
+    void deleteException() throws DaoException {
         int id = 2;
         giftCertificateDao.delete(id);
-        GiftCertificate actual = giftCertificateDao.read(id);
 
-        assertAll(() -> {
-            assertNotNull(actual);
-            assertFalse(actual.getActive());
-        });
+        assertThrows(DaoException.class, () -> giftCertificateDao.read(id));
     }
 
-    @Order(1)
     @Test
     void testReadAll() throws DaoException {
         List<GiftCertificate> certificates = giftCertificateDao.readAllActive(1, 5);

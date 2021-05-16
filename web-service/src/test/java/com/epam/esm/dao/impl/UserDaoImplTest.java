@@ -1,42 +1,30 @@
 package com.epam.esm.dao.impl;
 
+import com.epam.esm.config.H2JpaConfig;
+import com.epam.esm.config.TestConfig;
 import com.epam.esm.dao.DaoException;
-import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.UserDao;
 import com.epam.esm.model.User;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {H2JpaConfig.class, TestConfig.class})
+@Sql({"/data.sql"})
+@Transactional
 class UserDaoImplTest {
-    private static EmbeddedDatabase embeddedDatabase;
 
-    private static UserDao userDao;
-
-    @BeforeAll
-    public static void setUp() {
-        embeddedDatabase = new EmbeddedDatabaseBuilder()
-                .addDefaultScripts()
-                .setType(EmbeddedDatabaseType.H2)
-                .build();
-
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(embeddedDatabase);
-
-        userDao = new UserDaoImpl();
-    }
-
-    @AfterAll
-    public static void tearDown() {
-        embeddedDatabase.shutdown();
-    }
+    @Autowired
+    private UserDao userDao;
 
     @Test
     void read() throws DaoException {
