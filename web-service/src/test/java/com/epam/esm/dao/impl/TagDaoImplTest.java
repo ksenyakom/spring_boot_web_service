@@ -45,14 +45,6 @@ class TagDaoImplTest {
     }
 
     @Test
-    void createException() {
-        Tag emptyTag = new Tag();
-
-        assertNotNull(emptyTag.getId());
-        assertThrows(DaoException.class, () -> tagDao.create(emptyTag));
-    }
-
-    @Test
     void deleteException() throws DaoException {
         int id = 6;
         tagDao.delete(id);

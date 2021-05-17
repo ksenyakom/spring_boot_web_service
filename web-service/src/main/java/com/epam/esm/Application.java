@@ -18,19 +18,19 @@ import org.springframework.context.annotation.PropertySources;
 		@PropertySource("classpath:application.properties"),
 		@PropertySource("classpath:application-test.properties")
 })
-public class Application {
+public class Application implements ApplicationListener<ApplicationReadyEvent>{
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
 
-//implements ApplicationListener<ApplicationReadyEvent>
-//	@Qualifier("jacksonObjectMapper")
-//	@Autowired
-//	private ObjectMapper objectMapper;
-//
-//	@Override
-//	public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
-//		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
-//	}
+
+	@Qualifier("jacksonObjectMapper")
+	@Autowired
+	private ObjectMapper objectMapper;
+
+	@Override
+	public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
+		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+	}
 }

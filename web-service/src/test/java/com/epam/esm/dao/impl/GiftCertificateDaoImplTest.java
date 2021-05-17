@@ -90,13 +90,6 @@ class GiftCertificateDaoImplTest {
     }
 
     @Test
-    void createException() {
-        GiftCertificate emptyCertificate = new GiftCertificate();
-
-        assertThrows(DaoException.class, () -> giftCertificateDao.create(emptyCertificate));
-    }
-
-    @Test
     void update() throws DaoException {
         int id = 1;
         GiftCertificate giftCertificate = giftCertificateDao.read(id);
@@ -122,15 +115,6 @@ class GiftCertificateDaoImplTest {
                     assertNotNull(actual.getLastUpdateDate());
                     assertTrue(actual.getActive());
                 });
-    }
-
-    @Test
-    void updateException() {
-        GiftCertificate giftCertificate = new GiftCertificate();
-        int id = 1;
-        giftCertificate.setId(id);
-
-        assertThrows(DaoException.class, () -> giftCertificateDao.update(giftCertificate));
     }
 
     @Test

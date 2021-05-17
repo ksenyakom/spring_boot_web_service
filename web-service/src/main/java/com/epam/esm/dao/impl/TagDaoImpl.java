@@ -14,12 +14,14 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
+import javax.validation.ConstraintViolationException;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Repository
 public class TagDaoImpl implements TagDao {
     private static Logger logger = LogManager.getLogger(TagDaoImpl.class);
+    private static final String READ_MOST_WIDELY_USED_TAG_OF_USER = "SELECT tag_id AS id, count(tag_id) AS total  FROM certificate_tag AS t JOIN user_order AS o ON t.certificate_id = o.certificate_id WHERE o.user_id = ? GROUP BY t.tag_id ORDER BY total LIMIT 1";
 
     @PersistenceContext
     private EntityManager em;
@@ -33,6 +35,8 @@ public class TagDaoImpl implements TagDao {
 
         } catch (PersistenceException e) {
             throw new DaoException(String.format("Can not create new Tag. Name = %s", tag.getName()), "11", e);
+        } catch (ConstraintViolationException e) {
+            throw new DaoException(String.format("Can not create new Tag without name. Name = %s", tag.getName()), "41", e);
         }
 
     }
@@ -79,7 +83,6 @@ public class TagDaoImpl implements TagDao {
         }
     }
 
-    private static final String READ_MOST_WIDELY_USED_TAG_OF_USER = "SELECT tag_id AS id, count(tag_id) AS total  FROM certificate_tag AS t JOIN user_order AS o ON t.certificate_id = o.certificate_id WHERE o.user_id = ? GROUP BY t.tag_id ORDER BY total LIMIT 1";
 
     @Override
     public Tag readUsersMostWidelyTag(Integer userId) throws DaoException {

@@ -15,6 +15,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -40,6 +41,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             logger.debug("New certificate created with id={}", certificate.getId());
         } catch (PersistenceException e) {
             throw new DaoException(String.format("Can not create new GiftCertificate. Name = %s ", certificate.getName()), "01", e);
+        }catch (ConstraintViolationException e) {
+            throw new DaoException("Can not create new GiftCertificate, constraint violations", "43", e);
         }
     }
 
@@ -134,6 +137,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             logger.debug("Certificate was updated with id={}", certificate.getId());
         } catch (PersistenceException e) {
             throw new DaoException(String.format("Can not update GiftCertificate (id = %s)", certificate.getId()), "03", e);
+        }catch (ConstraintViolationException e) {
+            throw new DaoException("Can not create new GiftCertificate, constraint violations", "43", e);
         }
     }
 

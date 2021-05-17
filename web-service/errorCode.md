@@ -35,6 +35,9 @@
 38- Can't count tags
 39 - Can not read user with max sum
 40 - Can not read Tag for user id = %s
+41 - Can not create new Tag without. Name = %s
+42 - Can not create new Order, constraint violations
+43 - Can not create new GiftCertificate, constraint violations
 404 - Not found
 
 51 - Can not read User (id = %s)

@@ -14,6 +14,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import javax.validation.ConstraintViolationException;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -29,8 +30,10 @@ public class OrderDaoImpl implements OrderDao {
         try {
             em.persist(order);
             logger.debug("New order created with id={}", order.getId());
-        } catch (DataAccessException e) {
+        } catch (PersistenceException e) {
             throw new DaoException(String.format("Can not create new Order. User id = %s ", order.getUser() == null ? null : order.getUser().getId()), "61", e);
+        } catch (ConstraintViolationException e) {
+            throw new DaoException("Can not create new Order, constraint violations", "42", e);
         }
     }
 
@@ -57,6 +60,8 @@ public class OrderDaoImpl implements OrderDao {
             logger.debug("Order was updated with id={}", order.getId());
         } catch (PersistenceException e) {
             throw new DaoException(String.format("Can not update Order (id = %s)", order.getId()), "63", e);
+        }catch (ConstraintViolationException e) {
+            throw new DaoException("Can not create new Order, constraint violations", "42", e);
         }
     }
 

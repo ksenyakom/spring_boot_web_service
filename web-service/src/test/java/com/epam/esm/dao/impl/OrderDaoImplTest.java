@@ -63,13 +63,6 @@ class OrderDaoImplTest {
     }
 
     @Test
-    void createException() {
-        Order emptyOrder = new Order();
-
-        assertThrows(DaoException.class, () -> orderDao.create(emptyOrder));
-    }
-
-    @Test
     void testRead() throws DaoException {
         int id = 2;
         Order order = orderDao.read(id);
@@ -103,13 +96,6 @@ class OrderDaoImplTest {
                     assertNotNull(actual);
                     assertEquals(actual, order);
                 });
-    }
-
-    @Test
-    void updateException() {
-        int id = 1;
-        Order order = new Order(id);
-        assertThrows(DaoException.class, () -> orderDao.update(order));
     }
 
     @Test
