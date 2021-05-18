@@ -5,11 +5,9 @@ import com.epam.esm.config.TestConfig;
 import com.epam.esm.dao.DaoException;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.model.Tag;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -35,7 +33,11 @@ class TagDaoImplTest {
         tagDao.create(tag);
         Tag actual = tagDao.read(tag.getId());
 
-        assertEquals(tag, actual);
+        assertAll(() -> {
+            assertEquals(actual.getOperation(), "INSERT");
+            assertNotNull(actual.getTimestamp());
+            assertEquals(tag, actual);
+        });
     }
 
     @Test

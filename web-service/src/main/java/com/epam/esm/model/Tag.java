@@ -6,6 +6,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
@@ -20,6 +22,12 @@ public class Tag extends Model {
     @Size(min = 2, max = 255, message = "invalid length, must be from 2 to 255")
     @Column(nullable = false)
     private String name;
+
+    @Column(name = "operation")
+    private String operation;
+
+    @Column(name = "timestamp")
+    private LocalDateTime timestamp;
 
     public Tag() {
     }
@@ -51,6 +59,42 @@ public class Tag extends Model {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getOperation() {
+        return operation;
+    }
+
+    public void setOperation(String operation) {
+        this.operation = operation;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    @PrePersist
+    public void onPrePersist() {
+        audit("INSERT");
+    }
+
+    @PreUpdate
+    public void onPreUpdate() {
+        audit("UPDATE");
+    }
+
+    @PreRemove
+    public void onPreRemove() {
+        audit("DELETE");
+    }
+
+    private void audit(String operation) {
+        setOperation(operation);
+        setTimestamp(LocalDateTime.now(ZoneOffset.UTC));
     }
 
     @Override

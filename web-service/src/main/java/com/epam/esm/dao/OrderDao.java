@@ -3,6 +3,7 @@ package com.epam.esm.dao;
 import com.epam.esm.model.Order;
 import com.epam.esm.model.User;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -27,4 +28,5 @@ public interface OrderDao {
     int countAllActive() throws DaoException;
 
     int countActiveByUser(@NonNull User user) throws DaoException;
+
 }

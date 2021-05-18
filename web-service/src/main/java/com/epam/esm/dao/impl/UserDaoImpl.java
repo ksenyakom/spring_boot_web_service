@@ -27,6 +27,7 @@ import java.util.Set;
 public class UserDaoImpl implements UserDao {
     private static Logger logger = LogManager.getLogger(UserDaoImpl.class);
 
+
     @PersistenceContext
     private EntityManager em;
 
@@ -62,23 +63,6 @@ public class UserDaoImpl implements UserDao {
     }
 
 
-    private static final String READ_MAX_SUM_USER = "SELECT user_id AS id, sum(price) AS sum_amount FROM user_order GROUP BY  user_id ORDER BY sum_amount DESC LIMIT 1";
-
-    @Override
-    @Nullable
-    public User readBestBuyer() throws DaoException {
-        try {
-            Query query = em.createNativeQuery(READ_MAX_SUM_USER);
-            Object object = query.getSingleResult();
-            Object[] objects = (Object[]) object;
-            int id = (int)objects[0];
-            return new User(id);
-        } catch (NoResultException e) {
-            return null;
-        } catch (PersistenceException e1) {
-            throw new DaoException("Can not read user with max sum", "39", e1);
-        }
-    }
 
     @Override
     public int countAllActive() throws DaoException {

@@ -14,10 +14,7 @@ import org.springframework.context.annotation.PropertySources;
 
 
 @SpringBootApplication
-@PropertySources({
-		@PropertySource("classpath:application.properties"),
-		@PropertySource("classpath:application-test.properties")
-})
+
 public class Application implements ApplicationListener<ApplicationReadyEvent>{
 
 	public static void main(String[] args) {

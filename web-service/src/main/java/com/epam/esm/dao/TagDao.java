@@ -36,5 +36,5 @@ public interface TagDao {
      */
     List<Tag> readByPartName(String tagName) throws DaoException;
 
-    Tag readUsersMostWidelyTag(Integer id) throws DaoException;
+    Tag readBestBuyerMostWidelyUsedTag() throws DaoException;
 }

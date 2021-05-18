@@ -12,8 +12,6 @@ public interface UserDao {
 
     List<User> readAll(int page, int size) throws DaoException;
 
-    User readBestBuyer() throws DaoException;
-
     int countAllActive() throws DaoException;
 
 }

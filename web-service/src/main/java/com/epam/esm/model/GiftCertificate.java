@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Objects;
 
@@ -43,6 +44,12 @@ public class GiftCertificate extends Model {
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private List<Tag> tags;
+
+    @Column(name = "operation")
+    private String operation;
+
+    @Column(name = "timestamp")
+    private LocalDateTime timestamp;
 
     public GiftCertificate() {
     }
@@ -129,6 +136,42 @@ public class GiftCertificate extends Model {
 
     public void setActive(Boolean active) {
         isActive = active;
+    }
+
+    public String getOperation() {
+        return operation;
+    }
+
+    public void setOperation(String operation) {
+        this.operation = operation;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    @PrePersist
+    public void onPrePersist() {
+        audit("INSERT");
+    }
+
+    @PreUpdate
+    public void onPreUpdate() {
+        audit("UPDATE");
+    }
+
+    @PreRemove
+    public void onPreRemove() {
+        audit("DELETE");
+    }
+
+    private void audit(String operation) {
+        setOperation(operation);
+        setTimestamp(LocalDateTime.now(ZoneOffset.UTC));
     }
 
     @Override

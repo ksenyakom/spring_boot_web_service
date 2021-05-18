@@ -8,12 +8,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceException;
-import javax.persistence.Query;
+import javax.persistence.*;
 import javax.validation.ConstraintViolationException;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -21,6 +19,7 @@ import java.util.List;
 @Repository
 public class OrderDaoImpl implements OrderDao {
     private static Logger logger = LogManager.getLogger(OrderDaoImpl.class);
+
 
     @PersistenceContext
     private EntityManager em;
@@ -60,7 +59,7 @@ public class OrderDaoImpl implements OrderDao {
             logger.debug("Order was updated with id={}", order.getId());
         } catch (PersistenceException e) {
             throw new DaoException(String.format("Can not update Order (id = %s)", order.getId()), "63", e);
-        }catch (ConstraintViolationException e) {
+        } catch (ConstraintViolationException e) {
             throw new DaoException("Can not create new Order, constraint violations", "42", e);
         }
     }

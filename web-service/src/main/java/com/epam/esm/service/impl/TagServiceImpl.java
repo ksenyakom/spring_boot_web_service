@@ -1,10 +1,9 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.DaoException;
+import com.epam.esm.dao.OrderDao;
 import com.epam.esm.dao.TagDao;
-import com.epam.esm.dao.UserDao;
 import com.epam.esm.model.Tag;
-import com.epam.esm.model.User;
 import com.epam.esm.service.ServiceException;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +16,12 @@ import java.util.List;
 @Service
 public class TagServiceImpl implements TagService {
     private final TagDao tagDao;
-    private final UserDao userDao;
+    private final OrderDao orderDao;
 
     @Autowired
-    public TagServiceImpl(TagDao tagDao, UserDao userDao) {
+    public TagServiceImpl(TagDao tagDao, OrderDao orderDao) {
         this.tagDao = tagDao;
-        this.userDao = userDao;
+        this.orderDao = orderDao;
     }
 
 
@@ -68,11 +67,7 @@ public class TagServiceImpl implements TagService {
     @Nullable
     public Tag findBestBuyerMostWidelyTag() throws ServiceException {
         try {
-            User user = userDao.readBestBuyer();
-            if (user == null) {
-                return null;
-            }
-            Tag tag = tagDao.readUsersMostWidelyTag(user.getId());
+            Tag tag = tagDao.readBestBuyerMostWidelyUsedTag();
 
             return tag;
         } catch (DaoException e) {

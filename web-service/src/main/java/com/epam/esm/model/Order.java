@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Objects;
 
 @Entity(name = "user_order")
@@ -31,6 +32,11 @@ public class Order extends Model {
     @Column(name = "is_active")
     private Boolean isActive;
 
+    @Column(name = "operation")
+    private String operation;
+
+    @Column(name = "timestamp")
+    private LocalDateTime timestamp;
     public Order() {
     }
 
@@ -92,6 +98,42 @@ public class Order extends Model {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public String getOperation() {
+        return operation;
+    }
+
+    public void setOperation(String operation) {
+        this.operation = operation;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    @PrePersist
+    public void onPrePersist() {
+        audit("INSERT");
+    }
+
+    @PreUpdate
+    public void onPreUpdate() {
+        audit("UPDATE");
+    }
+
+    @PreRemove
+    public void onPreRemove() {
+        audit("DELETE");
+    }
+
+    private void audit(String operation) {
+        setOperation(operation);
+        setTimestamp(LocalDateTime.now(ZoneOffset.UTC));
     }
 
     @Override

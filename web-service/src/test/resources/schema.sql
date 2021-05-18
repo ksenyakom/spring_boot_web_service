@@ -20,13 +20,17 @@ CREATE TABLE `gift_certificate`
     `create_date`      TIMESTAMP      NOT NULL,
     `last_update_date` TIMESTAMP,
     `is_active`        BOOL DEFAULT true,
+    'operation'        VARCHAR(255),
+    'timestamp'        TIMESTAMP,
     CONSTRAINT PK_gift_certificate PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `tag`
 (
-    `id`   INTEGER      NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(255) NOT NULL,
+    `id`        INTEGER      NOT NULL AUTO_INCREMENT,
+    `name`      VARCHAR(255) NOT NULL,
+    'operation' VARCHAR(255),
+    'timestamp' TIMESTAMP,
     CONSTRAINT PK_tag PRIMARY KEY (`id`),
     CONSTRAINT UC_tag UNIQUE (name)
 );
@@ -36,6 +40,7 @@ CREATE TABLE `certificate_tag`
     `id`             INTEGER NOT NULL AUTO_INCREMENT,
     `certificate_id` INTEGER,
     `tag_id`         INTEGER,
+
     CONSTRAINT PK_certificate_tag PRIMARY KEY (`id`),
     CONSTRAINT FK_certificate_id FOREIGN KEY (`certificate_id`) REFERENCES gift_certificate (`id`)
         ON UPDATE CASCADE
@@ -53,6 +58,8 @@ CREATE TABLE `user_order`
     `price`          DECIMAL(10, 2) NOT NULL,
     `create_date`    TIMESTAMP      NOT NULL,
     `is_active`      BOOL DEFAULT true,
+    'operation'      VARCHAR(255),
+    'timestamp'      TIMESTAMP,
     CONSTRAINT PK_order PRIMARY KEY (`id`),
     CONSTRAINT FK_order_c_id FOREIGN KEY (`certificate_id`) REFERENCES gift_certificate (`id`)
         ON UPDATE CASCADE

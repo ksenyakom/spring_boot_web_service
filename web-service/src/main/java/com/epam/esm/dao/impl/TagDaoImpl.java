@@ -21,7 +21,6 @@ import java.util.List;
 @Repository
 public class TagDaoImpl implements TagDao {
     private static Logger logger = LogManager.getLogger(TagDaoImpl.class);
-    private static final String READ_MOST_WIDELY_USED_TAG_OF_USER = "SELECT tag_id AS id, count(tag_id) AS total  FROM certificate_tag AS t JOIN user_order AS o ON t.certificate_id = o.certificate_id WHERE o.user_id = ? GROUP BY t.tag_id ORDER BY total LIMIT 1";
 
     @PersistenceContext
     private EntityManager em;
@@ -38,7 +37,6 @@ public class TagDaoImpl implements TagDao {
         } catch (ConstraintViolationException e) {
             throw new DaoException(String.format("Can not create new Tag without name. Name = %s", tag.getName()), "41", e);
         }
-
     }
 
     @Override
@@ -48,7 +46,7 @@ public class TagDaoImpl implements TagDao {
             query.setParameter("name", name);
             query.getSingleResult();
             return true;
-        }catch (NoResultException e1) {
+        } catch (NoResultException e1) {
             return false;
         } catch (PersistenceException e) {
             throw new DaoException(String.format("Can not check if tag with name = %s exist", name), "19", e);
@@ -85,17 +83,15 @@ public class TagDaoImpl implements TagDao {
 
 
     @Override
-    public Tag readUsersMostWidelyTag(Integer userId) throws DaoException {
+    public Tag readBestBuyerMostWidelyUsedTag() throws DaoException {
         try {
-            Query query = em.createNativeQuery(READ_MOST_WIDELY_USED_TAG_OF_USER);
-            query.setParameter(1, userId);
-            Object[] objects = (Object[]) query.getSingleResult();
-            int id = (int) objects[0];
+            Query query = em.createNativeQuery("select test_function()");
+            Integer id = (Integer) query.getSingleResult();
             return read(id);
         } catch (NoResultException e1) {
-            throw new DaoException(String.format("Tag for user id = %s not found.", userId), "404");
+            throw new DaoException("Best buyer most widely used tag not found.", "404");
         } catch (PersistenceException e) {
-            throw new DaoException(String.format("Can not read Tag for user id = %s", userId), "40", e);
+            throw new DaoException("Can not read best buyer most widely used Tag", "40", e);
         }
     }
 
