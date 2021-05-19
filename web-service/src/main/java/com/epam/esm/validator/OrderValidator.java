@@ -35,6 +35,13 @@ public class OrderValidator implements Validator {
         if (order.getCreateDate() != null) {
             errors.rejectValue("createDate", "you can not create/update createDate field");
         }
+        if (order.getOperation() != null) {
+            errors.rejectValue("operation", "must be null");
+        }
+
+        if (order.getTimestamp() != null) {
+            errors.rejectValue("timestamp", "must be null");
+        }
         checkUser(order.getUser(), errors);
         checkCertificate(order.getCertificate(), errors);
     }

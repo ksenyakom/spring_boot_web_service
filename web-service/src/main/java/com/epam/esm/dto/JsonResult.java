@@ -14,6 +14,7 @@ import java.util.List;
  */
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class JsonResult<T extends Model> extends RepresentationModel<JsonResult<T>> {
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     private boolean success;
     private String errorCode;
     private String message;

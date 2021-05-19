@@ -40,8 +40,10 @@
 43 - Can not create new GiftCertificate, constraint violations
 404 - Not found
 
+50 - No tags for search found
 51 - Can not read User (id = %s)
 52 - Can not read all Users
+53 - Unrecognized property : %s.
 
 61 - Can not read Order
 63 - Can not update Order (id = %s)

@@ -14,6 +14,11 @@ import java.util.stream.Collectors;
 public class OrderFieldNameValidator implements FieldNameValidator {
     @Override
     public Set<String> validate(String line) {
+
+        if (line.contains("operation") || line.contains("timestamp")) {
+            throw new ServiceException("Fields timestamp or operation can not be used", "53");
+        }
+
         Set<String> fieldsToFind = new HashSet<>();
         String[] fields = line.split(",");
         Set<String> existingFields = Arrays.stream(Order.class.getDeclaredFields())

@@ -12,20 +12,21 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Min;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 /**
  * Controller class for GiftCertificate
  */
 @RestController
 @RequestMapping("/certificates")
+@Validated
 public class GiftCertificateController {
 
     @Autowired
@@ -48,16 +49,14 @@ public class GiftCertificateController {
 
 
     @GetMapping()
-    public JsonResult<GiftCertificate> index(@RequestParam(value = "page", defaultValue = "1") int page,
-                                             @RequestParam(value = "perPage", defaultValue = "5") int perPage,
+    public JsonResult<GiftCertificate> index(@RequestParam(value = "page", defaultValue = "1") @Min(1) Integer page,
+                                             @RequestParam(value = "perPage", defaultValue = "5") @Min(1) Integer perPage,
                                              @RequestParam(value = "includeMetadata", required = false, defaultValue = "true") boolean includeMetadata) {
-        //TODO validation
-        JsonResult<GiftCertificate> jsonResult = giftCertificateFacade.getAllCertificates(page, perPage, includeMetadata);
-        return jsonResult;
+        return giftCertificateFacade.getAllCertificates(page, perPage, includeMetadata);
     }
 
     @GetMapping("/{id}")
-    public JsonResult<GiftCertificate> show(@PathVariable("id") int id) {
+    public JsonResult<GiftCertificate> show(@PathVariable("id") @Min(1) Integer id) {
         return giftCertificateFacade.getCertificate(id);
     }
 
@@ -74,7 +73,7 @@ public class GiftCertificateController {
 
     @PutMapping("/{id}")
     public JsonResult<GiftCertificate> update(@RequestBody GiftCertificate certificate, BindingResult result,
-                                              @PathVariable("id") int id) {
+                                              @PathVariable("id") @Min(1) Integer id) {
         certificate.setId(id);
         giftCertificateValidator.validate(certificate, result);
         if (result.hasErrors()) {
@@ -86,7 +85,7 @@ public class GiftCertificateController {
 
     @PatchMapping("/{id}")
     public JsonResult<GiftCertificate> partUpdate(@RequestBody GiftCertificate certificate, BindingResult result,
-                                                  @PathVariable("id") int id) {
+                                                  @PathVariable("id") @Min(1) Integer id) {
         certificate.setId(id);
         giftCertificatePartValidator.validate(certificate, result);
         if (result.hasErrors()) {
@@ -97,7 +96,7 @@ public class GiftCertificateController {
     }
 
     @DeleteMapping("/{id}")
-    public JsonResult<GiftCertificate> delete(@PathVariable("id") int id) {
+    public JsonResult<GiftCertificate> delete(@PathVariable("id") @Min(1) Integer id) {
 
         return giftCertificateFacade.delete(id);
     }
@@ -120,13 +119,12 @@ public class GiftCertificateController {
     @GetMapping(value = "/search", params = {"tags"})
     public JsonResult<GiftCertificate> searchByTags(@RequestParam("tags") String tags) {
         if (tags == null || tags.isEmpty()) {
-            throw new ServiceException("No tags for search found", "");
+            throw new ServiceException("No tags for search found", "50");
         }
-        List<Tag> tagsList = Arrays.stream(tags.split(",")).map(name -> new Tag(name)).collect(Collectors.toList());
+        List<Tag> tagsList = Arrays.stream(tags.split(",")).map(Tag::new).collect(Collectors.toList());
         tagService.findByName(tagsList);
-        JsonResult<GiftCertificate> jsonResult = giftCertificateFacade.search(tagsList);
 
-        return jsonResult;
+        return giftCertificateFacade.search(tagsList);
     }
 
     private String message(BindingResult result) {

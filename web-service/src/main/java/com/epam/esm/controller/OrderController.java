@@ -11,8 +11,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Min;
 import java.util.Set;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -24,6 +26,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  */
 @RestController
 @RequestMapping("/orders")
+@Validated
 public class OrderController {
     @Autowired
     private OrderFacade orderFacade;
@@ -37,34 +40,31 @@ public class OrderController {
     private FieldNameValidator fieldNameValidator;
 
     @GetMapping()
-    public JsonResult<Order> index(@RequestParam(value = "page", defaultValue = "1") int page,
-                                   @RequestParam(value = "perPage", defaultValue = "5") int perPage,
+    public JsonResult<Order> index(@RequestParam(value = "page", defaultValue = "1") @Min(1) Integer page,
+                                   @RequestParam(value = "perPage", defaultValue = "5") @Min(1) Integer perPage,
                                    @RequestParam(value = "includeMetadata", required = false, defaultValue = "false") boolean includeMetadata) {
         return orderFacade.getAllOrders(page, perPage, includeMetadata);
     }
 
     @GetMapping("/{id}")
-    public JsonResult<Order> show(@PathVariable("id") int id) {
-        JsonResult<Order> jsonResult =  orderFacade.getOrder(id);
-
-        return jsonResult;
+    public JsonResult<Order> show(@PathVariable("id") @Min(1) Integer id) {
+        return orderFacade.getOrder(id);
     }
 
     @GetMapping(value = "/{id}", params = {"fields"})
-    public JsonResult<Order> showFields(@PathVariable("id") int id, @RequestParam("fields") String fields) {
+    public JsonResult<Order> showFields(@PathVariable("id") @Min(1) Integer id, @RequestParam("fields") String fields) {
         Set<String> fieldsToFind = fieldNameValidator.validate(fields);
         return orderFacade.getOrder(id, fieldsToFind);
     }
 
     @GetMapping("/search")
-    public JsonResult<Order> search(@RequestParam("userId") int userId,
-                                    @RequestParam(value = "page", defaultValue = "1") int page,
-                                    @RequestParam(value = "perPage", defaultValue = "5") int perPage,
-                                    @RequestParam(value = "includeMetadata", required = false, defaultValue = "true") boolean includeMetadata) {
-        JsonResult<Order> result = orderFacade.search(userId, page, perPage, includeMetadata);
-
-        return result;
+    public JsonResult<Order> search(@RequestParam("userId") @Min(1) Integer userId,
+                                    @RequestParam(value = "page", defaultValue = "1") @Min(1) Integer page,
+                                    @RequestParam(value = "perPage", defaultValue = "5") @Min(1) Integer perPage,
+                                    @RequestParam(value = "includeMetadata", defaultValue = "true") boolean includeMetadata) {
+        return orderFacade.search(userId, page, perPage, includeMetadata);
     }
+
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public JsonResult<Order> create(@RequestBody Order order, BindingResult result) {
@@ -78,7 +78,7 @@ public class OrderController {
 
     @PutMapping("/{id}")
     public JsonResult<Order> update(@RequestBody Order order, BindingResult result,
-                                              @PathVariable("id") int id) {
+                                    @PathVariable("id") @Min(1) Integer id) {
         order.setId(id);
         orderValidator.validate(order, result);
         if (result.hasErrors()) {
@@ -89,7 +89,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/{id}")
-    public JsonResult<Order> delete(@PathVariable("id") int id) {
+    public JsonResult<Order> delete(@PathVariable("id") @Min(1) Integer id) {
 
         return orderFacade.delete(id);
     }

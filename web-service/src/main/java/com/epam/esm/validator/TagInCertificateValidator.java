@@ -18,5 +18,12 @@ class TagInCertificateValidator {
                 errors.rejectValue("tag.name", "invalid length");
             }
         }
+        if (tag.getOperation() != null) {
+            errors.rejectValue("tag.operation", "must be null");
+        }
+
+        if (tag.getTimestamp() != null) {
+            errors.rejectValue("tag.timestamp", "must be null");
+        }
     }
 }

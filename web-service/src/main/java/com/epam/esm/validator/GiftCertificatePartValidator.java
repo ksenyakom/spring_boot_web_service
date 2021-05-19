@@ -63,5 +63,14 @@ public class GiftCertificatePartValidator implements Validator {
                 tagValidator.validateTag(tag, errors);
             }
         }
+
+        if (certificate.getOperation() != null) {
+                errors.rejectValue("operation", "must be null");
+        }
+
+        if (certificate.getTimestamp() != null) {
+            errors.rejectValue("timestamp", "must be null");
+        }
+
     }
 }

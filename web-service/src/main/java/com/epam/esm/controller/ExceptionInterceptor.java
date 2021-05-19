@@ -13,14 +13,15 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.validation.ConstraintViolationException;
+
 @ControllerAdvice
 public class ExceptionInterceptor {
     private static Logger logger = LogManager.getLogger(ExceptionInterceptor.class);
 
     @ExceptionHandler(ServiceException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public @ResponseBody
-    JsonResult<Model> serviceError(final ServiceException e) {
+    public @ResponseBody JsonResult<Model> serviceError(final ServiceException e) {
         logger.error("Error code:{}. Error message:{}", e.getErrorCode(), e.getMessage(), e);
         return new JsonResult.Builder<>()
                 .withSuccess(false)
@@ -31,13 +32,12 @@ public class ExceptionInterceptor {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public @ResponseBody
-    JsonResult<Model> messageNotReadable(final HttpMessageNotReadableException e) {
+    public @ResponseBody JsonResult<Model> messageNotReadable(final HttpMessageNotReadableException e) {
         logger.error(e);
 
         String message = "Message can not be read.Please, check fields and values." + e.getMessage();
         if (e.getCause().getClass() == UnrecognizedPropertyException.class) {
-            message = String.format(e.getMessage()+"Message can not be read. Unrecognized property : %s.", ((UnrecognizedPropertyException) e.getCause()).getPropertyName());
+            message = String.format("Message can not be read. Unrecognized property : %s.", ((UnrecognizedPropertyException) e.getCause()).getPropertyName());
         }
         return new JsonResult.Builder<>()
                 .withSuccess(false)
@@ -45,14 +45,24 @@ public class ExceptionInterceptor {
                 .build();
     }
 
-    @ExceptionHandler(RuntimeException.class)
+
+    @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public @ResponseBody
-    JsonResult<Model> otherError(final RuntimeException e) {
+    public @ResponseBody JsonResult<Model> constraintViolationError(final ConstraintViolationException e) {
         logger.error(e);
         return new JsonResult.Builder<>()
                 .withSuccess(false)
-                .withMessage(e.getClass() + " " + e.getMessage())
+                .withMessage(e.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public @ResponseBody JsonResult<Model> otherError(final RuntimeException e) {
+        logger.error(e);
+        return new JsonResult.Builder<>()
+                .withSuccess(false)
+                .withMessage(e.getMessage())
                 .build();
     }
 
