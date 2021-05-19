@@ -2,13 +2,9 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.DaoException;
 import com.epam.esm.dao.TagDao;
-import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.Tag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
@@ -58,11 +54,11 @@ public class TagDaoImpl implements TagDao {
         try {
             Query query = em.createQuery("SELECT t.id FROM tag t WHERE t.name = :name");
             query.setParameter("name", tag.getName());
-            long id = (long) query.getSingleResult();
-            tag.setId((int) id);
-        } catch (EmptyResultDataAccessException e) {
+            int id = (int) query.getSingleResult();
+            tag.setId(id);
+        } catch (NoResultException e) {
             throw new DaoException(String.format("Tag with name = %s does not exist", tag.getName()), "28", e);
-        } catch (DataAccessException e) {
+        } catch (PersistenceException e) {
             throw new DaoException(String.format("Can not check if tag with name = %s exist", tag.getName()), "19", e);
         }
     }
@@ -76,7 +72,7 @@ public class TagDaoImpl implements TagDao {
                 throw new DaoException(String.format("Tag with id = %s not found.", id), "404");
             }
             return tag;
-        } catch (IllegalArgumentException e) {
+        } catch (PersistenceException e) {
             throw new DaoException(String.format("Can not read Tag (id = %s)", id), "12", e);
         }
     }
@@ -139,7 +135,7 @@ public class TagDaoImpl implements TagDao {
             Query query = em.createQuery(jpql);
             query.setParameter("name", tagName);
             return query.getResultList();
-        } catch (DataAccessException e) {
+        } catch (PersistenceException e) {
             throw new DaoException(String.format("No tags with name = %s)", tagName), "21", e);
         }
     }

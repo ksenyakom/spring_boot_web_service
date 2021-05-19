@@ -4,6 +4,8 @@ import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.search.SearchGiftCertificateService;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import java.util.Collections;
 import java.util.List;
 
 public class SearchGiftCertificateByNameAndTagName implements SearchGiftCertificateService {
@@ -15,6 +17,8 @@ public class SearchGiftCertificateByNameAndTagName implements SearchGiftCertific
      * Name or part name of Tag.
      */
     private final String tagName;
+    private Integer totalFound;
+
 
     public SearchGiftCertificateByNameAndTagName(String name, String tagName) {
         this.name = name;
@@ -22,18 +26,29 @@ public class SearchGiftCertificateByNameAndTagName implements SearchGiftCertific
     }
 
     @Override
+    public Integer getTotalFound() {
+        return totalFound;
+    }
+
+    @Override
     public List<GiftCertificate> search(GiftCertificateService giftCertificateService) {
         byte choice = checkSearchParameters();
+        List<GiftCertificate> certificates = null;
         switch (choice) {
             case 1:
-                return giftCertificateService.findByName(name);
+                certificates = giftCertificateService.findByName(name);
+                break;
             case 2:
-                return giftCertificateService.findByTagName(tagName);
+                certificates = giftCertificateService.findByTagName(tagName);
+                break;
             case 3:
-                return giftCertificateService.findByNameAndTagName(name, tagName);
+                certificates = giftCertificateService.findByNameAndTagName(name, tagName);
+                break;
             default:
-                return giftCertificateService.findAll(1, 1); //TODO page, size
+                certificates = Collections.emptyList();
         }
+        totalFound = certificates.size();
+        return certificates;
     }
 
     private byte checkSearchParameters() {

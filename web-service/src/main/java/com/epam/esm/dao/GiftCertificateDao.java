@@ -41,6 +41,7 @@ public interface GiftCertificateDao {
     @NotNull
     List<GiftCertificate> readByTags(@NotNull List<Tag> tags) throws DaoException;
 
+
     /**
      * Reads GiftCertificates by name.
      *
@@ -48,8 +49,9 @@ public interface GiftCertificateDao {
      * @return - list of found certificates
      * @throws DaoException if any exception occur while receiving data.
      */
-    @NotNull
-    List<GiftCertificate> readByPartName(@NotNull String name) throws DaoException;
+
+    @NonNull
+    List<GiftCertificate> readByPartName(@NonNull String name) throws DaoException;
 
     /**
      * Reads GiftCertificates by name and tag.

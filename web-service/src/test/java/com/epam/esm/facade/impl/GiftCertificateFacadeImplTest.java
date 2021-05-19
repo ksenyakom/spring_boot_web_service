@@ -3,6 +3,7 @@ package com.epam.esm.facade.impl;
 import com.epam.esm.dto.JsonResult;
 import com.epam.esm.facade.GiftCertificateFacade;
 import com.epam.esm.model.GiftCertificate;
+import com.epam.esm.model.SearchParams;
 import com.epam.esm.service.CopyFields;
 import com.epam.esm.service.GiftCertificateService;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,7 +64,7 @@ class GiftCertificateFacadeImplTest {
 
     @Test
     void search() {
-        JsonResult<GiftCertificate> jsonResult = giftCertificateFacade.search(anyString(), anyString());
+        JsonResult<GiftCertificate> jsonResult = giftCertificateFacade.search(new SearchParams(), 1, 5, true);
 
         assertAll(() -> {
             assertNotNull(jsonResult.getResult());

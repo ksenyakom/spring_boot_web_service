@@ -51,7 +51,7 @@ public class GiftCertificateController {
     @GetMapping()
     public JsonResult<GiftCertificate> index(@RequestParam(value = "page", defaultValue = "1") @Min(1) Integer page,
                                              @RequestParam(value = "perPage", defaultValue = "5") @Min(1) Integer perPage,
-                                             @RequestParam(value = "includeMetadata", required = false, defaultValue = "true") boolean includeMetadata) {
+                                             @RequestParam(value = "includeMetadata", defaultValue = "true") boolean includeMetadata) {
         return giftCertificateFacade.getAllCertificates(page, perPage, includeMetadata);
     }
 
@@ -102,29 +102,32 @@ public class GiftCertificateController {
     }
 
     @GetMapping("/search")
-    public JsonResult<GiftCertificate> search(@ModelAttribute SearchParams searchParams, BindingResult result) {
+    public JsonResult<GiftCertificate> search(@ModelAttribute SearchParams searchParams, BindingResult result,
+                                              @RequestParam(value = "page", defaultValue = "1") @Min(1) Integer page,
+                                              @RequestParam(value = "perPage", defaultValue = "5") @Min(1) Integer perPage,
+                                              @RequestParam(value = "includeMetadata", defaultValue = "true") boolean includeMetadata) {
         searchValidator.validate(searchParams, result);
         if (result.hasErrors()) {
             throw new ServiceException(message(result), "24");
         }
 
         JsonResult<GiftCertificate> jsonResult =
-                giftCertificateFacade.search(searchParams.getName(), searchParams.getTagPartName());
-        Optional.ofNullable(jsonResult.getResult()).ifPresent(certificates ->
-                giftCertificateFacade.sort(searchParams.getSortByName(), searchParams.getSortByDate(), certificates));
-
+                giftCertificateFacade.search(searchParams, page, perPage, includeMetadata);
         return jsonResult;
     }
 
     @GetMapping(value = "/search", params = {"tags"})
-    public JsonResult<GiftCertificate> searchByTags(@RequestParam("tags") String tags) {
+    public JsonResult<GiftCertificate> searchByTags(@RequestParam("tags") String tags,
+                                                    @RequestParam(value = "page", defaultValue = "1") @Min(1) Integer page,
+                                                    @RequestParam(value = "perPage", defaultValue = "5") @Min(1) Integer perPage,
+                                                    @RequestParam(value = "includeMetadata", defaultValue = "true") boolean includeMetadata) {
         if (tags == null || tags.isEmpty()) {
             throw new ServiceException("No tags for search found", "50");
         }
         List<Tag> tagsList = Arrays.stream(tags.split(",")).map(Tag::new).collect(Collectors.toList());
         tagService.findByName(tagsList);
 
-        return giftCertificateFacade.search(tagsList);
+        return giftCertificateFacade.search(tagsList, page, perPage, includeMetadata);
     }
 
     private String message(BindingResult result) {

@@ -6,8 +6,6 @@ import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.Tag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
@@ -28,9 +26,9 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @PersistenceContext
     private EntityManager em;
 
-    private static final String READ_BY_NAME_AND_TAG_ID = "SELECT name, description, price, duration, create_date,  last_update_date, is_active, certificate_id as id FROM gift_certificate c join certificate_tag t on c.id = t.certificate_id  WHERE c.name LIKE CONCAT('%', ?, '%') AND t.tag_id = ? AND is_active = true";
+    private static final String READ_BY_NAME_AND_TAG_ID = "SELECT name, description, price, duration, create_date,  last_update_date, is_active, certificate_id as id, operation, timestamp FROM gift_certificate c join certificate_tag t on c.id = t.certificate_id  WHERE c.name LIKE CONCAT('%', ?, '%') AND t.tag_id = ? AND is_active = true";
     private static final String READ_BY_TAG_ID =
-            "SELECT name, description, price, duration, create_date,  last_update_date, is_active, certificate_id as id FROM gift_certificate c join certificate_tag t on c.id = t.certificate_id  WHERE t.tag_id = ? AND is_active = true";
+            "SELECT name, description, price, duration, create_date,  last_update_date, is_active, certificate_id as id, operation, timestamp  FROM gift_certificate c join certificate_tag t on c.id = t.certificate_id  WHERE t.tag_id = ? AND is_active = true";
 
 
     @Override
@@ -41,7 +39,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             logger.debug("New certificate created with id={}", certificate.getId());
         } catch (PersistenceException e) {
             throw new DaoException(String.format("Can not create new GiftCertificate. Name = %s ", certificate.getName()), "01", e);
-        }catch (ConstraintViolationException e) {
+        } catch (ConstraintViolationException e) {
             throw new DaoException("Can not create new GiftCertificate, constraint violations", "43", e);
         }
     }
@@ -90,7 +88,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
             Set<GiftCertificate> certificates = new HashSet<>();
             for (Tag tag : tags) {
-                query.setParameter(1,tag.getId() );
+                query.setParameter(1, tag.getId());
                 certificates.addAll(query.getResultList());
             }
             return new ArrayList<>(certificates);
@@ -103,7 +101,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @NonNull
     public List<GiftCertificate> readByPartName(@NonNull String name) throws DaoException {
         try {
-            String jpql = "SELECT c FROM gift_certificate c WHERE c.name LIKE CONCAT('%', :name, '%')";
+            String jpql = "SELECT c FROM gift_certificate c WHERE c.name LIKE CONCAT('%', :name, '%') AND c.isActive = true";
+
             Query query = em.createQuery(jpql);
             query.setParameter("name", name);
             return query.getResultList();
@@ -112,15 +111,16 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         }
     }
 
+
     @Override
     @NonNull
     public List<GiftCertificate> readByNameAndTagName(@NonNull String name, @NonNull List<Tag> tags) throws DaoException {
         try {
             Query query = em.createNativeQuery(READ_BY_NAME_AND_TAG_ID, GiftCertificate.class);
-            query.setParameter(1,name);
+            query.setParameter(1, name);
             Set<GiftCertificate> certificates = new HashSet<>();
             for (Tag tag : tags) {
-                query.setParameter(2,tag.getId() );
+                query.setParameter(2, tag.getId());
                 certificates.addAll(query.getResultList());
             }
             return new ArrayList<>(certificates);
@@ -137,7 +137,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             logger.debug("Certificate was updated with id={}", certificate.getId());
         } catch (PersistenceException e) {
             throw new DaoException(String.format("Can not update GiftCertificate (id = %s)", certificate.getId()), "03", e);
-        }catch (ConstraintViolationException e) {
+        } catch (ConstraintViolationException e) {
             throw new DaoException("Can not create new GiftCertificate, constraint violations", "43", e);
         }
     }
@@ -153,4 +153,22 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         }
     }
 
+    private String addSorting(String jpqlBase, List<String> fieldsToSort, List<String> orderAscDesc) {
+        if (fieldsToSort == null || fieldsToSort.isEmpty()) {
+            return jpqlBase;
+        }
+
+        StringBuilder jpql = new StringBuilder(jpqlBase);
+        jpql.append(" order by ");
+        for (int i = 0; i < fieldsToSort.size(); i++) {
+            jpql.append(" c.").append(fieldsToSort.get(i)).append(" ");
+            if (orderAscDesc.get(i).equalsIgnoreCase("desc")) {
+                jpql.append(" DESC ");
+            }
+            if (i != fieldsToSort.size() - 1) {
+                jpql.append(",");
+            }
+        }
+        return jpql.toString();
+    }
 }

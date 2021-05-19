@@ -6,9 +6,9 @@ public class SearchParams {
 
     private String tagPartName;
 
-    private String sortByName;
+    private String sortFields;
 
-    private String sortByDate;
+    private String sortOrder;
 
     public String getTagPartName() {
         return tagPartName;
@@ -18,20 +18,20 @@ public class SearchParams {
         this.tagPartName = tagPartName;
     }
 
-    public String getSortByName() {
-        return sortByName;
+    public String getSortFields() {
+        return sortFields;
     }
 
-    public void setSortByName(String sortByName) {
-        this.sortByName = sortByName;
+    public void setSortFields(String sortFields) {
+        this.sortFields = sortFields;
     }
 
-    public String getSortByDate() {
-        return sortByDate;
+    public String getSortOrder() {
+        return sortOrder;
     }
 
-    public void setSortByDate(String sortByDate) {
-        this.sortByDate = sortByDate;
+    public void setSortOrder(String sortOrder) {
+        this.sortOrder = sortOrder;
     }
 
     public String getName() {

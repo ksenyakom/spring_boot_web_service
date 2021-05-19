@@ -5,11 +5,17 @@ import com.epam.esm.model.Tag;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.search.SearchGiftCertificateService;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class SearchGiftCertificateByTags implements SearchGiftCertificateService {
     private final List<Tag> tags;
+    private Integer totalFound;
+
+    @Override
+    public Integer getTotalFound() {
+        return totalFound;
+    }
 
     public SearchGiftCertificateByTags(List<Tag> tags) {
         this.tags = tags;
@@ -17,12 +23,17 @@ public class SearchGiftCertificateByTags implements SearchGiftCertificateService
 
     @Override
     public List<GiftCertificate> search(GiftCertificateService service) {
-        Tag firstTag = tags.get(0);
-        List<GiftCertificate> certificates = service.findByTagId(firstTag);
-        tags.remove(0);
-        if (!tags.isEmpty()) {
-            certificates.removeIf(certificate ->!certificate.getTags().containsAll(tags));
+        List<GiftCertificate> certificates = findByFirstTag(service);
+
+        if (!tags.isEmpty() && !certificates.isEmpty()) {
+            certificates.removeIf(certificate -> !certificate.getTags().containsAll(tags));
         }
-        return certificates;
+
+       return certificates;
+    }
+
+    private List<GiftCertificate> findByFirstTag(GiftCertificateService service) {
+        Tag firstTag = tags.remove(0);
+        return service.findByTagId(firstTag);
     }
 }

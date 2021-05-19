@@ -10,4 +10,5 @@ import java.util.List;
  */
 public interface SearchGiftCertificateService {
     List<GiftCertificate> search(GiftCertificateService service);
+    Integer getTotalFound();
 }

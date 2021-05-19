@@ -52,3 +52,4 @@
 66 - Can not read Orders for user id = %s
 67 - Unrecognized field : %s
 68 - Can not count orders for user
+69 - Unrecognized value : %s, must be asc or desc

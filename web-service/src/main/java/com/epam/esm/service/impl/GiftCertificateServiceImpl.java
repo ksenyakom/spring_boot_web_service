@@ -20,7 +20,6 @@ import java.util.List;
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
-
     private final GiftCertificateDao giftCertificateDao;
 
     private final TagDao tagDao;
@@ -147,4 +146,5 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
         }
     }
+
 }

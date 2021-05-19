@@ -2,10 +2,12 @@ package com.epam.esm.facade;
 
 import com.epam.esm.dto.JsonResult;
 import com.epam.esm.model.GiftCertificate;
+import com.epam.esm.model.SearchParams;
 import com.epam.esm.model.Tag;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
+import javax.validation.constraints.Min;
 import java.util.List;
 
 /**
@@ -29,18 +31,13 @@ public interface GiftCertificateFacade {
     @NonNull
     JsonResult<GiftCertificate> partUpdate(GiftCertificate certificate);
     /**
-     * Searches GiftCertificate by name and tag name.
+     * Searches GiftCertificate by fields from searchParams
      *
-     * @param name    - name or part name of GiftCertificate name.
-     * @param tagName -  name or part name of Tag name.
      * @return - found GiftCertificates wrapped in JsonResult.
      */
     @NonNull
-    JsonResult<GiftCertificate> search(@Nullable String name, @Nullable String tagName);
+    JsonResult<GiftCertificate> search(SearchParams searchParams,Integer page, Integer perPage, boolean includeMetadata);
 
-    void sort(@Nullable String sortByName, @Nullable String sortByDate, @NonNull List<GiftCertificate> certificates);
-
-
-    JsonResult<GiftCertificate> search(List<Tag> tagsList);
+    JsonResult<GiftCertificate> search(List<Tag> tagsList, Integer page, Integer perPage, boolean includeMetadata);
 }
 
