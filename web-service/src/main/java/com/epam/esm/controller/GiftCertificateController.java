@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.Min;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -111,9 +110,7 @@ public class GiftCertificateController {
             throw new ServiceException(message(result), "24");
         }
 
-        JsonResult<GiftCertificate> jsonResult =
-                giftCertificateFacade.search(searchParams, page, perPage, includeMetadata);
-        return jsonResult;
+        return giftCertificateFacade.search(searchParams, page, perPage, includeMetadata);
     }
 
     @GetMapping(value = "/search", params = {"tags"})
