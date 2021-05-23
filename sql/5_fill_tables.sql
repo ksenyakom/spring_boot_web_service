@@ -1,12 +1,12 @@
 USE `gift_db`;
 
 insert into `user`
-(id, name, surname, age, email, is_active)
+(id, name, surname, date_of_birth, email, is_active)
 VALUES
-(1, 'Tais', 'Afinskaya', 17, 'tais@mail.ru', true),
-(2, 'Alexander', 'the Great', 25, 'makedonsky@mail.ru', true),
-(3, 'Ptolemy', 'Soter', 23, 'ptolemy@yandex.ru', true),
-(4, 'Ivan', 'Efremov', 64,'ivan@gmail.com', true);
+(1, 'Tais', 'Afinskaya', '2000-03-30', 'tais@mail.ru', true),
+(2, 'Alexander', 'the Great', '2001-03-30', 'makedonsky@mail.ru', true),
+(3, 'Ptolemy', 'Soter', '2000-03-30', 'ptolemy@yandex.ru', true),
+(4, 'Ivan', 'Efremov', '2001-03-30','ivan@gmail.com', true);
 
 insert into `tag`
 (`id`, `name`)

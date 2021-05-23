@@ -59,8 +59,8 @@ public class OrderValidator implements Validator {
             if (user.getSurname() != null) {
                 errors.rejectValue("user.surname", MUST_BE_EMPTY);
             }
-            if (user.getAge() != 0) {
-                errors.rejectValue("user.age", MUST_BE_EMPTY);
+            if (user.getDateOfBirth() != null) {
+                errors.rejectValue("user.dateOfBirth", MUST_BE_EMPTY);
             }
             if (user.getEmail() != null) {
                 errors.rejectValue("user.email", MUST_BE_EMPTY);

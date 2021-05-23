@@ -39,8 +39,9 @@ public class TagController {
     }
 
     @GetMapping("/{id}")
-    public JsonResult<Tag> show(@PathVariable("id") @Min(1) Integer id) throws ServiceException {
-        return tagFacade.getTag(id);
+    public JsonResult<Tag> show(@PathVariable("id") @Min(1) Integer id,
+                                @RequestParam(value = "includeMetadata", required = false, defaultValue = "true") boolean includeMetadata) throws ServiceException {
+        return tagFacade.getTag(id, includeMetadata);
     }
 
     @PostMapping()
@@ -63,7 +64,7 @@ public class TagController {
         result.getFieldErrors()
                 .forEach(fieldError -> sb.append(" ")
                         .append(fieldError.getField()).append(": ")
-                        .append(fieldError.getDefaultMessage()).append("."));
+                        .append(fieldError.getCode()).append("."));
         return sb.toString();
     }
 }

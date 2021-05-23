@@ -14,6 +14,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.validation.ConstraintViolationException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -153,22 +154,4 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         }
     }
 
-    private String addSorting(String jpqlBase, List<String> fieldsToSort, List<String> orderAscDesc) {
-        if (fieldsToSort == null || fieldsToSort.isEmpty()) {
-            return jpqlBase;
-        }
-
-        StringBuilder jpql = new StringBuilder(jpqlBase);
-        jpql.append(" order by ");
-        for (int i = 0; i < fieldsToSort.size(); i++) {
-            jpql.append(" c.").append(fieldsToSort.get(i)).append(" ");
-            if (orderAscDesc.get(i).equalsIgnoreCase("desc")) {
-                jpql.append(" DESC ");
-            }
-            if (i != fieldsToSort.size() - 1) {
-                jpql.append(",");
-            }
-        }
-        return jpql.toString();
-    }
 }

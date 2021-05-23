@@ -13,7 +13,7 @@ import java.util.Set;
 
 public interface OrderFacade {
     @NonNull
-    JsonResult<Order> getOrder(int id);
+    JsonResult<Order> getOrder(int id,boolean includeMetadata);
 
     @NonNull
     JsonResult<Order> save(Order order);

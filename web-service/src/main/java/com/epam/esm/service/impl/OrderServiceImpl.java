@@ -1,5 +1,6 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.controller.GiftCertificateController;
 import com.epam.esm.dao.*;
 import com.epam.esm.model.*;
 import com.epam.esm.service.FillOrderFields;
@@ -20,14 +21,16 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
     private final OrderDao orderDao;
     private final UserDao userDao;
+    private final GiftCertificateDao giftCertificateDao;
 
     private final FillOrderFields fillOrderFields;
 
     @Autowired
-    public OrderServiceImpl(OrderDao orderDao, UserDao userDao, FillOrderFields fillOrderFields) {
+    public OrderServiceImpl(OrderDao orderDao, UserDao userDao, FillOrderFields fillOrderFields, GiftCertificateDao giftCertificateDao) {
         this.orderDao = orderDao;
         this.userDao = userDao;
         this.fillOrderFields = fillOrderFields;
+        this.giftCertificateDao = giftCertificateDao;
     }
 
     @Override
@@ -91,9 +94,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void save(Order order) throws ServiceException {
         try {
-
+            userDao.read(order.getUser().getId());
+            giftCertificateDao.read(order.getCertificate().getId());
             if (order.getId() == null) {
                 order.setCreateDate(LocalDateTime.now(ZoneOffset.UTC));
+                order.setActive(true);
                 orderDao.create(order);
             } else {
                 orderDao.update(order);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN">
+<Configuration status="info">
     <Properties>
         <Property name="patternfull">
             %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{5} - %msg%n
@@ -22,7 +22,14 @@
     </Appenders>
 
     <Loggers>
-        <Root level="all">
+        <Logger name="com.epam.esm" level="debug" additivity="false">
+            <AppenderRef ref="logFile"/>
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name="org.springframework.boot" level="error" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Root level="error">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="logFile"/>
         </Root>

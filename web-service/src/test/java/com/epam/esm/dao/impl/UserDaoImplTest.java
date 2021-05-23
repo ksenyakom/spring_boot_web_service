@@ -13,6 +13,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,7 +36,7 @@ class UserDaoImplTest {
             assertEquals("Alexander", actual.getName());
             assertEquals("the Great", actual.getSurname());
             assertEquals("makedonsky@mail.ru", actual.getEmail());
-            assertEquals(25, actual.getAge());
+            assertEquals(LocalDate.parse("2001-03-30"), actual.getDateOfBirth());
             assertEquals(id, actual.getId());
             assertTrue(actual.isActive());
         });

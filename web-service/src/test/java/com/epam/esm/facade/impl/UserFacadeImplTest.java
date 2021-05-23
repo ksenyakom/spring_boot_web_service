@@ -33,7 +33,7 @@ class UserFacadeImplTest {
     @Test
     void getUser() {
         given(userService.findById(anyInt())).willReturn(new User());
-        JsonResult<User> jsonResult = userFacade.getUser(anyInt());
+        JsonResult<User> jsonResult = userFacade.getUser(anyInt(), true);
 
         assertAll(() -> {
             assertEquals(1, jsonResult.getResult().size());

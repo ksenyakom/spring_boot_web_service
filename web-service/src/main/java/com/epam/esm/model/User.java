@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
@@ -20,7 +18,8 @@ public class User extends Model {
 
     private String surname;
 
-    private int age;
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
 
     private String email;
 
@@ -34,11 +33,11 @@ public class User extends Model {
         this.id = id;
     }
 
-    public User(Integer id, String name, String surname, int age, String email, Boolean isActive) {
+    public User(Integer id, String name, String surname, LocalDate dateOfBirth, String email, Boolean isActive) {
         this.id = id;
         this.name = name;
         this.surname = surname;
-        this.age = age;
+        this.dateOfBirth = dateOfBirth;
         this.email = email;
         this.isActive = isActive;
     }
@@ -67,12 +66,12 @@ public class User extends Model {
         this.surname = surname;
     }
 
-    public int getAge() {
-        return age;
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setDateOfBirth(LocalDate age) {
+        this.dateOfBirth = age;
     }
 
     public String getEmail() {
@@ -98,7 +97,7 @@ public class User extends Model {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         User user = (User) o;
-        return age == user.age &&
+        return dateOfBirth == user.dateOfBirth &&
                 isActive == user.isActive &&
                 Objects.equals(name, user.name) &&
                 Objects.equals(surname, user.surname) &&
@@ -107,6 +106,6 @@ public class User extends Model {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), name, surname, age, email, isActive);
+        return Objects.hash(super.hashCode(), name, surname, dateOfBirth, email, isActive);
     }
 }

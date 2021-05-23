@@ -3,11 +3,9 @@ package com.epam.esm.facade.impl;
 import com.epam.esm.controller.GiftCertificateController;
 import com.epam.esm.controller.OrderController;
 import com.epam.esm.controller.UserController;
-import com.epam.esm.dao.DaoException;
 import com.epam.esm.dto.JsonResult;
 import com.epam.esm.dto.Metadata;
 import com.epam.esm.facade.OrderFacade;
-import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.Order;
 import com.epam.esm.model.User;
 import com.epam.esm.service.OrderService;
@@ -16,7 +14,6 @@ import com.epam.esm.service.search.impl.SearchOrderByUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.security.cert.Certificate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -34,13 +31,13 @@ public class OrderFacadeImpl implements OrderFacade {
     }
 
     @Override
-    public JsonResult<Order> getOrder(int id) {
+    public JsonResult<Order> getOrder(int id, boolean includeMetadata) {
         Order order = orderService.findById(id);
         Metadata metadata = new Metadata();
-        metadata.add(linkTo(methodOn(OrderController.class).show(id)).withSelfRel());
+        metadata.add(linkTo(methodOn(OrderController.class).show(id, includeMetadata)).withSelfRel());
         metadata.add(linkTo(methodOn(OrderController.class).delete(id)).withRel("delete"));
-        metadata.add(linkTo(methodOn(GiftCertificateController.class).show(order.getCertificate().getId())).withRel("certificate"));
-        metadata.add(linkTo(methodOn(UserController.class).show(order.getUser().getId())).withRel("user"));
+        metadata.add(linkTo(methodOn(GiftCertificateController.class).getCertificate(order.getCertificate().getId())).withRel("certificate"));
+        metadata.add(linkTo(methodOn(UserController.class).show(order.getUser().getId(),includeMetadata)).withRel("user"));
 
         return new JsonResult.Builder<Order>()
                 .withSuccess(true)
@@ -64,8 +61,8 @@ public class OrderFacadeImpl implements OrderFacade {
         orderService.save(order);
         order = orderService.findById(order.getId());
         Metadata metadata = new Metadata();
-        metadata.add(linkTo(methodOn(OrderController.class).show(order.getId())).withRel("order"));
-        metadata.add(linkTo(methodOn(GiftCertificateController.class).show(order.getCertificate().getId())).withRel("certificate"));
+        metadata.add(linkTo(methodOn(OrderController.class).show(order.getId(),true)).withRel("order"));
+        metadata.add(linkTo(methodOn(GiftCertificateController.class).getCertificate(order.getCertificate().getId())).withRel("certificate"));
 
         return new JsonResult.Builder<Order>()
                 .withSuccess(true)
@@ -124,8 +121,8 @@ public class OrderFacadeImpl implements OrderFacade {
             metadata.add(linkTo(methodOn(OrderController.class).index(page >= pageCount ? pageCount : page + 1, perPage, includeMetadata)).withRel("next"));
             metadata.add(linkTo(methodOn(OrderController.class).index(pageCount, perPage, includeMetadata)).withRel("last"));
             for (Order order : orders) {
-                metadata.add(linkTo(methodOn(OrderController.class).show(order.getId())).withRel("order"));
-                metadata.add(linkTo(methodOn(GiftCertificateController.class).show(order.getCertificate().getId())).withRel("certificate"));
+                metadata.add(linkTo(methodOn(OrderController.class).show(order.getId(),includeMetadata)).withRel("order"));
+                metadata.add(linkTo(methodOn(GiftCertificateController.class).getCertificate(order.getCertificate().getId())).withRel("certificate"));
             }
 
             return metadata;

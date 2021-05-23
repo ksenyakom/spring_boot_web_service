@@ -1,6 +1,7 @@
 package com.epam.esm.facade.impl;
 
 import com.epam.esm.controller.GiftCertificateController;
+import com.epam.esm.controller.OrderController;
 import com.epam.esm.controller.UserController;
 import com.epam.esm.dto.JsonResult;
 import com.epam.esm.dto.Metadata;
@@ -27,18 +28,23 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     @Override
-    public JsonResult<User> getUser(int id) {
+    public JsonResult<User> getUser(int id, boolean includeMetadata) {
         User user = userService.findById(id);
+        Metadata metadata = new Metadata();
+        metadata.add(linkTo(methodOn(UserController.class).show(id, includeMetadata)).withSelfRel());
+        metadata.add(linkTo(methodOn(OrderController.class).search(id,null, null, includeMetadata)).withRel("orders"));
+
         return new JsonResult.Builder<User>()
                 .withSuccess(true)
                 .withResult(Collections.singletonList(user))
+                .withMetadata(metadata)
                 .build();
     }
 
     @Override
     public JsonResult<User> getAllUsers(int page, int size, boolean includeMetadata) {
         List<User> users = userService.findAll(page, size);
-        Metadata metadata = fillMetadata( page, size, includeMetadata);
+        Metadata metadata = fillMetadata(page, size, includeMetadata);
 
         return new JsonResult.Builder<User>()
                 .withSuccess(true)
@@ -47,7 +53,7 @@ public class UserFacadeImpl implements UserFacade {
                 .build();
     }
 
-    private Metadata fillMetadata ( int page, int perPage, boolean includeMetadata) {
+    private Metadata fillMetadata (int page, int perPage, boolean includeMetadata) {
         if (includeMetadata) {
             int totalFound = userService.countAll();
             Metadata metadata = new Metadata.Builder()

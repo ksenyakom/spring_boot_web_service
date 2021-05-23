@@ -113,8 +113,9 @@ public class OrderDaoImpl implements OrderDao {
     @Override
     public int countActiveByUser(@NonNull User user) throws DaoException {
         try {
-            String jpql = "SELECT count(o) FROM user_order o WHERE o.isActive = true";
+            String jpql = "SELECT count(o) FROM user_order o WHERE o.isActive = true AND o.user = :user";
             Query query = em.createQuery(jpql);
+            query.setParameter("user", user);
             long count = (long) query.getSingleResult();
             return (int) count;
         } catch (PersistenceException e) {

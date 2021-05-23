@@ -28,13 +28,14 @@ public class UserController {
     @GetMapping()
     public JsonResult<User> index(@RequestParam(value = "page", defaultValue = "1") @Min(1) Integer page,
                                   @RequestParam(value = "perPage", defaultValue = "5") @Min(1) Integer perPage,
-                                  @RequestParam(value = "includeMetadata", required = false, defaultValue = "false") boolean includeMetadata)
+                                  @RequestParam(value = "includeMetadata", defaultValue = "true") boolean includeMetadata)
             throws ServiceException {
         return userFacade.getAllUsers(page, perPage, includeMetadata);
     }
 
     @GetMapping("/{id}")
-    public JsonResult<User> show(@PathVariable("id") @Min(1) Integer id) throws ServiceException {
-        return userFacade.getUser(id);
+    public JsonResult<User> show(@PathVariable("id") @Min(1) Integer id,
+                                 @RequestParam(value = "includeMetadata", defaultValue = "true") boolean includeMetadata) throws ServiceException {
+        return userFacade.getUser(id, includeMetadata);
     }
 }

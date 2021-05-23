@@ -1,5 +1,6 @@
 package com.epam.esm.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
@@ -62,6 +63,7 @@ public class Tag extends Model {
         this.name = name;
     }
 
+    @JsonIgnore
     public String getOperation() {
         return operation;
     }
@@ -70,6 +72,7 @@ public class Tag extends Model {
         this.operation = operation;
     }
 
+    @JsonIgnore
     public LocalDateTime getTimestamp() {
         return timestamp;
     }

@@ -36,8 +36,8 @@ public class UserValidator implements Validator {
             errors.rejectValue("surname", "surname can contain only letters and _ or -, length 2-255 characters");
         }
 
-        if (user.getAge() <= 0) {
-            errors.rejectValue("age", "invalid value, must be grater then 0");
+        if (user.getDateOfBirth() == null) {
+            errors.rejectValue("age", "empty field");
         }
 
         if (user.getEmail() == null) {

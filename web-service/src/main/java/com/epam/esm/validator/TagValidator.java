@@ -21,7 +21,7 @@ public class TagValidator implements Validator {
     public void validate(Object o, Errors errors) {
         Tag tag = (Tag) o;
         if (tag.getId() != null) {
-            errors.rejectValue("id", "you can not set id fot new tag");
+            errors.rejectValue("id", "you can not set id for new tag");
 
         }
         if (tag.getName() == null) {

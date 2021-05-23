@@ -19,6 +19,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Collections;
 import java.util.List;
 
@@ -74,11 +76,11 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
     @Override
     @NonNull
     public JsonResult<GiftCertificate> delete(int id) {
-        giftCertificateService.delete(id);
+            giftCertificateService.delete(id);
 
-        return new JsonResult.Builder<GiftCertificate>()
-                .withSuccess(true)
-                .build();
+            return new JsonResult.Builder<GiftCertificate>()
+                    .withSuccess(true)
+                    .build();
     }
 
     @Override

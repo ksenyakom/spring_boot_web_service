@@ -10,7 +10,6 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 
 @SpringBootApplication
-
 public class Application implements ApplicationListener<ApplicationReadyEvent> {
 
     public static void main(String[] args) {

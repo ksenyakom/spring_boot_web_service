@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +37,7 @@ class UserServiceImplTest {
     @Test
     void findById() throws DaoException {
         int id = 1;
-        User user = new User(id, "Tais", "Afinskaya", 17, "tais@mail.ru", true);
+        User user = new User(id, "Tais", "Afinskaya",  LocalDate.parse("2000-01-01"), "tais@mail.ru", true);
         given(userDao.read(id)).willReturn(user);
         User actual = userService.findById(id);
         assertEquals(actual, user);

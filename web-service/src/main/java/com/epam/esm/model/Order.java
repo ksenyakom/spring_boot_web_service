@@ -100,6 +100,7 @@ public class Order extends Model {
         this.price = price;
     }
 
+    @JsonIgnore
     public String getOperation() {
         return operation;
     }
@@ -108,6 +109,7 @@ public class Order extends Model {
         this.operation = operation;
     }
 
+    @JsonIgnore
     public LocalDateTime getTimestamp() {
         return timestamp;
     }

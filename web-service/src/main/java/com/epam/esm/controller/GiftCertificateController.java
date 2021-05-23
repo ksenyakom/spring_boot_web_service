@@ -55,7 +55,7 @@ public class GiftCertificateController {
     }
 
     @GetMapping("/{id}")
-    public JsonResult<GiftCertificate> show(@PathVariable("id") @Min(1) Integer id) {
+    public JsonResult<GiftCertificate> getCertificate(@PathVariable("id") @Min(1) Integer id) {
         return giftCertificateFacade.getCertificate(id);
     }
 

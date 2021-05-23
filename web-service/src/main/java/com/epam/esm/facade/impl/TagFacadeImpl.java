@@ -29,11 +29,15 @@ public class TagFacadeImpl implements TagFacade {
     }
 
     @Override
-    public JsonResult<Tag> getTag(int id) {
+    public JsonResult<Tag> getTag(int id, boolean includeMetadata) {
         Tag tag = tagService.findById(id);
+
+        Metadata metadata = new Metadata();
+        metadata.add(linkTo(methodOn(GiftCertificateController.class).searchByTags(tag.getName(),null, null, includeMetadata)).withRel("gift_certificates"));
         return new JsonResult.Builder<Tag>()
                 .withSuccess(true)
                 .withResult(Collections.singletonList(tag))
+                .withMetadata(metadata)
                 .build();
     }
 

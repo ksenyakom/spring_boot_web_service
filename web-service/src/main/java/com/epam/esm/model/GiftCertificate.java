@@ -138,6 +138,7 @@ public class GiftCertificate extends Model {
         isActive = active;
     }
 
+    @JsonIgnore
     public String getOperation() {
         return operation;
     }
@@ -146,6 +147,7 @@ public class GiftCertificate extends Model {
         this.operation = operation;
     }
 
+    @JsonIgnore
     public LocalDateTime getTimestamp() {
         return timestamp;
     }

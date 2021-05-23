@@ -47,8 +47,9 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public JsonResult<Order> show(@PathVariable("id") @Min(1) Integer id) {
-        return orderFacade.getOrder(id);
+    public JsonResult<Order> show(@PathVariable("id") @Min(1) Integer id,
+                                  @RequestParam(value = "includeMetadata", required = false, defaultValue = "false") boolean includeMetadata) {
+        return orderFacade.getOrder(id, includeMetadata);
     }
 
     @GetMapping(value = "/{id}", params = {"fields"})
