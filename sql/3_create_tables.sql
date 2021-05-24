@@ -40,10 +40,9 @@ CREATE TABLE `tag`
 
 CREATE TABLE `certificate_tag`
 (
-    `id`             INTEGER NOT NULL AUTO_INCREMENT,
     `certificate_id` INTEGER,
     `tag_id`         INTEGER,
-    CONSTRAINT PK_certificate_tag PRIMARY KEY (`id`),
+    CONSTRAINT PK_certificate_tag PRIMARY KEY (certificate_id, tag_id),
     CONSTRAINT FK_certificate_id FOREIGN KEY (`certificate_id`) REFERENCES gift_certificate (`id`)
         ON UPDATE CASCADE
         ON DELETE RESTRICT,
