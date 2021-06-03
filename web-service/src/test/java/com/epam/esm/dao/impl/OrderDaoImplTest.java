@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,7 +38,7 @@ class OrderDaoImplTest {
     @Test
     void create() throws DaoException {
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
-        Order order = new Order(new User(1), new GiftCertificate(1), now, new BigDecimal(100));
+        Order order = new Order(new User(1), Collections.singletonList(new GiftCertificate(1)), now, new BigDecimal(100));
         order.setActive(true);
 
         orderDao.create(order);
@@ -47,7 +48,7 @@ class OrderDaoImplTest {
                 () -> {
                     assertNotNull(actual);
                     assertEquals(order.getUser().getId(), actual.getUser().getId());
-                    assertEquals(order.getCertificate().getId(), actual.getCertificate().getId());
+                    assertEquals(order.getCertificates().size(), actual.getCertificates().size());
                     assertEquals(0, order.getPrice().compareTo(actual.getPrice()));
                     assertNotNull(actual.getCreateDate());
                     assertTrue(actual.isActive());
@@ -70,32 +71,11 @@ class OrderDaoImplTest {
             assertNotNull(order);
             assertEquals(id, order.getId());
             assertEquals(2, order.getUser().getId());
-            assertEquals(2, order.getCertificate().getId());
+            assertEquals(1, order.getCertificates().size());
             assertEquals(0, order.getPrice().compareTo(BigDecimal.TEN));
             assertNotNull(order.getCreateDate());
             assertTrue(order.isActive());
         });
-    }
-
-    @Test
-    void update() throws DaoException {
-        int id = 1;
-        Order order = orderDao.read(id);
-        assert order != null;
-        order.setUser(new User(2));
-        order.setCertificate(new GiftCertificate(2));
-        order.setPrice(BigDecimal.ONE);
-        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
-        order.setCreateDate(now);
-        orderDao.update(order);
-
-        Order actual = orderDao.read(id);
-
-        assertAll("Orders should be equal",
-                () -> {
-                    assertNotNull(actual);
-                    assertEquals(actual, order);
-                });
     }
 
     @Test

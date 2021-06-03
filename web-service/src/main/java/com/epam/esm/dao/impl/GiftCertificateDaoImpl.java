@@ -133,7 +133,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Override
     public void update(@NonNull GiftCertificate certificate) throws DaoException {
         try {
-            read(certificate.getId());
+            GiftCertificate existingCertificate = read(certificate.getId());
+            certificate.setCreateDate(existingCertificate.getCreateDate());
             em.merge(certificate);
             logger.debug("Certificate was updated with id={}", certificate.getId());
         } catch (PersistenceException e) {

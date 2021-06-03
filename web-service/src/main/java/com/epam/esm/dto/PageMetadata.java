@@ -3,10 +3,8 @@ package com.epam.esm.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.hateoas.RepresentationModel;
 
-import java.util.Map;
-
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-public class Metadata extends RepresentationModel<Metadata> {
+public class PageMetadata extends RepresentationModel<PageMetadata> {
     private int page;
     private int perPage;
     private int pageCount;
@@ -46,33 +44,33 @@ public class Metadata extends RepresentationModel<Metadata> {
     }
 
     public static class Builder {
-        private Metadata metadata;
+        private PageMetadata pageMetadata;
 
         public Builder() {
-            metadata = new Metadata();
+            pageMetadata = new PageMetadata();
         }
 
         public Builder withPage(int page) {
-            metadata.page = page;
+            pageMetadata.page = page;
             return this;
         }
         public Builder withPerPage(int perPage) {
-            metadata.perPage = perPage;
+            pageMetadata.perPage = perPage;
             return this;
         }
 
         public Builder withPageCount(int pageCount) {
-            metadata.pageCount = pageCount;
+            pageMetadata.pageCount = pageCount;
             return this;
         }
 
         public Builder withTotalCount(int totalCount) {
-            metadata.totalCount = totalCount;
+            pageMetadata.totalCount = totalCount;
             return this;
         }
 
-        public Metadata build() {
-            return metadata;
+        public PageMetadata build() {
+            return pageMetadata;
         }
     }
 }

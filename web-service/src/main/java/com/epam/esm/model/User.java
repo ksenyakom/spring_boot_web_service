@@ -2,6 +2,7 @@ package com.epam.esm.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -9,7 +10,7 @@ import java.util.Objects;
 
 @Entity
 @JsonInclude(value = JsonInclude.Include.NON_DEFAULT)
-public class User extends Model {
+public class User extends RepresentationModel<User> implements Model  {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;

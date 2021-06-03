@@ -3,6 +3,7 @@ package com.epam.esm.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -13,7 +14,7 @@ import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 @Entity(name = "gift_certificate")
-public class GiftCertificate extends Model {
+public class GiftCertificate extends RepresentationModel<GiftCertificate> implements Model  {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;

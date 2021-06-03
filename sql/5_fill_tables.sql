@@ -25,11 +25,11 @@ values
 (3, 'Swimming pool', 'Visiting swimming pool with sauna', 15, 10, '2021-03-15T18:31:42',true);
 
 insert into `certificate_tag`
-(`id`, `certificate_id`, `tag_id`)
+(`certificate_id`, `tag_id`)
 values
-(1, 1, 1),
-(2, 1, 3),
-(3, 2, 1),
-(4, 2, 2),
-(5, 3, 4),
-(6, 3, 5);
+(1, 1),
+(1, 3),
+(2, 1),
+(2, 2),
+(3, 4),
+(3, 5);

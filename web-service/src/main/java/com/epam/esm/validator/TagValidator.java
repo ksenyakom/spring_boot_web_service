@@ -27,17 +27,18 @@ public class TagValidator implements Validator {
         if (tag.getName() == null) {
             errors.rejectValue("name", "empty value");
         } else {
+            tag.setName(tag.getName().trim());
             if (tag.getName().length() < MIN_LENGTH || tag.getName().length() > MAX_LENGTH) {
                 errors.rejectValue("name", "invalid length");
             }
         }
 
         if (tag.getOperation() != null) {
-            errors.rejectValue("operation", "must be null");
+            errors.rejectValue("operation", "unrecognized field");
         }
 
         if (tag.getTimestamp() != null) {
-            errors.rejectValue("timestamp", "must be null");
+            errors.rejectValue("timestamp", "unrecognized field");
         }
     }
 

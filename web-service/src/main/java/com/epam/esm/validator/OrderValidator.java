@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 @Component
 public class OrderValidator implements Validator {
@@ -24,26 +24,25 @@ public class OrderValidator implements Validator {
     public void validate(@NonNull Object o, @NonNull Errors errors) {
         Order order = (Order) o;
 
-        if (order.getId() != null && order.getId() < 0) {
-            errors.rejectValue("id", "id must be equal or grater then 0");
+        if (order.getId() != null) {
+            errors.rejectValue("id", "you can not set id for new order");
         }
-        if (order.getPrice() == null) {
-            errors.rejectValue("price", "empty field");
-        } else if (order.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
-            errors.rejectValue("price", "invalid value");
+        if (order.getPrice() != null) {
+            errors.rejectValue("price", "you can not set price for order");
         }
+
         if (order.getCreateDate() != null) {
             errors.rejectValue("createDate", "you can not create/update createDate field");
         }
         if (order.getOperation() != null) {
-            errors.rejectValue("operation", "must be null");
+            errors.rejectValue("operation", "unrecognized field");
         }
 
         if (order.getTimestamp() != null) {
-            errors.rejectValue("timestamp", "must be null");
+            errors.rejectValue("timestamp", "unrecognized field");
         }
         checkUser(order.getUser(), errors);
-        checkCertificate(order.getCertificate(), errors);
+        checkListCertificate(order.getCertificates(), errors);
     }
 
     private void checkUser(User user, Errors errors) {
@@ -65,6 +64,14 @@ public class OrderValidator implements Validator {
             if (user.getEmail() != null) {
                 errors.rejectValue("user.email", MUST_BE_EMPTY);
             }
+        }
+    }
+
+    private void checkListCertificate(List<GiftCertificate> certificates, Errors errors) {
+        if (certificates == null) {
+            errors.rejectValue("certificates", "empty field");
+        } else {
+            certificates.forEach(certificate -> checkCertificate(certificate, errors));
         }
     }
 
@@ -99,6 +106,12 @@ public class OrderValidator implements Validator {
             }
             if (certificate.getActive() != null) {
                 errors.rejectValue("certificate.isActive", MUST_BE_EMPTY);
+            }
+            if (certificate.getOperation() != null) {
+                errors.rejectValue("certificate.operation", "unrecognized field");
+            }
+            if (certificate.getTimestamp() != null) {
+                errors.rejectValue("certificate.timestamp", "unrecognized field");
             }
         }
     }

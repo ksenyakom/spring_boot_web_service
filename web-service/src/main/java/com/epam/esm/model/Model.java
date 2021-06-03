@@ -6,6 +6,6 @@ import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Objects;
 
-public abstract class Model implements Serializable {
+public interface Model extends Serializable {
 
 }

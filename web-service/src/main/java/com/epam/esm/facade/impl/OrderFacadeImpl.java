@@ -1,10 +1,8 @@
 package com.epam.esm.facade.impl;
 
-import com.epam.esm.controller.GiftCertificateController;
 import com.epam.esm.controller.OrderController;
-import com.epam.esm.controller.UserController;
 import com.epam.esm.dto.JsonResult;
-import com.epam.esm.dto.Metadata;
+import com.epam.esm.dto.PageMetadata;
 import com.epam.esm.facade.OrderFacade;
 import com.epam.esm.model.Order;
 import com.epam.esm.model.User;
@@ -31,24 +29,21 @@ public class OrderFacadeImpl implements OrderFacade {
     }
 
     @Override
-    public JsonResult<Order> getOrder(int id, boolean includeMetadata) {
+    public JsonResult<Order> getOrder(int id) {
         Order order = orderService.findById(id);
-        Metadata metadata = new Metadata();
-        metadata.add(linkTo(methodOn(OrderController.class).show(id, includeMetadata)).withSelfRel());
-        metadata.add(linkTo(methodOn(OrderController.class).delete(id)).withRel("delete"));
-        metadata.add(linkTo(methodOn(GiftCertificateController.class).getCertificate(order.getCertificate().getId())).withRel("certificate"));
-        metadata.add(linkTo(methodOn(UserController.class).show(order.getUser().getId(),includeMetadata)).withRel("user"));
+        addHateoasLinks(order);
 
         return new JsonResult.Builder<Order>()
                 .withSuccess(true)
                 .withResult(Collections.singletonList(order))
-                .withMetadata(metadata)
                 .build();
     }
 
     @Override
     public JsonResult<Order> getOrder(int id, Set<String> fieldsToFind) {
         Order order = orderService.findById(id, fieldsToFind);
+        addHateoasLinks(order);
+
         return new JsonResult.Builder<Order>()
                 .withSuccess(true)
                 .withResult(Collections.singletonList(order))
@@ -60,14 +55,11 @@ public class OrderFacadeImpl implements OrderFacade {
     public JsonResult<Order> save(Order order) {
         orderService.save(order);
         order = orderService.findById(order.getId());
-        Metadata metadata = new Metadata();
-        metadata.add(linkTo(methodOn(OrderController.class).show(order.getId(),true)).withRel("order"));
-        metadata.add(linkTo(methodOn(GiftCertificateController.class).getCertificate(order.getCertificate().getId())).withRel("certificate"));
+        addHateoasLinks(order);
 
         return new JsonResult.Builder<Order>()
                 .withSuccess(true)
                 .withResult(Collections.singletonList(order))
-                .withMetadata(metadata)
                 .build();
     }
 
@@ -83,12 +75,13 @@ public class OrderFacadeImpl implements OrderFacade {
     public JsonResult<Order> getAllOrders(int page, int perPage, boolean includeMetadata) {
         List<Order> orders = orderService.findAll(page, perPage);
         int totalFound = orderService.countAll();
-        Metadata metadata = fillMetadata(includeMetadata, page, perPage, orders, totalFound);
+        PageMetadata pageMetadata = fillPageMetadata(includeMetadata, page, perPage, totalFound);
+        orders.forEach(order -> addHateoasLinks(order));
 
         return new JsonResult.Builder<Order>()
                 .withSuccess(true)
                 .withResult(orders)
-                .withMetadata(metadata)
+                .withMetadata(pageMetadata)
                 .build();
     }
 
@@ -97,35 +90,37 @@ public class OrderFacadeImpl implements OrderFacade {
         SearchOrderService searchOrderService = new SearchOrderByUser(new User(userId), page, perPage);
         List<Order> orders = searchOrderService.search(orderService);
         int totalFound = searchOrderService.getTotalFound();
-        Metadata metadata = fillMetadata(includeMetadata, page, perPage, orders, totalFound);
+        PageMetadata pageMetadata = fillPageMetadata(includeMetadata, page, perPage, totalFound);
+        orders.forEach(order -> addHateoasLinks(order));
 
         return new JsonResult.Builder<Order>()
                 .withSuccess(true)
                 .withResult(orders)
-                .withMetadata(metadata)
+                .withMetadata(pageMetadata)
                 .build();
     }
 
-    private Metadata fillMetadata(boolean includeMetadata, int page, int perPage, List<Order> orders, int totalFound) {
+    private void addHateoasLinks(Order order) {
+        order.add(linkTo(methodOn(OrderController.class).show(order.getId())).withSelfRel());
+    }
+
+    private PageMetadata fillPageMetadata(boolean includeMetadata, int page, int perPage, int totalFound) {
         if (includeMetadata) {
-            Metadata metadata = new Metadata.Builder()
+            PageMetadata pageMetadata = new PageMetadata.Builder()
                     .withPage(page)
                     .withPerPage(perPage)
                     .withPageCount(totalFound / perPage + (totalFound % perPage == 0 ? 0 : 1))
                     .withTotalCount(totalFound)
                     .build();
-            int pageCount = metadata.getPageCount();
-            metadata.add(linkTo(methodOn(OrderController.class).index(page, perPage, includeMetadata)).withSelfRel());
-            metadata.add(linkTo(methodOn(OrderController.class).index(1, perPage, includeMetadata)).withRel("first"));
-            metadata.add(linkTo(methodOn(OrderController.class).index(page < 2 ? 1 : page - 1, perPage, includeMetadata)).withRel("previous"));
-            metadata.add(linkTo(methodOn(OrderController.class).index(page >= pageCount ? pageCount : page + 1, perPage, includeMetadata)).withRel("next"));
-            metadata.add(linkTo(methodOn(OrderController.class).index(pageCount, perPage, includeMetadata)).withRel("last"));
-            for (Order order : orders) {
-                metadata.add(linkTo(methodOn(OrderController.class).show(order.getId(),includeMetadata)).withRel("order"));
-                metadata.add(linkTo(methodOn(GiftCertificateController.class).getCertificate(order.getCertificate().getId())).withRel("certificate"));
-            }
+            int pageCount = pageMetadata.getPageCount();
+            pageMetadata.add(linkTo(methodOn(OrderController.class).index(page, perPage, includeMetadata)).withSelfRel());
+            pageMetadata.add(linkTo(methodOn(OrderController.class).index(1, perPage, includeMetadata)).withRel("first"));
+            pageMetadata.add(linkTo(methodOn(OrderController.class).index(page < 2 ? 1 : page - 1, perPage, includeMetadata)).withRel("previous"));
+            pageMetadata.add(linkTo(methodOn(OrderController.class).index(page >= pageCount ? pageCount : page + 1, perPage, includeMetadata)).withRel("next"));
+            pageMetadata.add(linkTo(methodOn(OrderController.class).index(pageCount, perPage, includeMetadata)).withRel("last"));
 
-            return metadata;
+
+            return pageMetadata;
         }
         return null;
     }

@@ -2,16 +2,17 @@ package com.epam.esm.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Objects;
+import java.util.List;
 
 @Entity(name = "user_order")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Order extends Model {
+public class Order extends  RepresentationModel<Order> implements Model {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -20,9 +21,12 @@ public class Order extends Model {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "certificate_id")
-    private GiftCertificate certificate;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "order_certificate",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "certificate_id")
+    )
+    private List<GiftCertificate> certificates;
 
     @Column(name = "create_date")
     private LocalDateTime createDate;
@@ -44,9 +48,10 @@ public class Order extends Model {
         this.id = id;
     }
 
-    public Order(User user, GiftCertificate certificate, LocalDateTime createDate, BigDecimal price) {
+    public Order(User user, List<GiftCertificate> certificates, LocalDateTime createDate, BigDecimal price) {
+        this.id = id;
         this.user = user;
-        this.certificate = certificate;
+        this.certificates = certificates;
         this.createDate = createDate;
         this.price = price;
     }
@@ -76,12 +81,12 @@ public class Order extends Model {
         this.user = user;
     }
 
-    public GiftCertificate getCertificate() {
-        return certificate;
+    public List<GiftCertificate> getCertificates() {
+        return certificates;
     }
 
-    public void setCertificate(GiftCertificate certificate) {
-        this.certificate = certificate;
+    public void setCertificates(List<GiftCertificate> certificates) {
+        this.certificates = certificates;
     }
 
     public LocalDateTime getCreateDate() {
@@ -136,23 +141,5 @@ public class Order extends Model {
     private void audit(String operation) {
         setOperation(operation);
         setTimestamp(LocalDateTime.now(ZoneOffset.UTC));
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Order order = (Order) o;
-        return isActive == order.isActive &&
-                Objects.equals(user, order.user) &&
-                Objects.equals(certificate, order.certificate) &&
-                Objects.equals(createDate, order.createDate) &&
-                (price.compareTo(order.price) == 0);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), user, certificate, createDate, price, isActive);
     }
 }

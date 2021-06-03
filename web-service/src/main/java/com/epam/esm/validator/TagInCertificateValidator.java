@@ -19,11 +19,11 @@ class TagInCertificateValidator {
             }
         }
         if (tag.getOperation() != null) {
-            errors.rejectValue("tag.operation", "must be null");
+            errors.rejectValue("tag.operation", "unrecognized field");
         }
 
         if (tag.getTimestamp() != null) {
-            errors.rejectValue("tag.timestamp", "must be null");
+            errors.rejectValue("tag.timestamp", "unrecognized field");
         }
     }
 }

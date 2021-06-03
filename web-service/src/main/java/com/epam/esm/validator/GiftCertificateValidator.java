@@ -26,21 +26,27 @@ public class GiftCertificateValidator implements Validator {
     public void validate(@NonNull Object o, @NonNull Errors errors) {
         GiftCertificate certificate = (GiftCertificate) o;
 
-        if (certificate.getId() != null && certificate.getId() < 0) {
-            errors.rejectValue("id", "id must be equal or grater then 0");
+        if (certificate.getId() != null) {
+            errors.rejectValue("id", "you can not set id for new giftCertificate");
         }
 
         if (certificate.getName() == null) {
             errors.rejectValue("name", "empty field");
-        } else if (certificate.getName().length() < MIN_LENGTH || certificate.getName().length() > MAX_LENGTH) {
-            errors.rejectValue("name", "invalid length");
+        } else {
+            certificate.setName(certificate.getName().trim());
+            if (certificate.getName().length() < MIN_LENGTH || certificate.getName().length() > MAX_LENGTH) {
+                errors.rejectValue("name", "invalid length");
+            }
         }
 
         String description = certificate.getDescription();
         if (description == null) {
             errors.rejectValue("description", "empty field");
-        } else if (description.isEmpty() || description.length() > MAX_LENGTH) {
-            errors.rejectValue("description", "invalid length");
+        } else {
+            certificate.setDescription(certificate.getDescription().trim());
+            if (description.isEmpty() || description.length() > MAX_LENGTH) {
+                errors.rejectValue("description", "invalid length");
+            }
         }
 
         if (certificate.getDuration() <= 0) {
@@ -63,11 +69,11 @@ public class GiftCertificateValidator implements Validator {
         }
 
         if (certificate.getOperation() != null) {
-            errors.rejectValue("operation", "must be null");
+            errors.rejectValue("operation", "unrecognized field");
         }
 
         if (certificate.getTimestamp() != null) {
-            errors.rejectValue("timestamp", "must be null");
+            errors.rejectValue("timestamp", "unrecognized field");
         }
     }
 

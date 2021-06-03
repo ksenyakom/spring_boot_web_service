@@ -35,6 +35,7 @@ public class GiftCertificatePartValidator implements Validator {
         }
 
         if (certificate.getName() != null) {
+            certificate.setName(certificate.getName().trim());
             if (certificate.getName().length() < MIN_LENGTH || certificate.getName().length() > MAX_LENGTH) {
                 errors.rejectValue("name", "invalid length");
             }
@@ -42,6 +43,7 @@ public class GiftCertificatePartValidator implements Validator {
 
         String description = certificate.getDescription();
         if (description != null) {
+            certificate.setDescription(certificate.getDescription().trim());
             if (description.isEmpty() || description.length() > MAX_LENGTH) {
                 errors.rejectValue("description", "invalid length");
             }
@@ -65,11 +67,11 @@ public class GiftCertificatePartValidator implements Validator {
         }
 
         if (certificate.getOperation() != null) {
-                errors.rejectValue("operation", "must be null");
+                errors.rejectValue("operation", "unrecognized field");
         }
 
         if (certificate.getTimestamp() != null) {
-            errors.rejectValue("timestamp", "must be null");
+            errors.rejectValue("timestamp", "unrecognized field");
         }
 
     }

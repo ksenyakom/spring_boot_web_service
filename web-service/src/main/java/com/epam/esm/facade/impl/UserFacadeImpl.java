@@ -1,10 +1,10 @@
 package com.epam.esm.facade.impl;
 
-import com.epam.esm.controller.GiftCertificateController;
 import com.epam.esm.controller.OrderController;
+import com.epam.esm.controller.TagController;
 import com.epam.esm.controller.UserController;
 import com.epam.esm.dto.JsonResult;
-import com.epam.esm.dto.Metadata;
+import com.epam.esm.dto.PageMetadata;
 import com.epam.esm.facade.UserFacade;
 import com.epam.esm.model.Tag;
 import com.epam.esm.model.User;
@@ -28,47 +28,47 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     @Override
-    public JsonResult<User> getUser(int id, boolean includeMetadata) {
+    public JsonResult<User> getUser(int id) {
         User user = userService.findById(id);
-        Metadata metadata = new Metadata();
-        metadata.add(linkTo(methodOn(UserController.class).show(id, includeMetadata)).withSelfRel());
-        metadata.add(linkTo(methodOn(OrderController.class).search(id,null, null, includeMetadata)).withRel("orders"));
 
         return new JsonResult.Builder<User>()
                 .withSuccess(true)
                 .withResult(Collections.singletonList(user))
-                .withMetadata(metadata)
                 .build();
     }
 
     @Override
     public JsonResult<User> getAllUsers(int page, int size, boolean includeMetadata) {
         List<User> users = userService.findAll(page, size);
-        Metadata metadata = fillMetadata(page, size, includeMetadata);
+        PageMetadata pageMetadata = fillMetadata(page, size, includeMetadata);
 
         return new JsonResult.Builder<User>()
                 .withSuccess(true)
                 .withResult(users)
-                .withMetadata(metadata)
+                .withMetadata(pageMetadata)
                 .build();
     }
 
-    private Metadata fillMetadata (int page, int perPage, boolean includeMetadata) {
+    private void addHateoasLinks(User user) {
+        user.add(linkTo(methodOn(UserController.class).show(user.getId())).withSelfRel());
+    }
+
+    private PageMetadata fillMetadata (int page, int perPage, boolean includeMetadata) {
         if (includeMetadata) {
             int totalFound = userService.countAll();
-            Metadata metadata = new Metadata.Builder()
+            PageMetadata pageMetadata = new PageMetadata.Builder()
                     .withPage(page)
                     .withPerPage(perPage)
                     .withPageCount(totalFound / perPage + (totalFound % perPage == 0? 0 : 1))
                     .withTotalCount(totalFound)
                     .build();
-            int pageCount = metadata.getPageCount();
-            metadata.add(linkTo(methodOn(UserController.class).index(page, perPage, includeMetadata)).withSelfRel());
-            metadata.add(linkTo(methodOn(UserController.class).index(1, perPage, includeMetadata)).withRel("first"));
-            metadata.add(linkTo(methodOn(UserController.class).index(page < 2 ? 1 : page - 1, perPage, includeMetadata)).withRel("previous"));
-            metadata.add(linkTo(methodOn(UserController.class).index(page >= pageCount ? pageCount : page + 1, perPage, includeMetadata)).withRel("next"));
-            metadata.add(linkTo(methodOn(UserController.class).index(pageCount, perPage, includeMetadata)).withRel("last"));
-            return metadata;
+            int pageCount = pageMetadata.getPageCount();
+            pageMetadata.add(linkTo(methodOn(UserController.class).index(page, perPage, includeMetadata)).withSelfRel());
+            pageMetadata.add(linkTo(methodOn(UserController.class).index(1, perPage, includeMetadata)).withRel("first"));
+            pageMetadata.add(linkTo(methodOn(UserController.class).index(page < 2 ? 1 : page - 1, perPage, includeMetadata)).withRel("previous"));
+            pageMetadata.add(linkTo(methodOn(UserController.class).index(page >= pageCount ? pageCount : page + 1, perPage, includeMetadata)).withRel("next"));
+            pageMetadata.add(linkTo(methodOn(UserController.class).index(pageCount, perPage, includeMetadata)).withRel("last"));
+            return pageMetadata;
         }
         return null;
     }

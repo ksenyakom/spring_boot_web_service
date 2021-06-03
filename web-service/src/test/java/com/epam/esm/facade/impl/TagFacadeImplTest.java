@@ -33,7 +33,7 @@ class TagFacadeImplTest {
     @Test
     void getTag() {
         given(tagService.findById(anyInt())).willReturn(new Tag());
-        JsonResult<Tag> jsonResult = tagFacade.getTag(anyInt(), true);
+        JsonResult<Tag> jsonResult = tagFacade.getTag(anyInt() );
 
         assertAll(() -> {
             assertEquals(1, jsonResult.getResult().size());

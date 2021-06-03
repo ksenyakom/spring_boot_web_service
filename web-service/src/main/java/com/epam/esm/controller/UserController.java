@@ -34,8 +34,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public JsonResult<User> show(@PathVariable("id") @Min(1) Integer id,
-                                 @RequestParam(value = "includeMetadata", defaultValue = "true") boolean includeMetadata) throws ServiceException {
-        return userFacade.getUser(id, includeMetadata);
+    public JsonResult<User> show(@PathVariable("id") @Min(1) Integer id) throws ServiceException {
+        return userFacade.getUser(id);
     }
 }

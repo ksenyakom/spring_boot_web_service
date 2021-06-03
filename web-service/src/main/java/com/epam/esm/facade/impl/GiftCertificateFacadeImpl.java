@@ -2,7 +2,7 @@ package com.epam.esm.facade.impl;
 
 import com.epam.esm.controller.GiftCertificateController;
 import com.epam.esm.dto.JsonResult;
-import com.epam.esm.dto.Metadata;
+import com.epam.esm.dto.PageMetadata;
 import com.epam.esm.facade.GiftCertificateFacade;
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.SearchParams;
@@ -16,11 +16,8 @@ import com.epam.esm.service.sort.SortGiftCertificateService;
 import com.epam.esm.service.sort.impl.SortByFields;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
-import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,6 +40,7 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
     @NonNull
     public JsonResult<GiftCertificate> getCertificate(int id) {
         GiftCertificate certificate = giftCertificateService.findById(id);
+        addHateoasLinks(certificate);
 
         return new JsonResult.Builder<GiftCertificate>()
                 .withSuccess(true)
@@ -54,6 +52,7 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
     @NonNull
     public JsonResult<GiftCertificate> save(GiftCertificate certificate) {
         giftCertificateService.save(certificate);
+        addHateoasLinks(certificate);
 
         return new JsonResult.Builder<GiftCertificate>()
                 .withSuccess(true)
@@ -66,6 +65,7 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
         GiftCertificate actual = giftCertificateService.findById(certificate.getId());
         copyFields.copyNotEmptyFields(actual, certificate);
         giftCertificateService.save(actual);
+        addHateoasLinks(certificate);
 
         return new JsonResult.Builder<GiftCertificate>()
                 .withSuccess(true)
@@ -76,11 +76,11 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
     @Override
     @NonNull
     public JsonResult<GiftCertificate> delete(int id) {
-            giftCertificateService.delete(id);
+        giftCertificateService.delete(id);
 
-            return new JsonResult.Builder<GiftCertificate>()
-                    .withSuccess(true)
-                    .build();
+        return new JsonResult.Builder<GiftCertificate>()
+                .withSuccess(true)
+                .build();
     }
 
     @Override
@@ -92,25 +92,29 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
         SortGiftCertificateService sortCertificate = new SortByFields(searchParams.getSortFields(), searchParams.getSortOrder());
         sortCertificate.sort(certificates);
 
-        Metadata metadata = fillMetadata(includeMetadata,page,perPage,certificates.size());
+        PageMetadata pageMetadata = fillPageMetadata(includeMetadata, page, perPage, certificates.size());
         certificates = getCertificatesForPage(certificates, page, perPage, certificates.size());
+        certificates.forEach(certificate -> addHateoasLinks(certificate));
+
         return new JsonResult.Builder<GiftCertificate>()
                 .withSuccess(true)
                 .withResult(certificates)
-                .withMetadata(metadata)
+                .withMetadata(pageMetadata)
                 .build();
     }
 
     @Override
     public JsonResult<GiftCertificate> search(List<Tag> tagsList, Integer page, Integer perPage, boolean includeMetadata) {
         SearchGiftCertificateService searchCertificate = new SearchGiftCertificateByTags(tagsList);
-        List<GiftCertificate> certificateList = searchCertificate.search(giftCertificateService);
-        Metadata metadata = fillMetadata(includeMetadata,page,perPage,certificateList.size());
-        certificateList = getCertificatesForPage(certificateList, page, perPage, certificateList.size());
+        List<GiftCertificate> certificates = searchCertificate.search(giftCertificateService);
+        PageMetadata pageMetadata = fillPageMetadata(includeMetadata, page, perPage, certificates.size());
+        certificates = getCertificatesForPage(certificates, page, perPage, certificates.size());
+        certificates.forEach(certificate -> addHateoasLinks(certificate));
+
         return new JsonResult.Builder<GiftCertificate>()
                 .withSuccess(true)
-                .withResult(certificateList)
-                .withMetadata(metadata)
+                .withResult(certificates)
+                .withMetadata(pageMetadata)
                 .build();
     }
 
@@ -119,37 +123,43 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
     public JsonResult<GiftCertificate> getAllCertificates(int page, int perPage, boolean includeMetadata) {
         List<GiftCertificate> certificates = giftCertificateService.findAll(page, perPage);
 
-        Metadata metadata = fillMetadata(includeMetadata, page, perPage, giftCertificateService.countAll());
+        PageMetadata pageMetadata = fillPageMetadata(includeMetadata, page, perPage, giftCertificateService.countAll());
+        certificates.forEach(certificate -> addHateoasLinks(certificate));
 
         return new JsonResult.Builder<GiftCertificate>()
                 .withSuccess(true)
                 .withResult(certificates)
-                .withMetadata(metadata)
+                .withMetadata(pageMetadata)
                 .build();
     }
 
-    private Metadata fillMetadata(boolean includeMetadata, int page, int perPage, int totalFound) {
+    private void addHateoasLinks(GiftCertificate certificate) {
+        certificate.add(linkTo(methodOn(GiftCertificateController.class).getCertificate(certificate.getId())).withSelfRel());
+        certificate.add(linkTo(methodOn(GiftCertificateController.class).delete(certificate.getId())).withRel("delete"));
+    }
+
+    private PageMetadata fillPageMetadata(boolean includeMetadata, int page, int perPage, int totalFound) {
         if (includeMetadata) {
-            Metadata metadata = new Metadata.Builder()
+            PageMetadata pageMetadata = new PageMetadata.Builder()
                     .withPage(page)
                     .withPerPage(perPage)
                     .withPageCount(totalFound / perPage + (totalFound % perPage == 0 ? 0 : 1))
                     .withTotalCount(totalFound)
                     .build();
-            int pageCount = metadata.getPageCount();
-            metadata.add(linkTo(methodOn(GiftCertificateController.class).index(page, perPage, includeMetadata)).withSelfRel());
-            metadata.add(linkTo(methodOn(GiftCertificateController.class).index(1, perPage, includeMetadata)).withRel("first"));
-            metadata.add(linkTo(methodOn(GiftCertificateController.class).index(page < 2 ? 1 : page - 1, perPage, includeMetadata)).withRel("previous"));
-            metadata.add(linkTo(methodOn(GiftCertificateController.class).index(page >= pageCount ? pageCount : page + 1, perPage, includeMetadata)).withRel("next"));
-            metadata.add(linkTo(methodOn(GiftCertificateController.class).index(pageCount, perPage, includeMetadata)).withRel("last"));
-            return metadata;
+            int pageCount = pageMetadata.getPageCount();
+            pageMetadata.add(linkTo(methodOn(GiftCertificateController.class).index(page, perPage, includeMetadata)).withSelfRel());
+            pageMetadata.add(linkTo(methodOn(GiftCertificateController.class).index(1, perPage, includeMetadata)).withRel("first"));
+            pageMetadata.add(linkTo(methodOn(GiftCertificateController.class).index(page < 2 ? 1 : page - 1, perPage, includeMetadata)).withRel("previous"));
+            pageMetadata.add(linkTo(methodOn(GiftCertificateController.class).index(page >= pageCount ? pageCount : page + 1, perPage, includeMetadata)).withRel("next"));
+            pageMetadata.add(linkTo(methodOn(GiftCertificateController.class).index(pageCount, perPage, includeMetadata)).withRel("last"));
+            return pageMetadata;
         }
         return null;
     }
 
     private List<GiftCertificate> getCertificatesForPage(List<GiftCertificate> certificates, Integer page, Integer perPage, Integer totalFound) {
         if (totalFound == 0) {
-            return  Collections.emptyList();
+            return Collections.emptyList();
         }
 
         int fromIndex = (page - 1) * perPage;

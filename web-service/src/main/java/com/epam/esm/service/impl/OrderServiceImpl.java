@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -95,12 +96,23 @@ public class OrderServiceImpl implements OrderService {
     public void save(Order order) throws ServiceException {
         try {
             userDao.read(order.getUser().getId());
-            giftCertificateDao.read(order.getCertificate().getId());
+            BigDecimal price = BigDecimal.ZERO;
+            for (GiftCertificate certificate : order.getCertificates()) {
+                giftCertificateDao.read(certificate.getId());
+                price = price.add(certificate.getPrice());
+            }
             if (order.getId() == null) {
+                order.setPrice(price);
                 order.setCreateDate(LocalDateTime.now(ZoneOffset.UTC));
                 order.setActive(true);
                 orderDao.create(order);
             } else {
+                price = BigDecimal.ZERO;
+                for (GiftCertificate certificate : order.getCertificates()) {
+                    giftCertificateDao.read(certificate.getId());
+                    price = price.add(certificate.getPrice());
+                }
+                order.setPrice(price);
                 orderDao.update(order);
             }
         } catch (DaoException e) {

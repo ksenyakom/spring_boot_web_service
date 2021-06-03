@@ -39,9 +39,8 @@ public class TagController {
     }
 
     @GetMapping("/{id}")
-    public JsonResult<Tag> show(@PathVariable("id") @Min(1) Integer id,
-                                @RequestParam(value = "includeMetadata", required = false, defaultValue = "true") boolean includeMetadata) throws ServiceException {
-        return tagFacade.getTag(id, includeMetadata);
+    public JsonResult<Tag> show(@PathVariable("id") @Min(1) Integer id) throws ServiceException {
+        return tagFacade.getTag(id);
     }
 
     @PostMapping()

@@ -8,7 +8,7 @@ import com.epam.esm.model.Tag;
  * Methods supposed to wrap results in JsonResult class.
  */
 public interface TagFacade {
-    JsonResult<Tag> getTag(int id, boolean includeMetadata);
+    JsonResult<Tag> getTag(int id);
 
     JsonResult<Tag> save(Tag tag);
 

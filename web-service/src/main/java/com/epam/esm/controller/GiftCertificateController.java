@@ -73,11 +73,11 @@ public class GiftCertificateController {
     @PutMapping("/{id}")
     public JsonResult<GiftCertificate> update(@RequestBody GiftCertificate certificate, BindingResult result,
                                               @PathVariable("id") @Min(1) Integer id) {
-        certificate.setId(id);
         giftCertificateValidator.validate(certificate, result);
         if (result.hasErrors()) {
             throw new ServiceException(message(result), "20");
         }
+        certificate.setId(id);
 
         return giftCertificateFacade.save(certificate);
     }
@@ -121,7 +121,7 @@ public class GiftCertificateController {
         if (tags == null || tags.isEmpty()) {
             throw new ServiceException("No tags for search found", "50");
         }
-        List<Tag> tagsList = Arrays.stream(tags.split(",")).map(Tag::new).collect(Collectors.toList());
+        List<Tag> tagsList = Arrays.stream(tags.split(",")).map(name -> new Tag(name.trim())).collect(Collectors.toList());
         tagService.findByName(tagsList);
 
         return giftCertificateFacade.search(tagsList, page, perPage, includeMetadata);

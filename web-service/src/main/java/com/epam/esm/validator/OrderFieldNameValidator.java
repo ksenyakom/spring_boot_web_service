@@ -20,9 +20,11 @@ public class OrderFieldNameValidator implements FieldNameValidator {
         }
 
         Set<String> fieldsToFind = new HashSet<>();
-        String[] fields = line.split(",");
+
+        String[] fields = line.replace(" ", "").split(",");
         Set<String> existingFields = Arrays.stream(Order.class.getDeclaredFields())
                 .map(Field::getName)
+                .filter(field -> !field.equals("operation") && !field.equals("timestamp"))
                 .collect(Collectors.toSet());
 
         for (String field : fields) {

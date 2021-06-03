@@ -42,14 +42,13 @@ public class OrderController {
     @GetMapping()
     public JsonResult<Order> index(@RequestParam(value = "page", defaultValue = "1") @Min(1) Integer page,
                                    @RequestParam(value = "perPage", defaultValue = "5") @Min(1) Integer perPage,
-                                   @RequestParam(value = "includeMetadata", required = false, defaultValue = "false") boolean includeMetadata) {
+                                   @RequestParam(value = "includeMetadata", required = false, defaultValue = "true") boolean includeMetadata) {
         return orderFacade.getAllOrders(page, perPage, includeMetadata);
     }
 
     @GetMapping("/{id}")
-    public JsonResult<Order> show(@PathVariable("id") @Min(1) Integer id,
-                                  @RequestParam(value = "includeMetadata", required = false, defaultValue = "false") boolean includeMetadata) {
-        return orderFacade.getOrder(id, includeMetadata);
+    public JsonResult<Order> show(@PathVariable("id") @Min(1) Integer id) {
+        return orderFacade.getOrder(id);
     }
 
     @GetMapping(value = "/{id}", params = {"fields"})
@@ -66,43 +65,5 @@ public class OrderController {
         return orderFacade.search(userId, page, perPage, includeMetadata);
     }
 
-    @PostMapping()
-    @ResponseStatus(HttpStatus.CREATED)
-    public JsonResult<Order> create(@RequestBody Order order, BindingResult result) {
-        orderValidator.validate(order, result);
-        if (result.hasErrors()) {
-            throw new ServiceException(message(result), "20");
-        }
-
-        return orderFacade.save(order);
-    }
-
-    @PutMapping("/{id}")
-    public JsonResult<Order> update(@RequestBody Order order, BindingResult result,
-                                    @PathVariable("id") @Min(1) Integer id) {
-        order.setId(id);
-        orderValidator.validate(order, result);
-        if (result.hasErrors()) {
-            throw new ServiceException(message(result), "20");
-        }
-
-        return orderFacade.save(order);
-    }
-
-    @DeleteMapping("/{id}")
-    public JsonResult<Order> delete(@PathVariable("id") @Min(1) Integer id) {
-
-        return orderFacade.delete(id);
-    }
-
-    private String message(BindingResult result) {
-        StringBuilder sb = new StringBuilder();
-        result.getFieldErrors()
-                .forEach(fieldError -> sb.append(" ")
-                        .append(fieldError.getField()).append(": ")
-                        .append(fieldError.getCode()).append("."));
-
-        return sb.toString();
-    }
 
 }

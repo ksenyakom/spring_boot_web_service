@@ -20,16 +20,6 @@
     </properties>
 
     <dependencies>
-        		<dependency>
-        			<groupId>org.springframework.boot</groupId>
-        			<artifactId>spring-boot-starter</artifactId>
-        			<exclusions>
-        				<exclusion>
-        					<groupId>org.springframework.boot</groupId>
-        					<artifactId>spring-boot-starter-logging</artifactId>
-        				</exclusion>
-        			</exclusions>
-        		</dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -42,11 +32,6 @@
             </exclusions>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

@@ -2,7 +2,6 @@ package com.epam.esm.dto;
 
 import com.epam.esm.model.Model;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
 
@@ -13,23 +12,28 @@ import java.util.List;
  * @param <T> - type of model, containing in the result
  */
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-public class JsonResult<T extends Model> extends RepresentationModel<JsonResult<T>> {
+public class JsonResult<T extends Model> {
+
     @JsonInclude(JsonInclude.Include.ALWAYS)
     private boolean success;
+
     private String errorCode;
+
     private String message;
+
     private List<T> result;
-    private Metadata metadata;
+
+    private PageMetadata pageMetadata;
 
     private JsonResult() {
     }
 
-    public Metadata getMetadata() {
-        return metadata;
+    public PageMetadata getMetadata() {
+        return pageMetadata;
     }
 
-    public void setMetadata(Metadata metadata) {
-        this.metadata = metadata;
+    public void setMetadata(PageMetadata pageMetadata) {
+        this.pageMetadata = pageMetadata;
     }
 
     public boolean isSuccess() {
@@ -91,8 +95,8 @@ public class JsonResult<T extends Model> extends RepresentationModel<JsonResult<
             return this;
         }
 
-        public Builder<T> withMetadata(Metadata metadata){
-            jsonResult.metadata = metadata;
+        public Builder<T> withMetadata(PageMetadata pageMetadata){
+            jsonResult.pageMetadata = pageMetadata;
             return this;
         }
 

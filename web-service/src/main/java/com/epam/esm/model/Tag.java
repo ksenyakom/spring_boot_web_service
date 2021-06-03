@@ -2,6 +2,7 @@ package com.epam.esm.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -14,7 +15,7 @@ import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 @Entity(name = "tag")
-public class Tag extends Model {
+public class Tag extends RepresentationModel<Tag> implements Model  {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)

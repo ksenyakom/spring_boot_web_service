@@ -16,8 +16,8 @@ public class FillOrderFields {
         if (fieldsToFind.contains("createDate")) {
             orderToReturn.setCreateDate(order.getCreateDate());
         }
-        if (fieldsToFind.contains("certificate")) {
-            orderToReturn.setCertificate(order.getCertificate());
+        if (fieldsToFind.contains("certificates")) {
+            orderToReturn.setCertificates(order.getCertificates());
 
         }
         if (fieldsToFind.contains("user")) {

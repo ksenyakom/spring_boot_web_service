@@ -11,12 +11,12 @@ public class SortByFields implements SortGiftCertificateService {
     /**
      * Field to sort by.
      */
-    private final String sortFields;
+    private String sortFields;
     /**
      * Order to sort.
      * Value must be "asc" or "desc" to specify sort order, divided by ",".
      */
-    private final String sortOrder;
+    private String sortOrder;
 
     public SortByFields(@Nullable String sortFields, @Nullable String sortOrder) {
         this.sortFields = sortFields;
@@ -34,10 +34,13 @@ public class SortByFields implements SortGiftCertificateService {
     private Comparator<GiftCertificate> getComparator() {
         Comparator<GiftCertificate> comparator = null;
 
-        if (sortOrder != null && sortFields != null) {
-            String[] fields = sortFields.split(",");
 
+        if (sortOrder != null && sortFields != null) {
+            sortFields = sortFields.replace(" ", "");
+            sortOrder = sortOrder.replace(" ", "");
+            String[] fields = sortFields.split(",");
             String[] orderAscDesc = sortOrder.split(",");
+
             for (int i = 0; i < fields.length; ++i) {
                 if (fields[i].equalsIgnoreCase("name")) {
                     comparator = addByNameComparison(comparator, orderAscDesc[i]);

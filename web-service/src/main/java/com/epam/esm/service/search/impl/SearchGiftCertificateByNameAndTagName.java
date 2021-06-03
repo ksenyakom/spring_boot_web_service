@@ -4,7 +4,6 @@ import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.search.SearchGiftCertificateService;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Collections;
 import java.util.List;
 
