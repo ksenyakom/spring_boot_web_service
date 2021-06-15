@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
@@ -18,17 +19,18 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import org.springframework.security.core.AuthenticationException;
 import javax.validation.ConstraintViolationException;
 import java.sql.SQLIntegrityConstraintViolationException;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class ExceptionInterceptor extends ResponseEntityExceptionHandler {
     private static Logger logger = LogManager.getLogger(ExceptionInterceptor.class);
     private static final String Status_500 = "01 02 03 04 05 11 12 14 15 16 17 18 22 23 25 26 33 35 36 37 38 40 51 52 61 63 65 64 66 68 50";
-    private static final String Status_422 = "20 41 42 43 53 67";
+    private static final String Status_422 = "20 41 42 43 53 67 42283";
     private static final String Status_400 = "27 24 34";
     private static final String Status_406 = "29 69";
-    private static final String Status_409 = "19";
+    private static final String Status_409 = "19, 55";
 
     private HttpStatus getStatus(String errorCode) {
         HttpStatus status = HttpStatus.NOT_FOUND;
@@ -149,6 +151,19 @@ public class ExceptionInterceptor extends ResponseEntityExceptionHandler {
         return new JsonResult.Builder<>()
                 .withSuccess(false)
                 .withMessage(e.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(value = HttpStatus.FORBIDDEN)
+    public @ResponseBody
+    JsonResult<Model> errorAuthenticationException(final AccessDeniedException e) {
+        logger.error(e);
+
+        return new JsonResult.Builder<>()
+                .withSuccess(false)
+                .withErrorCode("40391")
+                .withMessage("Access denied")
                 .build();
     }
 

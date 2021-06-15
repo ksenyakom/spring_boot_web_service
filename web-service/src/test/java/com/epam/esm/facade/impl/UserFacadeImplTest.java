@@ -5,6 +5,7 @@ import com.epam.esm.facade.UserFacade;
 import com.epam.esm.model.Tag;
 import com.epam.esm.model.User;
 import com.epam.esm.service.UserService;
+import com.epam.esm.service.mapper.UserMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +23,7 @@ import static org.mockito.BDDMockito.given;
 class UserFacadeImplTest {
     @Mock
     UserService userService;
+
 
     UserFacade userFacade;
 

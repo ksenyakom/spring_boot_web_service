@@ -7,7 +7,12 @@ import java.util.List;
 public interface UserService {
     User findById(Integer id) throws ServiceException;
 
+    User findByEmail(String email) throws ServiceException;
+
     List<User> findAll(int page, int size) throws ServiceException;
 
     int countAll();
+
+    void save(User user);
+
 }

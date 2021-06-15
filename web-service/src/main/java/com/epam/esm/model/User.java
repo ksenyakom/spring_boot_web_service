@@ -22,10 +22,16 @@ public class User extends RepresentationModel<User> implements Model  {
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
+    @Column(name = "email")
     private String email;
 
     @Column(name = "is_active")
     private Boolean isActive;
+
+    private String password;
+
+    @Enumerated(value = EnumType.STRING)
+    private Role role;
 
     public User() {
     }
@@ -41,6 +47,23 @@ public class User extends RepresentationModel<User> implements Model  {
         this.dateOfBirth = dateOfBirth;
         this.email = email;
         this.isActive = isActive;
+    }
+
+    @JsonIgnore
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public Integer getId() {

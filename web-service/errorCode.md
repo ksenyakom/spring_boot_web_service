@@ -44,6 +44,9 @@
 51 - Can not read User (id = %s)
 52 - Can not read all Users
 53 - Unrecognized property : %s.
+54 - Can not read User email = %s
+55 - There is an account with that email address: userDto.getEmail
+
 
 61 - Can not read Order
 63 - Can not update Order (id = %s)
@@ -53,3 +56,12 @@
 67 - Unrecognized field : %s
 68 - Can not count orders for user
 69 - Unrecognized value : %s, must be asc or desc
+
+80 - Can not check if user with email = %s exist"
+81 - "Can not create new User. Email = %s"
+82 - Can not create new Tag without email. Email = %s"
+83 - Error while user registration validation 
+
+40190 - Full authentication is required to access this resource
+40391 - Access denied
+40992 - You are already logged in

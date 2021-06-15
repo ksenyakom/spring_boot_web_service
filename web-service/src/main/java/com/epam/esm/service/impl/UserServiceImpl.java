@@ -7,6 +7,7 @@ import com.epam.esm.service.ServiceException;
 import com.epam.esm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findAll(int page, int size) throws ServiceException {
         try {
-            return userDao.readAll(page,size);
+            return userDao.readAll(page, size);
         } catch (DaoException e) {
             throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
         }
@@ -41,6 +42,30 @@ public class UserServiceImpl implements UserService {
     public int countAll() {
         try {
             return userDao.countAllActive();
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
+        }
+    }
+
+    @Transactional
+    @Override
+    public void save(User user) {
+        try {
+            if (userDao.checkIfExist(user.getEmail())) {
+                throw new ServiceException("There is an account with that email address: "
+                        + user.getEmail(), "55");
+            }
+            user.setActive(true);
+            userDao.create(user);
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
+        }
+    }
+
+    @Override
+    public User findByEmail(String email) throws ServiceException {
+        try {
+            return userDao.readByEmail(email);
         } catch (DaoException e) {
             throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
         }
