@@ -10,6 +10,7 @@ import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 import org.springframework.validation.annotation.Validated;
@@ -61,6 +62,7 @@ public class GiftCertificateController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('certificates:write')")
     public JsonResult<GiftCertificate> create(@RequestBody GiftCertificate certificate, BindingResult result) {
         giftCertificateValidator.validate(certificate, result);
         if (result.hasErrors()) {
@@ -71,6 +73,7 @@ public class GiftCertificateController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('certificates:write')")
     public JsonResult<GiftCertificate> update(@RequestBody GiftCertificate certificate, BindingResult result,
                                               @PathVariable("id") @Min(1) Integer id) {
         giftCertificateValidator.validate(certificate, result);
@@ -83,6 +86,7 @@ public class GiftCertificateController {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAuthority('certificates:write')")
     public JsonResult<GiftCertificate> partUpdate(@RequestBody GiftCertificate certificate, BindingResult result,
                                                   @PathVariable("id") @Min(1) Integer id) {
         certificate.setId(id);
@@ -95,6 +99,7 @@ public class GiftCertificateController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('certificates:write')")
     public JsonResult<GiftCertificate> delete(@PathVariable("id") @Min(1) Integer id) {
 
         return giftCertificateFacade.delete(id);

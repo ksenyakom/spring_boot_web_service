@@ -1,9 +1,8 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.controller.GiftCertificateController;
 import com.epam.esm.dao.*;
 import com.epam.esm.model.*;
-import com.epam.esm.service.FillOrderFields;
+import com.epam.esm.service.mapper.impl.OrderMapperImpl;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +13,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -24,13 +20,13 @@ public class OrderServiceImpl implements OrderService {
     private final UserDao userDao;
     private final GiftCertificateDao giftCertificateDao;
 
-    private final FillOrderFields fillOrderFields;
+    private final OrderMapperImpl orderMapperImpl;
 
     @Autowired
-    public OrderServiceImpl(OrderDao orderDao, UserDao userDao, FillOrderFields fillOrderFields, GiftCertificateDao giftCertificateDao) {
+    public OrderServiceImpl(OrderDao orderDao, UserDao userDao, OrderMapperImpl orderMapperImpl, GiftCertificateDao giftCertificateDao) {
         this.orderDao = orderDao;
         this.userDao = userDao;
-        this.fillOrderFields = fillOrderFields;
+        this.orderMapperImpl = orderMapperImpl;
         this.giftCertificateDao = giftCertificateDao;
     }
 
@@ -38,17 +34,6 @@ public class OrderServiceImpl implements OrderService {
     public Order findById(Integer id) throws ServiceException {
         try {
             return orderDao.read(id);
-        } catch (DaoException e) {
-            throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
-        }
-    }
-
-    @Override
-    public Order findById(int id, Set<String> fieldsToFind) {
-        try {
-            Order order = orderDao.read(id);
-            Order orderToReturn = fillOrderFields.fill(order, fieldsToFind);
-            return orderToReturn;
         } catch (DaoException e) {
             throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
         }
@@ -98,7 +83,7 @@ public class OrderServiceImpl implements OrderService {
             userDao.read(order.getUser().getId());
             BigDecimal price = BigDecimal.ZERO;
             for (GiftCertificate certificate : order.getCertificates()) {
-                giftCertificateDao.read(certificate.getId());
+                certificate = giftCertificateDao.read(certificate.getId());
                 price = price.add(certificate.getPrice());
             }
             if (order.getId() == null) {
@@ -107,12 +92,9 @@ public class OrderServiceImpl implements OrderService {
                 order.setActive(true);
                 orderDao.create(order);
             } else {
-                price = BigDecimal.ZERO;
-                for (GiftCertificate certificate : order.getCertificates()) {
-                    giftCertificateDao.read(certificate.getId());
-                    price = price.add(certificate.getPrice());
+                if (order.getPrice() == null) {
+                    order.setPrice(price);
                 }
-                order.setPrice(price);
                 orderDao.update(order);
             }
         } catch (DaoException e) {

@@ -16,8 +16,6 @@ public interface OrderService {
 
     List<Order> findByUser(User user, int page, int size) throws ServiceException;
 
-    Order findById(int id, Set<String> fieldsToFind) throws ServiceException;
-
     void delete(Integer id) throws ServiceException;
 
     int countAll();

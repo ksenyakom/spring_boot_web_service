@@ -1,16 +1,19 @@
-package com.epam.esm.service;
+package com.epam.esm.service.mapper.impl;
 
 import com.epam.esm.model.GiftCertificate;
+import com.epam.esm.service.ServiceException;
+import com.epam.esm.service.mapper.CertificateMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CopyFields {
+public class CertificateMapperImpl implements CertificateMapper {
     /**
      * Copying only fields which are not null or 0.
      *
      * @param copyTo   - all not empty values are copied here.
      * @param copyFrom - object may have only one not null field.
      */
+    @Override
     public void copyNotEmptyFields(GiftCertificate copyTo, GiftCertificate copyFrom) {
         boolean changeExist = false;
 

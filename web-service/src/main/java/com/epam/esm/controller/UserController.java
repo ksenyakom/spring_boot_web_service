@@ -55,8 +55,7 @@ public class UserController {
     @GetMapping("/profile")
     @PreAuthorize("hasAuthority('users:read profile')")
     public JsonResult<User> getCurrentUserProfile() throws ServiceException {
-        String email = ((org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
-                .getUsername();
+        String email = getCurrentUserEmail();
         JsonResult<User> result = userFacade.getUserByEmail(email);
         return result;
     }
@@ -83,5 +82,11 @@ public class UserController {
                         .append(fieldError.getField()).append(": ")
                         .append(fieldError.getCode()).append("."));
         return sb.toString();
+    }
+
+    private String getCurrentUserEmail() {
+        return ((org.springframework.security.core.userdetails.User)
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+                .getUsername();
     }
 }

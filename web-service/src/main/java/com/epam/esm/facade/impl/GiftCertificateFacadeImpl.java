@@ -7,7 +7,8 @@ import com.epam.esm.facade.GiftCertificateFacade;
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.SearchParams;
 import com.epam.esm.model.Tag;
-import com.epam.esm.service.CopyFields;
+import com.epam.esm.service.mapper.CertificateMapper;
+import com.epam.esm.service.mapper.impl.CertificateMapperImpl;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.search.SearchGiftCertificateService;
 import com.epam.esm.service.search.impl.SearchGiftCertificateByNameAndTagName;
@@ -29,12 +30,12 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
 
     private final GiftCertificateService giftCertificateService;
 
-    private final CopyFields copyFields;
+    private final CertificateMapper certificateMapper;
 
     @Autowired
-    public GiftCertificateFacadeImpl(GiftCertificateService giftCertificateService, CopyFields copyFields) {
+    public GiftCertificateFacadeImpl(GiftCertificateService giftCertificateService, CertificateMapper certificateMapper) {
         this.giftCertificateService = giftCertificateService;
-        this.copyFields = copyFields;
+        this.certificateMapper = certificateMapper;
     }
 
     @NonNull
@@ -63,7 +64,7 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
     @Override
     public JsonResult<GiftCertificate> partUpdate(GiftCertificate certificate) {
         GiftCertificate actual = giftCertificateService.findById(certificate.getId());
-        copyFields.copyNotEmptyFields(actual, certificate);
+        certificateMapper.copyNotEmptyFields(actual, certificate);
         giftCertificateService.save(actual);
         addHateoasLinks(certificate);
 

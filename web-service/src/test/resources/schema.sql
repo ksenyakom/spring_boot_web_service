@@ -70,7 +70,7 @@ CREATE TABLE `order_certificate`
     `certificate_id` INTEGER,
     `order_id`       INTEGER,
     CONSTRAINT PK_order_certificate PRIMARY KEY (`id`),
-    CONSTRAINT FK_certificate_id FOREIGN KEY (`certificate_id`) REFERENCES gift_certificate (`id`)
+    CONSTRAINT FK_gift_certificate_id FOREIGN KEY (`certificate_id`) REFERENCES gift_certificate (`id`)
         ON UPDATE CASCADE
         ON DELETE RESTRICT,
     CONSTRAINT FK_order_id FOREIGN KEY (`order_id`) REFERENCES user_order (`id`)

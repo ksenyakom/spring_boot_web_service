@@ -1,12 +1,8 @@
 package com.epam.esm.dto;
 
-import com.epam.esm.validator.PasswordMatches;
-import com.epam.esm.validator.ValidEmail;
-
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-@PasswordMatches
 public class UserDto {
     @NotNull
     @NotEmpty
@@ -21,7 +17,6 @@ public class UserDto {
     private String password;
     private String matchingPassword;
 
-    @ValidEmail
     @NotNull
     @NotEmpty
     private String email;

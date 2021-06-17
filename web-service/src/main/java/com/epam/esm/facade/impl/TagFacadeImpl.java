@@ -81,7 +81,7 @@ public class TagFacadeImpl implements TagFacade {
     }
 
     private void addHateoasLinks(Tag tag) {
-        tag.add(linkTo(methodOn(TagController.class).show(tag.getId())).withSelfRel());
+        tag.add(linkTo(methodOn(TagController.class).getTag(tag.getId())).withSelfRel());
         tag.add(linkTo(methodOn(TagController.class).delete(tag.getId())).withRel("delete"));
     }
 
@@ -94,11 +94,11 @@ public class TagFacadeImpl implements TagFacade {
                     .withTotalCount(totalFound)
                     .build();
             int pageCount = pageMetadata.getPageCount();
-            pageMetadata.add(linkTo(methodOn(TagController.class).index(page, perPage, includeMetadata)).withSelfRel());
-            pageMetadata.add(linkTo(methodOn(TagController.class).index(1, perPage, includeMetadata)).withRel("first"));
-            pageMetadata.add(linkTo(methodOn(TagController.class).index(page < 2 ? 1 : page - 1, perPage, includeMetadata)).withRel("previous"));
-            pageMetadata.add(linkTo(methodOn(TagController.class).index(page >= pageCount ? pageCount : page + 1, perPage, includeMetadata)).withRel("next"));
-            pageMetadata.add(linkTo(methodOn(TagController.class).index(pageCount, perPage, includeMetadata)).withRel("last"));
+            pageMetadata.add(linkTo(methodOn(TagController.class).getAll(page, perPage, includeMetadata)).withSelfRel());
+            pageMetadata.add(linkTo(methodOn(TagController.class).getAll(1, perPage, includeMetadata)).withRel("first"));
+            pageMetadata.add(linkTo(methodOn(TagController.class).getAll(page < 2 ? 1 : page - 1, perPage, includeMetadata)).withRel("previous"));
+            pageMetadata.add(linkTo(methodOn(TagController.class).getAll(page >= pageCount ? pageCount : page + 1, perPage, includeMetadata)).withRel("next"));
+            pageMetadata.add(linkTo(methodOn(TagController.class).getAll(pageCount, perPage, includeMetadata)).withRel("last"));
 
 
             return pageMetadata;

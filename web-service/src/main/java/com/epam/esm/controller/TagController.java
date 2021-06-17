@@ -7,6 +7,7 @@ import com.epam.esm.service.ServiceException;
 import com.epam.esm.validator.TagValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -32,19 +33,20 @@ public class TagController {
     }
 
     @GetMapping()
-    public JsonResult<Tag> index(@RequestParam(value = "page", defaultValue = "1") @Min(1) Integer page,
-                                 @RequestParam(value = "perPage", defaultValue = "5") @Min(1) Integer perPage,
-                                 @RequestParam(value = "includeMetadata", required = false, defaultValue = "true") boolean includeMetadata) throws ServiceException {
+    public JsonResult<Tag> getAll(@RequestParam(value = "page", defaultValue = "1") @Min(1) Integer page,
+                                  @RequestParam(value = "perPage", defaultValue = "5") @Min(1) Integer perPage,
+                                  @RequestParam(value = "includeMetadata", required = false, defaultValue = "true") boolean includeMetadata) throws ServiceException {
         return tagFacade.getAllTags(page, perPage, includeMetadata);
     }
 
     @GetMapping("/{id}")
-    public JsonResult<Tag> show(@PathVariable("id") @Min(1) Integer id) throws ServiceException {
+    public JsonResult<Tag> getTag(@PathVariable("id") @Min(1) Integer id) throws ServiceException {
         return tagFacade.getTag(id);
     }
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('tags:write')")
     public JsonResult<Tag> create(@RequestBody Tag tag, BindingResult result) throws ServiceException {
         tagValidator.validate(tag, result);
         if (result.hasErrors()) {
@@ -54,6 +56,7 @@ public class TagController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('tags:write')")
     public JsonResult<Tag> delete(@PathVariable("id") @Min(1) Integer id) throws ServiceException {
         return tagFacade.delete(id);
     }

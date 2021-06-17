@@ -40,18 +40,6 @@ public class OrderFacadeImpl implements OrderFacade {
     }
 
     @Override
-    public JsonResult<Order> getOrder(int id, Set<String> fieldsToFind) {
-        Order order = orderService.findById(id, fieldsToFind);
-        addHateoasLinks(order);
-
-        return new JsonResult.Builder<Order>()
-                .withSuccess(true)
-                .withResult(Collections.singletonList(order))
-                .build();
-    }
-
-
-    @Override
     public JsonResult<Order> save(Order order) {
         orderService.save(order);
         order = orderService.findById(order.getId());
@@ -101,7 +89,7 @@ public class OrderFacadeImpl implements OrderFacade {
     }
 
     private void addHateoasLinks(Order order) {
-        order.add(linkTo(methodOn(OrderController.class).show(order.getId())).withSelfRel());
+        order.add(linkTo(methodOn(OrderController.class).getCertificate(order.getId())).withSelfRel());
     }
 
     private PageMetadata fillPageMetadata(boolean includeMetadata, int page, int perPage, int totalFound) {
@@ -113,11 +101,11 @@ public class OrderFacadeImpl implements OrderFacade {
                     .withTotalCount(totalFound)
                     .build();
             int pageCount = pageMetadata.getPageCount();
-            pageMetadata.add(linkTo(methodOn(OrderController.class).index(page, perPage, includeMetadata)).withSelfRel());
-            pageMetadata.add(linkTo(methodOn(OrderController.class).index(1, perPage, includeMetadata)).withRel("first"));
-            pageMetadata.add(linkTo(methodOn(OrderController.class).index(page < 2 ? 1 : page - 1, perPage, includeMetadata)).withRel("previous"));
-            pageMetadata.add(linkTo(methodOn(OrderController.class).index(page >= pageCount ? pageCount : page + 1, perPage, includeMetadata)).withRel("next"));
-            pageMetadata.add(linkTo(methodOn(OrderController.class).index(pageCount, perPage, includeMetadata)).withRel("last"));
+            pageMetadata.add(linkTo(methodOn(OrderController.class).getAll(page, perPage, includeMetadata)).withSelfRel());
+            pageMetadata.add(linkTo(methodOn(OrderController.class).getAll(1, perPage, includeMetadata)).withRel("first"));
+            pageMetadata.add(linkTo(methodOn(OrderController.class).getAll(page < 2 ? 1 : page - 1, perPage, includeMetadata)).withRel("previous"));
+            pageMetadata.add(linkTo(methodOn(OrderController.class).getAll(page >= pageCount ? pageCount : page + 1, perPage, includeMetadata)).withRel("next"));
+            pageMetadata.add(linkTo(methodOn(OrderController.class).getAll(pageCount, perPage, includeMetadata)).withRel("last"));
 
 
             return pageMetadata;

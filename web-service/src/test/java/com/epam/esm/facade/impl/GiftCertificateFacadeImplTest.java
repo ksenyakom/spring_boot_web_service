@@ -4,7 +4,7 @@ import com.epam.esm.dto.JsonResult;
 import com.epam.esm.facade.GiftCertificateFacade;
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.SearchParams;
-import com.epam.esm.service.CopyFields;
+import com.epam.esm.service.mapper.impl.CertificateMapperImpl;
 import com.epam.esm.service.GiftCertificateService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,8 +27,8 @@ class GiftCertificateFacadeImplTest {
 
     @BeforeEach
     void setUp() {
-        CopyFields copyFields = new CopyFields();
-        giftCertificateFacade = new GiftCertificateFacadeImpl(giftCertificateService, copyFields);
+        CertificateMapperImpl certificateMapperImpl = new CertificateMapperImpl();
+        giftCertificateFacade = new GiftCertificateFacadeImpl(giftCertificateService, certificateMapperImpl);
     }
 
     @Test

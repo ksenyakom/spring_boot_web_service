@@ -22,6 +22,4 @@ public interface OrderFacade {
     @NonNull
     JsonResult<Order> search(int userId, int page, int perPage, boolean includeMetadata);
 
-    @NonNull
-    JsonResult<Order> getOrder(int id, Set<String> fieldsToFind);
 }
