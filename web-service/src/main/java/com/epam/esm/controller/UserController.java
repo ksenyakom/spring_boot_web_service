@@ -4,7 +4,7 @@ import com.epam.esm.dto.JsonResult;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.facade.UserFacade;
 import com.epam.esm.model.User;
-import com.epam.esm.security.SecurityUser;
+import com.epam.esm.security.UserPrincipal;
 import com.epam.esm.service.ServiceException;
 import com.epam.esm.service.mapper.UserMapper;
 import com.epam.esm.validator.UserDtoValidator;
@@ -60,20 +60,20 @@ public class UserController {
         return result;
     }
 
-    @PostMapping()
-    public JsonResult<User> userRegistration(@RequestBody UserDto userDto,BindingResult result) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) {
-            throw new ServiceException("You are already logged in", "40992");
-        }
-        userDtoValidator.validate(userDto,result);
-        if (result.hasErrors()) {
-            throw new ServiceException(message(result), "42283");
-        }
-        User user = userMapper.mapUserDtoToUser(userDto);
-        JsonResult<User> registered = userFacade.registerNewUserAccount(user);
-        return registered;
-    }
+//    @PostMapping()
+//    public JsonResult<User> userRegistration(@RequestBody UserDto userDto,BindingResult result) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (authentication != null) {
+//            throw new ServiceException("You are already logged in", "40992");
+//        }
+//        userDtoValidator.validate(userDto,result);
+//        if (result.hasErrors()) {
+//            throw new ServiceException(message(result), "42283");
+//        }
+//        User user = userMapper.mapUserDtoToUser(userDto);
+//        JsonResult<User> registered = userFacade.registerNewUserAccount(user);
+//        return registered;
+//    }
 
     private String message(BindingResult result) {
         StringBuilder sb = new StringBuilder();
@@ -85,8 +85,8 @@ public class UserController {
     }
 
     private String getCurrentUserEmail() {
-        return ((org.springframework.security.core.userdetails.User)
-                SecurityContextHolder.getContext().getAuthentication().getPrincipal())
-                .getUsername();
+        UserPrincipal userPrincipal = (UserPrincipal)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        return userPrincipal.getEmail();
     }
 }

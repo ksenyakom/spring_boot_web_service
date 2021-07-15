@@ -3,7 +3,7 @@ package com.epam.esm.controller;
 import com.epam.esm.dto.JsonResult;
 import com.epam.esm.facade.GiftCertificateFacade;
 import com.epam.esm.model.GiftCertificate;
-import com.epam.esm.model.SearchParams;
+import com.epam.esm.dto.SearchParams;
 import com.epam.esm.model.Tag;
 import com.epam.esm.service.ServiceException;
 import com.epam.esm.service.TagService;

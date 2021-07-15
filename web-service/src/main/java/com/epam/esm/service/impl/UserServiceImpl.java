@@ -52,8 +52,8 @@ public class UserServiceImpl implements UserService {
     public void save(User user) {
         try {
             if (userDao.checkIfExist(user.getEmail())) {
-                throw new ServiceException("There is an account with that email address: "
-                        + user.getEmail(), "55");
+                throw new ServiceException(
+                        String.format("Account with email address %s already exist", user.getEmail()), "40955");
             }
             user.setActive(true);
             userDao.create(user);
@@ -66,6 +66,15 @@ public class UserServiceImpl implements UserService {
     public User findByEmail(String email) throws ServiceException {
         try {
             return userDao.readByEmail(email);
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
+        }
+    }
+
+    @Override
+    public boolean existsByEmail(String email) throws ServiceException {
+        try {
+            return userDao.checkIfExist(email);
         } catch (DaoException e) {
             throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
         }

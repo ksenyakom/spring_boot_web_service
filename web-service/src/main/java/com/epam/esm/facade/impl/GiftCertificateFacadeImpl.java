@@ -5,10 +5,10 @@ import com.epam.esm.dto.JsonResult;
 import com.epam.esm.dto.PageMetadata;
 import com.epam.esm.facade.GiftCertificateFacade;
 import com.epam.esm.model.GiftCertificate;
-import com.epam.esm.model.SearchParams;
+import com.epam.esm.model.Permission;
+import com.epam.esm.dto.SearchParams;
 import com.epam.esm.model.Tag;
 import com.epam.esm.service.mapper.CertificateMapper;
-import com.epam.esm.service.mapper.impl.CertificateMapperImpl;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.search.SearchGiftCertificateService;
 import com.epam.esm.service.search.impl.SearchGiftCertificateByNameAndTagName;
@@ -17,6 +17,8 @@ import com.epam.esm.service.sort.SortGiftCertificateService;
 import com.epam.esm.service.sort.impl.SortByFields;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -27,13 +29,16 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
+    private static final SimpleGrantedAuthority CERTIFICATES_WRITE_AUTHORITY =
+            new SimpleGrantedAuthority(Permission.CERTIFICATES_WRITE.getPermission());
 
     private final GiftCertificateService giftCertificateService;
 
     private final CertificateMapper certificateMapper;
 
     @Autowired
-    public GiftCertificateFacadeImpl(GiftCertificateService giftCertificateService, CertificateMapper certificateMapper) {
+    public GiftCertificateFacadeImpl(GiftCertificateService giftCertificateService,
+                                     CertificateMapper certificateMapper) {
         this.giftCertificateService = giftCertificateService;
         this.certificateMapper = certificateMapper;
     }
@@ -136,7 +141,11 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
 
     private void addHateoasLinks(GiftCertificate certificate) {
         certificate.add(linkTo(methodOn(GiftCertificateController.class).getCertificate(certificate.getId())).withSelfRel());
-        certificate.add(linkTo(methodOn(GiftCertificateController.class).delete(certificate.getId())).withRel("delete"));
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+                .contains(CERTIFICATES_WRITE_AUTHORITY)) {
+            certificate.add(linkTo(methodOn(GiftCertificateController.class).delete(certificate.getId())).withRel("delete"));
+
+        }
     }
 
     private PageMetadata fillPageMetadata(boolean includeMetadata, int page, int perPage, int totalFound) {

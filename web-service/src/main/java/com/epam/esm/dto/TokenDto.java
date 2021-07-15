@@ -6,6 +6,14 @@ public class TokenDto implements Model {
     private String email;
     private String token;
 
+    public TokenDto() {
+    }
+
+    public TokenDto(String email, String token) {
+        this.email = email;
+        this.token = token;
+    }
+
     public String getEmail() {
         return email;
     }

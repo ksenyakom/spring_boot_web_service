@@ -80,10 +80,10 @@ public class TagServiceImpl implements TagService {
     public void save(Tag tag) throws ServiceException {
         try {
             if (tag.getId() != null) {
-                throw new ServiceException("You can not choose id for tag", "29");
+                throw new ServiceException("You can not choose id for tag", "40629");
             }
             if (tagDao.checkIfExist(tag.getName())) {
-                throw new ServiceException(String.format("Tag with name = %s already exist", tag.getName()), "19");
+                throw new ServiceException(String.format("Tag with name '%s' already exist", tag.getName()), "40919");
             }
             tagDao.create(tag);
         } catch (DaoException e) {

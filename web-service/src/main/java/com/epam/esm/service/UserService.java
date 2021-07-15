@@ -11,6 +11,8 @@ public interface UserService {
 
     List<User> findAll(int page, int size) throws ServiceException;
 
+    boolean existsByEmail(String email) throws ServiceException;
+
     int countAll();
 
     void save(User user);

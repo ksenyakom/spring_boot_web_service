@@ -2,12 +2,10 @@ package com.epam.esm.facade;
 
 import com.epam.esm.dto.JsonResult;
 import com.epam.esm.model.GiftCertificate;
-import com.epam.esm.model.SearchParams;
+import com.epam.esm.dto.SearchParams;
 import com.epam.esm.model.Tag;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 
-import javax.validation.constraints.Min;
 import java.util.List;
 
 /**

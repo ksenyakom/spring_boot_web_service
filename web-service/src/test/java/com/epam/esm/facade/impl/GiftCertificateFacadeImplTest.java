@@ -3,7 +3,7 @@ package com.epam.esm.facade.impl;
 import com.epam.esm.dto.JsonResult;
 import com.epam.esm.facade.GiftCertificateFacade;
 import com.epam.esm.model.GiftCertificate;
-import com.epam.esm.model.SearchParams;
+import com.epam.esm.dto.SearchParams;
 import com.epam.esm.service.mapper.impl.CertificateMapperImpl;
 import com.epam.esm.service.GiftCertificateService;
 import org.junit.jupiter.api.BeforeEach;

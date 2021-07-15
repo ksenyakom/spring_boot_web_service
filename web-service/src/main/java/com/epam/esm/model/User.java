@@ -2,6 +2,7 @@ package com.epam.esm.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.sun.istack.NotNull;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
@@ -32,6 +33,10 @@ public class User extends RepresentationModel<User> implements Model  {
 
     @Enumerated(value = EnumType.STRING)
     private Role role;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private AuthProvider provider;
 
     public User() {
     }
@@ -104,6 +109,14 @@ public class User extends RepresentationModel<User> implements Model  {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public AuthProvider getProvider() {
+        return provider;
+    }
+
+    public void setProvider(AuthProvider provider) {
+        this.provider = provider;
     }
 
     @JsonIgnore

@@ -4,9 +4,13 @@ import com.epam.esm.controller.TagController;
 import com.epam.esm.dto.JsonResult;
 import com.epam.esm.dto.PageMetadata;
 import com.epam.esm.facade.TagFacade;
+import com.epam.esm.model.Permission;
 import com.epam.esm.model.Tag;
+import com.epam.esm.security.UserPrincipal;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -17,6 +21,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 public class TagFacadeImpl implements TagFacade {
+    private static final SimpleGrantedAuthority TAGS_WRITE_AUTHORITY = new SimpleGrantedAuthority(Permission.TAGS_WRITE.getPermission());
 
     private final TagService tagService;
 
@@ -82,7 +87,11 @@ public class TagFacadeImpl implements TagFacade {
 
     private void addHateoasLinks(Tag tag) {
         tag.add(linkTo(methodOn(TagController.class).getTag(tag.getId())).withSelfRel());
-        tag.add(linkTo(methodOn(TagController.class).delete(tag.getId())).withRel("delete"));
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+                .contains(TAGS_WRITE_AUTHORITY)) {
+            tag.add(linkTo(methodOn(TagController.class).delete(tag.getId())).withRel("delete"));
+        }
+
     }
 
     private PageMetadata fillPageMetadata(boolean includeMetadata, int page, int perPage, int totalFound) {

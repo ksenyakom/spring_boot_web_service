@@ -1,15 +1,19 @@
 package com.epam.esm.facade.impl;
 
 import com.epam.esm.controller.OrderController;
+import com.epam.esm.controller.TagController;
 import com.epam.esm.dto.JsonResult;
 import com.epam.esm.dto.PageMetadata;
 import com.epam.esm.facade.OrderFacade;
 import com.epam.esm.model.Order;
+import com.epam.esm.model.Permission;
 import com.epam.esm.model.User;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.search.SearchOrderService;
 import com.epam.esm.service.search.impl.SearchOrderByUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -22,6 +26,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Component
 public class OrderFacadeImpl implements OrderFacade {
     private final OrderService orderService;
+    private static final SimpleGrantedAuthority ORDERS_DELETE_AUTHORITY =
+            new SimpleGrantedAuthority(Permission.ORDERS_DELETE.getPermission());
 
     @Autowired
     public OrderFacadeImpl(OrderService orderService) {
@@ -90,6 +96,10 @@ public class OrderFacadeImpl implements OrderFacade {
 
     private void addHateoasLinks(Order order) {
         order.add(linkTo(methodOn(OrderController.class).getCertificate(order.getId())).withSelfRel());
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+                .contains(ORDERS_DELETE_AUTHORITY)) {
+            order.add(linkTo(methodOn(OrderController.class).delete(order.getId())).withRel("delete"));
+        }
     }
 
     private PageMetadata fillPageMetadata(boolean includeMetadata, int page, int perPage, int totalFound) {

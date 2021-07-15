@@ -1,7 +1,7 @@
 package com.epam.esm.validator;
 
 import com.epam.esm.model.GiftCertificate;
-import com.epam.esm.model.SearchParams;
+import com.epam.esm.dto.SearchParams;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;

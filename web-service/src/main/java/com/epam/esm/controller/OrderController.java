@@ -5,6 +5,7 @@ import com.epam.esm.facade.OrderFacade;
 import com.epam.esm.model.Order;
 import com.epam.esm.model.Role;
 import com.epam.esm.model.User;
+import com.epam.esm.security.UserPrincipal;
 import com.epam.esm.service.ServiceException;
 import com.epam.esm.service.UserService;
 import com.epam.esm.service.mapper.OrderMapper;
@@ -151,12 +152,12 @@ public class OrderController {
     }
 
     private String getCurrentUserEmail() {
-        return ((org.springframework.security.core.userdetails.User)
-                SecurityContextHolder.getContext().getAuthentication().getPrincipal())
-                .getUsername();
+        UserPrincipal userPrincipal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        return userPrincipal.getEmail();
     }
 
-    private void checkUserAuthorizedForGettingResource(Order order){
+    private void checkUserAuthorizedForGettingResource(Order order) {
         User currentUser = getCurrentUser();
         if (currentUser.getRole() == Role.USER) {
             if (!order.getUser().getId().equals(currentUser.getId())) {

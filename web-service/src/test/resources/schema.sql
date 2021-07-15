@@ -1,10 +1,12 @@
 CREATE TABLE `user`
 (
-    `id`            INT       AUTO_INCREMENT   NOT NULL ,
-    `name`          VARCHAR(255) NOT NULL,
-    `surname`       VARCHAR(255) NOT NULL,
+    `id`            INT AUTO_INCREMENT NOT NULL,
+    `name`          VARCHAR(255)       NOT NULL,
+    `surname`       VARCHAR(255)       NOT NULL,
     `date_of_birth` DATE,
-    `email`         VARCHAR(255) NOT NULL,
+    `email`         VARCHAR(255)       NOT NULL,
+    `password`      VARCHAR(64)        NOT NULL,
+    `role`          VARCHAR(50)        NOT NULL,
     `is_active`     BOOL DEFAULT true,
     CONSTRAINT PK_user PRIMARY KEY (`id`),
     CONSTRAINT UC_user UNIQUE (email)
@@ -40,7 +42,7 @@ CREATE TABLE `certificate_tag`
     `certificate_id` INTEGER,
     `tag_id`         INTEGER,
 
-    CONSTRAINT PK_certificate_tag PRIMARY KEY (certificate_id,tag_id),
+    CONSTRAINT PK_certificate_tag PRIMARY KEY (certificate_id, tag_id),
     CONSTRAINT FK_certificate_id FOREIGN KEY (`certificate_id`) REFERENCES gift_certificate (`id`)
         ON UPDATE CASCADE
         ON DELETE RESTRICT,
@@ -51,13 +53,13 @@ CREATE TABLE `certificate_tag`
 );
 CREATE TABLE `user_order`
 (
-    `id`             INT            NOT NULL AUTO_INCREMENT,
-    `user_id`        INT,
-    `price`          DECIMAL(10, 2) NOT NULL,
-    `create_date`    TIMESTAMP      NOT NULL,
-    `is_active`      BOOL DEFAULT true,
-    'operation'      VARCHAR(255),
-    'timestamp'      TIMESTAMP,
+    `id`          INT            NOT NULL AUTO_INCREMENT,
+    `user_id`     INT,
+    `price`       DECIMAL(10, 2) NOT NULL,
+    `create_date` TIMESTAMP      NOT NULL,
+    `is_active`   BOOL DEFAULT true,
+    'operation'   VARCHAR(255),
+    'timestamp'   TIMESTAMP,
     CONSTRAINT PK_order PRIMARY KEY (`id`),
     CONSTRAINT FK_order_u_id FOREIGN KEY (`user_id`) REFERENCES user (`id`)
         ON UPDATE CASCADE

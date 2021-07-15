@@ -29,12 +29,16 @@ public class ExceptionInterceptor extends ResponseEntityExceptionHandler {
     private static final String Status_500 = "01 02 03 04 05 11 12 14 15 16 17 18 22 23 25 26 33 35 36 37 38 40 51 52 61 63 65 64 66 68 50";
     private static final String Status_422 = "20 41 42 43 53 67 42283";
     private static final String Status_400 = "27 24 34";
-    private static final String Status_406 = "29 69";
-    private static final String Status_409 = "19, 55";
+    private static final String Status_406 = "40629 69";
+    private static final String Status_409 = "40919, 40955";
+    private static final String Status_401 = "40190";
 
     private HttpStatus getStatus(String errorCode) {
         HttpStatus status = HttpStatus.NOT_FOUND;
 
+        if (Status_401.contains(errorCode)) {
+            status = HttpStatus.UNAUTHORIZED;
+        }
         if (Status_409.contains(errorCode)) {
             status = HttpStatus.CONFLICT;
         }
