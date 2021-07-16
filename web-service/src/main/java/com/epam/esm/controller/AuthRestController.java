@@ -9,8 +9,8 @@ import com.epam.esm.dto.LoginRequest;
 import com.epam.esm.security.TokenProvider;
 import com.epam.esm.service.ServiceException;
 import com.epam.esm.service.UserService;
-import com.epam.esm.service.mapper.UserMapper;
 import com.epam.esm.validator.UserDtoValidator;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -45,7 +45,7 @@ public class AuthRestController {
     private UserDtoValidator userDtoValidator;
 
     @Autowired
-    private UserMapper userMapper;
+    private ModelMapper mapper;
 
     @Autowired
     private UserFacade userFacade;
@@ -74,35 +74,11 @@ public class AuthRestController {
         if (result.hasErrors()) {
             throw new ServiceException(message(result), "42283");
         }
-        User user = userMapper.mapUserDtoToUser(userDto);
-        user.setPassword(passwordEncoder.encode(user.getPassword())); //TODO проверить
+        User user = mapper.map(userDto, User.class);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         return userFacade.registerNewUserAccount(user);
     }
-
-
-//
-//    @PostMapping("/login")
-//    public JsonResult<TokenDto> authenticate(@RequestBody AuthenticationRequestDto request) {
-//            String email = request.getEmail();
-//            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, request.getPassword())); // аутентифицируем пользователя
-//            User user = userService.findByEmail(email); // ищем пользователя в бд
-//            String token = jwtTokenProvider.createToken(request.getEmail(), user.getRole().name()); //создаем токен
-//            TokenDto tokenDto = new TokenDto();
-//            tokenDto.setEmail(request.getEmail());
-//            tokenDto.setToken(token);
-//            return new JsonResult.Builder<TokenDto>()
-//                    .withSuccess(true)
-//                    .withResult(Collections.singletonList(tokenDto))
-//                    .build();
-//
-//    }
-//
-//    @PostMapping("/logout")
-//    public void logout(HttpServletRequest request, HttpServletResponse response) {
-//        SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
-//        securityContextLogoutHandler.logout(request, response, null);
-//    }
 
     private String message(BindingResult result) {
         StringBuilder sb = new StringBuilder();

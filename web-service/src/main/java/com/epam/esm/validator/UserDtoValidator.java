@@ -13,7 +13,7 @@ import java.util.Objects;
 public class UserDtoValidator implements Validator {
     private static final String REGEX_NAME = "[A-Za-zА-Яа-я0-9_\\-]{2,255}";
     private static final String REGEX_EMAIL = "^[a-zA-Z0-9_.+\\-]+@[a-zA-Z0-9\\-]+\\.[a-zA-Z0-9\\-.]+";
-    private static final String REGEX_PASSWORD = ".{4,255}"; //TODO make password stronger
+    private static final String REGEX_PASSWORD = ".{4,255}";
 
     @Override
     public boolean supports(@NonNull Class<?> aClass) {
@@ -24,13 +24,11 @@ public class UserDtoValidator implements Validator {
     public void validate(@NonNull Object o, @NonNull Errors errors) {
         UserDto user = (UserDto) o;
 
-
         if (user.getName() == null) {
             errors.rejectValue("name", "empty field");
         } else if (!user.getName().matches(REGEX_NAME)) {
             errors.rejectValue("name", "name can contain only letters and _ or -, length 2-255 characters");
         }
-
 
         if (user.getSurname() == null) {
             errors.rejectValue("surname", "empty field");

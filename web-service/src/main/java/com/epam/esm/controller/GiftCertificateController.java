@@ -1,5 +1,6 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.dto.CertificateDto;
 import com.epam.esm.dto.JsonResult;
 import com.epam.esm.facade.GiftCertificateFacade;
 import com.epam.esm.model.GiftCertificate;
@@ -7,6 +8,7 @@ import com.epam.esm.dto.SearchParams;
 import com.epam.esm.model.Tag;
 import com.epam.esm.service.ServiceException;
 import com.epam.esm.service.TagService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -47,6 +49,8 @@ public class GiftCertificateController {
     @Qualifier("giftCertificateSearchValidator")
     private Validator searchValidator;
 
+    @Autowired
+    private ModelMapper mapper;
 
     @GetMapping()
     public JsonResult<GiftCertificate> index(@RequestParam(value = "page", defaultValue = "1") @Min(1) Integer page,
@@ -63,12 +67,12 @@ public class GiftCertificateController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('certificates:write')")
-    public JsonResult<GiftCertificate> create(@RequestBody GiftCertificate certificate, BindingResult result) {
-        giftCertificateValidator.validate(certificate, result);
+    public JsonResult<GiftCertificate> create(@RequestBody CertificateDto certificateDto, BindingResult result) {
+        giftCertificateValidator.validate(certificateDto, result);
         if (result.hasErrors()) {
-            throw new ServiceException(message(result), "20");
+            throw new ServiceException(message(result), "42220");
         }
-
+        GiftCertificate certificate = mapper.map(certificateDto, GiftCertificate.class);
         return giftCertificateFacade.save(certificate);
     }
 
@@ -78,7 +82,7 @@ public class GiftCertificateController {
                                               @PathVariable("id") @Min(1) Integer id) {
         giftCertificateValidator.validate(certificate, result);
         if (result.hasErrors()) {
-            throw new ServiceException(message(result), "20");
+            throw new ServiceException(message(result), "42220");
         }
         certificate.setId(id);
 
@@ -87,12 +91,13 @@ public class GiftCertificateController {
 
     @PatchMapping("/{id}")
     @PreAuthorize("hasAuthority('certificates:write')")
-    public JsonResult<GiftCertificate> partUpdate(@RequestBody GiftCertificate certificate, BindingResult result,
+    public JsonResult<GiftCertificate> partUpdate(@RequestBody CertificateDto certificateDto, BindingResult result,
                                                   @PathVariable("id") @Min(1) Integer id) {
+        GiftCertificate certificate = mapper.map(certificateDto, GiftCertificate.class);
         certificate.setId(id);
         giftCertificatePartValidator.validate(certificate, result);
         if (result.hasErrors()) {
-            throw new ServiceException(message(result), "20");
+            throw new ServiceException(message(result), "42220");
         }
 
         return giftCertificateFacade.partUpdate(certificate);
@@ -112,7 +117,7 @@ public class GiftCertificateController {
                                               @RequestParam(value = "includeMetadata", defaultValue = "true") boolean includeMetadata) {
         searchValidator.validate(searchParams, result);
         if (result.hasErrors()) {
-            throw new ServiceException(message(result), "24");
+            throw new ServiceException(message(result), "40024");
         }
 
         return giftCertificateFacade.search(searchParams, page, perPage, includeMetadata);
@@ -124,7 +129,7 @@ public class GiftCertificateController {
                                                     @RequestParam(value = "perPage", defaultValue = "5") @Min(1) Integer perPage,
                                                     @RequestParam(value = "includeMetadata", defaultValue = "true") boolean includeMetadata) {
         if (tags == null || tags.isEmpty()) {
-            throw new ServiceException("No tags for search found", "50");
+            throw new ServiceException("No tags for search found", "50050");
         }
         List<Tag> tagsList = Arrays.stream(tags.split(",")).map(name -> new Tag(name.trim())).collect(Collectors.toList());
         tagService.findByName(tagsList);

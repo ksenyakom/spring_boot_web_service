@@ -1,5 +1,6 @@
 package com.epam.esm.validator;
 
+import com.epam.esm.dto.CertificateDto;
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.Tag;
 import org.springframework.lang.NonNull;
@@ -19,16 +20,12 @@ public class GiftCertificateValidator implements Validator {
 
     @Override
     public boolean supports(@NonNull Class<?> aClass) {
-        return GiftCertificate.class.equals(aClass);
+        return CertificateDto.class.equals(aClass);
     }
 
     @Override
     public void validate(@NonNull Object o, @NonNull Errors errors) {
-        GiftCertificate certificate = (GiftCertificate) o;
-
-        if (certificate.getId() != null) {
-            errors.rejectValue("id", "you can not set id for new giftCertificate");
-        }
+        CertificateDto certificate = (CertificateDto) o;
 
         if (certificate.getName() == null) {
             errors.rejectValue("name", "empty field");
@@ -66,14 +63,6 @@ public class GiftCertificateValidator implements Validator {
             for (Tag tag : certificate.getTags()) {
                 tagValidator.validateTag(tag, errors);
             }
-        }
-
-        if (certificate.getOperation() != null) {
-            errors.rejectValue("operation", "unrecognized field");
-        }
-
-        if (certificate.getTimestamp() != null) {
-            errors.rejectValue("timestamp", "unrecognized field");
         }
     }
 

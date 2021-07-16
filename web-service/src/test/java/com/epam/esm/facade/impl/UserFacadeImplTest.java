@@ -2,10 +2,8 @@ package com.epam.esm.facade.impl;
 
 import com.epam.esm.dto.JsonResult;
 import com.epam.esm.facade.UserFacade;
-import com.epam.esm.model.Tag;
 import com.epam.esm.model.User;
 import com.epam.esm.service.UserService;
-import com.epam.esm.service.mapper.UserMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,7 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 

@@ -1,10 +1,12 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.JsonResult;
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.facade.TagFacade;
 import com.epam.esm.model.Tag;
 import com.epam.esm.service.ServiceException;
-import com.epam.esm.validator.TagValidator;
+import com.epam.esm.validator.TagDtoValidator;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,15 +24,14 @@ import javax.validation.constraints.Min;
 @Validated
 public class TagController {
 
+    @Autowired
     private TagFacade tagFacade;
 
-    private TagValidator tagValidator;
+    @Autowired
+    private TagDtoValidator tagDtoValidator;
 
     @Autowired
-    public TagController(TagFacade tagFacade, TagValidator tagValidator) {
-        this.tagFacade = tagFacade;
-        this.tagValidator = tagValidator;
-    }
+    private ModelMapper mapper;
 
     @GetMapping()
     public JsonResult<Tag> getAll(@RequestParam(value = "page", defaultValue = "1") @Min(1) Integer page,
@@ -47,11 +48,12 @@ public class TagController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('tags:write')")
-    public JsonResult<Tag> create(@RequestBody Tag tag, BindingResult result) throws ServiceException {
-        tagValidator.validate(tag, result);
+    public JsonResult<Tag> create(@RequestBody TagDto tagDto, BindingResult result) throws ServiceException {
+        tagDtoValidator.validate(tagDto, result);
         if (result.hasErrors()) {
-            throw new ServiceException(message(result), "20");
+            throw new ServiceException(message(result), "42220");
         }
+        Tag tag = mapper.map(tagDto, Tag.class);
         return tagFacade.save(tag);
     }
 

@@ -95,7 +95,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/tags/**", "/certificates/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/tags/**", "/certificates/**","/index").permitAll()
                 .antMatchers("/", //TODO надо ли это
                         "/error",
                         "/favicon.ico",
