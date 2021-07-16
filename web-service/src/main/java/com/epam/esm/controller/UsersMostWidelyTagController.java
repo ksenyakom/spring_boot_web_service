@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/most_widely_used_tag")
 public class UsersMostWidelyTagController {
 
-    private TagFacade tagFacade;
+    private final TagFacade tagFacade;
 
     @Autowired
     public UsersMostWidelyTagController(TagFacade tagFacade) {

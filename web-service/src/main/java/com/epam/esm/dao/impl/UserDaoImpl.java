@@ -30,7 +30,7 @@ public class UserDaoImpl implements UserDao {
 
             return query.getSingleResult();
         } catch (PersistenceException e) {
-            throw new DaoException(String.format("Can not read User (email = %s)", email), "54", e);
+            throw new DaoException(String.format("Can not read User (email = %s)", email), "50054", e);
         }
 
     }
@@ -41,11 +41,11 @@ public class UserDaoImpl implements UserDao {
         try {
             User user = em.find(User.class, id);
             if (user == null) {
-                throw new DaoException(String.format("User with id = %s not found.", id), "404");
+                throw new DaoException(String.format("User with id = %s not found.", id), "40400");
             }
             return user;
         } catch (IllegalArgumentException e) {
-            throw new DaoException(String.format("Can not read User (id = %s)", id), "51", e);
+            throw new DaoException(String.format("Can not read User (id = %s)", id), "50051", e);
         }
     }
 
@@ -58,7 +58,7 @@ public class UserDaoImpl implements UserDao {
             query.setMaxResults(size);
             return query.getResultList();
         } catch (PersistenceException e) {
-            throw new DaoException("Can not read all Users", "52", e);
+            throw new DaoException("Can not read all Users", "50052", e);
         }
     }
 
@@ -71,7 +71,7 @@ public class UserDaoImpl implements UserDao {
             long count = (long) query.getSingleResult();
             return (int) count;
         } catch (PersistenceException e) {
-            throw new DaoException("Can't count active users.", "36");
+            throw new DaoException("Can't count active users.", "50036");
         }
     }
 
@@ -85,7 +85,7 @@ public class UserDaoImpl implements UserDao {
         } catch (NoResultException e1) {
             return false;
         } catch (PersistenceException e) {
-            throw new DaoException(String.format("Can not check if user with email = %s exist", email), "80", e);
+            throw new DaoException(String.format("Can not check if user with email = %s exist", email), "50080", e);
         }
     }
 
@@ -96,9 +96,9 @@ public class UserDaoImpl implements UserDao {
             logger.debug("New user created with id={}, email={}", user.getId(), user.getEmail());
 
         } catch (PersistenceException e) {
-            throw new DaoException(String.format("Can not create new User. Email = %s", user.getEmail()), "81", e);
+            throw new DaoException(String.format("Can not create new User. Email = %s", user.getEmail()), "50081", e);
         } catch (ConstraintViolationException e) {
-            throw new DaoException(String.format("Can not create new Tag without email. Email = %s", user.getEmail()), "82", e);
+            throw new DaoException(String.format("Can not create new Tag without email. Email = %s", user.getEmail()), "42282", e);
         }
     }
 

@@ -110,7 +110,7 @@ public class OrderController {
     public JsonResult<Order> create(@RequestBody Order order, BindingResult result) {
         orderValidator.validate(order, result);
         if (result.hasErrors()) {
-            throw new ServiceException(message(result), "20");
+            throw new ServiceException(message(result), "42220");
         }
 
         return orderFacade.save(order);
@@ -123,7 +123,7 @@ public class OrderController {
 
         orderValidator.validate(order, result);
         if (result.hasErrors()) {
-            throw new ServiceException(message(result), "20");
+            throw new ServiceException(message(result), "42220");
         }
         order.setId(id);
 
@@ -152,7 +152,8 @@ public class OrderController {
     }
 
     private String getCurrentUserEmail() {
-        UserPrincipal userPrincipal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserPrincipal userPrincipal =
+                (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         return userPrincipal.getEmail();
     }

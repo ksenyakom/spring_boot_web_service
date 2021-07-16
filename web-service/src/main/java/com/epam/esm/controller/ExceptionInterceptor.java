@@ -13,50 +13,21 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import org.springframework.security.core.AuthenticationException;
 import javax.validation.ConstraintViolationException;
 import java.sql.SQLIntegrityConstraintViolationException;
 
 @RestControllerAdvice
 public class ExceptionInterceptor extends ResponseEntityExceptionHandler {
     private static Logger logger = LogManager.getLogger(ExceptionInterceptor.class);
-    private static final String Status_500 = "01 02 03 04 05 11 12 14 15 16 17 18 22 23 25 26 33 35 36 37 38 40 51 52 61 63 65 64 66 68 50050";
-    private static final String Status_422 = "42220 41 42 43 53 67 42283";
-    private static final String Status_400 = "27 40024 34";
-    private static final String Status_406 = "40629 69";
-    private static final String Status_409 = "40919, 40955";
-    private static final String Status_401 = "40190";
-
-    private HttpStatus getStatus(String errorCode) {
-        HttpStatus status = HttpStatus.NOT_FOUND;
-
-        if (Status_401.contains(errorCode)) {
-            status = HttpStatus.UNAUTHORIZED;
-        }
-        if (Status_409.contains(errorCode)) {
-            status = HttpStatus.CONFLICT;
-        }
-        if (Status_422.contains(errorCode)) {
-            status = HttpStatus.UNPROCESSABLE_ENTITY;
-        }
-        if (Status_406.contains(errorCode)) {
-            status = HttpStatus.NOT_ACCEPTABLE;
-        }
-        if (Status_400.contains(errorCode)) {
-            status = HttpStatus.BAD_REQUEST;
-        }
-        if (Status_500.contains(errorCode)) {
-            status = HttpStatus.INTERNAL_SERVER_ERROR;
-        }
-
-        return status;
-    }
 
     @ExceptionHandler(ServiceException.class)
     public ResponseEntity<Object> serviceError(final ServiceException e) {
@@ -69,7 +40,6 @@ public class ExceptionInterceptor extends ResponseEntityExceptionHandler {
                 .withErrorCode(e.getErrorCode())
                 .build();
         return new ResponseEntity<>(result, status);
-
     }
 
     @Override
@@ -115,6 +85,7 @@ public class ExceptionInterceptor extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String message = String.format("Page not found: %s", ex.getRequestURL());
+        logger.error(message);
         JsonResult<?> result = new JsonResult.Builder<>()
                 .withSuccess(false)
                 .withMessage(message)
@@ -181,5 +152,26 @@ public class ExceptionInterceptor extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
     }
 
-
+    private HttpStatus getStatus(String errorCode) {
+        if (errorCode != null && errorCode.length() >= 3) {
+            int status = Integer.getInteger(errorCode.substring(0, 4));
+            switch (status) {
+                case 400:
+                    return HttpStatus.BAD_REQUEST;
+                case 401:
+                    return HttpStatus.UNAUTHORIZED;
+                case 404:
+                    return HttpStatus.NOT_FOUND;
+                case 406:
+                    return HttpStatus.NOT_ACCEPTABLE;
+                case 409:
+                    return HttpStatus.CONFLICT;
+                case 422:
+                    return HttpStatus.UNPROCESSABLE_ENTITY;
+                case 500:
+                    return HttpStatus.INTERNAL_SERVER_ERROR;
+            }
+        }
+        return HttpStatus.NOT_FOUND;
+    }
 }

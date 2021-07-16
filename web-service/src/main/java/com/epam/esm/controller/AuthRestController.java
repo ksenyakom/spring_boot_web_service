@@ -33,9 +33,6 @@ public class AuthRestController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired

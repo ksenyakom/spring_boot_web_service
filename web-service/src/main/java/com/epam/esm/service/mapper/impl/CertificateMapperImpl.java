@@ -42,7 +42,7 @@ public class CertificateMapperImpl implements CertificateMapper {
         }
 
         if (!changeExist) {
-            throw new ServiceException(String.format("No fields to change found for GiftCertificate with id = %s", copyTo.getId()), "27");
+            throw new ServiceException(String.format("No fields to change found for GiftCertificate with id = %s", copyTo.getId()), "40027");
         }
     }
 }

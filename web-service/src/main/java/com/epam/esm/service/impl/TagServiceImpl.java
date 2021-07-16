@@ -67,9 +67,8 @@ public class TagServiceImpl implements TagService {
     @Nullable
     public Tag findBestBuyerMostWidelyTag() throws ServiceException {
         try {
-            Tag tag = tagDao.readBestBuyerMostWidelyUsedTag();
 
-            return tag;
+            return tagDao.readBestBuyerMostWidelyUsedTag();
         } catch (DaoException e) {
             throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
         }

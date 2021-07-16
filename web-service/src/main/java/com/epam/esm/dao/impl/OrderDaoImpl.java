@@ -32,7 +32,7 @@ public class OrderDaoImpl implements OrderDao {
         } catch (PersistenceException e) {
             throw new DaoException(String.format("Can not create new Order. User id = %s ", order.getUser() == null ? null : order.getUser().getId()), "61", e);
         } catch (ConstraintViolationException e) {
-            throw new DaoException("Can not create new Order, constraint violations", "42", e);
+            throw new DaoException("Can not create new Order, constraint violations", "42242", e);
         }
     }
 
@@ -41,12 +41,12 @@ public class OrderDaoImpl implements OrderDao {
         try {
             Order order = em.find(Order.class, id);
             if (order == null) {
-                throw new DaoException(String.format("Order with id = %s not found.", id), "404");
+                throw new DaoException(String.format("Order with id = %s not found.", id), "40400");
             }
 
             return order;
         } catch (IllegalArgumentException e) {
-            throw new DaoException(String.format("Can not read Order (id = %s).", id), "61", e);
+            throw new DaoException(String.format("Can not read Order (id = %s).", id), "50061", e);
         }
     }
 
@@ -58,9 +58,9 @@ public class OrderDaoImpl implements OrderDao {
             em.merge(order);
             logger.debug("Order was updated with id={}", order.getId());
         } catch (PersistenceException e) {
-            throw new DaoException(String.format("Can not update Order (id = %s)", order.getId()), "63", e);
+            throw new DaoException(String.format("Can not update Order (id = %s)", order.getId()), "50063", e);
         } catch (ConstraintViolationException e) {
-            throw new DaoException("Can not create new Order, constraint violations", "42", e);
+            throw new DaoException("Can not create new Order, constraint violations", "42242", e);
         }
     }
 
@@ -71,17 +71,21 @@ public class OrderDaoImpl implements OrderDao {
             em.remove(order);
             logger.debug("Order was deleted(isActive=false) with id={}", id);
         } catch (PersistenceException e) {
-            throw new DaoException(String.format("Can not delete Order (id = %s)", id), "64", e);
+            throw new DaoException(String.format("Can not delete Order (id = %s)", id), "50064", e);
         }
     }
 
     @Override
     public @NotNull List<Order> readAllActive(int page, int size) throws DaoException {
+        try {
         String jpql = "SELECT o FROM user_order o WHERE o.isActive = true";
         Query query = em.createQuery(jpql);
         query.setFirstResult((page - 1) * size);
         query.setMaxResults(size);
         return query.getResultList();
+        } catch (PersistenceException e) {
+            throw new DaoException("Can not read all Orders", "50065", e);
+        }
     }
 
     @Override
@@ -91,7 +95,7 @@ public class OrderDaoImpl implements OrderDao {
             long count = (long) query.getSingleResult();
             return (int) count;
         } catch (PersistenceException e) {
-            throw new DaoException("Can't count active orders.", "37");
+            throw new DaoException("Can't count active orders.", "50037");
         }
     }
 
@@ -106,7 +110,7 @@ public class OrderDaoImpl implements OrderDao {
 
             return query.getResultList();
         } catch (PersistenceException e) {
-            throw new DaoException(String.format("Can not read Orders for user id = %s", user.getId()), "66", e);
+            throw new DaoException(String.format("Can not read Orders for user id = %s", user.getId()), "50066", e);
         }
     }
 
@@ -119,7 +123,7 @@ public class OrderDaoImpl implements OrderDao {
             long count = (long) query.getSingleResult();
             return (int) count;
         } catch (PersistenceException e) {
-            throw new DaoException(String.format("Can not count Orders for user id = %s", user.getId()), "66", e);
+            throw new DaoException(String.format("Can not count Orders for user id = %s", user.getId()), "50068", e);
         }
     }
 }

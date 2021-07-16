@@ -39,9 +39,10 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             em.persist(certificate);
             logger.debug("New certificate created with id={}", certificate.getId());
         } catch (PersistenceException e) {
-            throw new DaoException(String.format("Can not create new GiftCertificate. Name = %s ", certificate.getName()), "01", e);
+            throw new DaoException(
+                    String.format("Can not create new GiftCertificate. Name = %s ", certificate.getName()), "50001", e);
         } catch (ConstraintViolationException e) {
-            throw new DaoException("Can not create new GiftCertificate, constraint violations", "43", e);
+            throw new DaoException("Can not create new GiftCertificate, constraint violations", "42243", e);
         }
     }
 
@@ -51,22 +52,26 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         try {
             GiftCertificate giftCertificate = em.find(GiftCertificate.class, id);
             if (giftCertificate == null) {
-                throw new DaoException(String.format("GiftCertificate with id = %s not found.", id), "404");
+                throw new DaoException(String.format("GiftCertificate with id = %s not found.", id), "40400");
             }
             return giftCertificate;
         } catch (IllegalArgumentException e) {
-            throw new DaoException(String.format("Can not read GiftCertificate (id = %s).", id), "02", e);
+            throw new DaoException(String.format("Can not read GiftCertificate (id = %s).", id), "50002", e);
         }
     }
 
     @Override
     @NonNull
     public List<GiftCertificate> readAllActive(int page, int size) throws DaoException {
+        try{
         String jpql = "SELECT c FROM gift_certificate c WHERE c.isActive = true";
         Query query = em.createQuery(jpql);
         query.setFirstResult((page - 1) * size);
         query.setMaxResults(size);
         return query.getResultList();
+        } catch (PersistenceException e) {
+            throw new DaoException("Can not read all GiftCertificates", "50005");
+        }
     }
 
     @Override
@@ -77,7 +82,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             long count = (long) query.getSingleResult();
             return (int) count;
         } catch (PersistenceException e) {
-            throw new DaoException("Can't count active giftCertificates.", "33");
+            throw new DaoException("Can't count active giftCertificates.", "50033");
         }
     }
 
@@ -94,7 +99,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             }
             return new ArrayList<>(certificates);
         } catch (PersistenceException e) {
-            throw new DaoException(String.format("Can not read certificates by tags (tag = %s)", tags), "22", e);
+            throw new DaoException(String.format("Can not read certificates by tags (tag = %s)", tags), "50022", e);
         }
     }
 
@@ -108,7 +113,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             query.setParameter("name", name);
             return query.getResultList();
         } catch (PersistenceException e) {
-            throw new DaoException(String.format("Can not read certificates by name (name = %s)", name), "23", e);
+            throw new DaoException(String.format("Can not read certificates by name (name = %s)", name), "50023", e);
         }
     }
 
@@ -126,7 +131,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             }
             return new ArrayList<>(certificates);
         } catch (PersistenceException e) {
-            throw new DaoException("Can not read certificates by tags and name", "35", e);
+            throw new DaoException("Can not read certificates by tags and name", "50035", e);
         }
     }
 
@@ -138,9 +143,9 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             em.merge(certificate);
             logger.debug("Certificate was updated with id={}", certificate.getId());
         } catch (PersistenceException e) {
-            throw new DaoException(String.format("Can not update GiftCertificate (id = %s)", certificate.getId()), "03", e);
+            throw new DaoException(String.format("Can not update GiftCertificate (id = %s)", certificate.getId()), "50003", e);
         } catch (ConstraintViolationException e) {
-            throw new DaoException("Can not create new GiftCertificate, constraint violations", "43", e);
+            throw new DaoException("Can not create new GiftCertificate, constraint violations", "42243", e);
         }
     }
 
@@ -151,7 +156,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             em.remove(giftCertificate);
             logger.debug("Certificate was deleted(isActive=false) with id={}", id);
         } catch (PersistenceException e) {
-            throw new DaoException(String.format("Can not delete GiftCertificate (id = %s)", id), "04", e);
+            throw new DaoException(String.format("Can not delete GiftCertificate (id = %s)", id), "50004", e);
         }
     }
 

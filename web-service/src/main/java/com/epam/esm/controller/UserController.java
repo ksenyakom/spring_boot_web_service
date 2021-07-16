@@ -21,7 +21,7 @@ import javax.validation.constraints.Min;
 @Validated
 public class UserController {
 
-    private UserFacade userFacade;
+    private final UserFacade userFacade;
 
     @Autowired
     public UserController(UserFacade userFacade) {
@@ -54,7 +54,8 @@ public class UserController {
     }
 
     private String getCurrentUserEmail() {
-        UserPrincipal userPrincipal = (UserPrincipal)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserPrincipal userPrincipal =
+                (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         return userPrincipal.getEmail();
     }

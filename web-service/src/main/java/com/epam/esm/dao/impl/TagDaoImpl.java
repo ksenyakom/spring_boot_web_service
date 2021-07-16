@@ -29,9 +29,9 @@ public class TagDaoImpl implements TagDao {
             logger.debug("New tag created with id={}, name={}", tag.getId(), tag.getName());
 
         } catch (PersistenceException e) {
-            throw new DaoException(String.format("Can not create new Tag. Name = %s", tag.getName()), "11", e);
+            throw new DaoException(String.format("Can not create new Tag. Name = %s", tag.getName()), "50011", e);
         } catch (ConstraintViolationException e) {
-            throw new DaoException(String.format("Can not create new Tag without name. Name = %s", tag.getName()), "41", e);
+            throw new DaoException(String.format("Can not create new Tag without name. Name = %s", tag.getName()), "42241", e);
         }
     }
 
@@ -45,7 +45,7 @@ public class TagDaoImpl implements TagDao {
         } catch (NoResultException e1) {
             return false;
         } catch (PersistenceException e) {
-            throw new DaoException(String.format("Can not check if tag with name = %s exist", name), "19", e);
+            throw new DaoException(String.format("Can not check if tag with name = %s exist", name), "50085", e);
         }
     }
 
@@ -57,9 +57,9 @@ public class TagDaoImpl implements TagDao {
             int id = (int) query.getSingleResult();
             tag.setId(id);
         } catch (NoResultException e) {
-            throw new DaoException(String.format("Tag with name = %s does not exist", tag.getName()), "28", e);
+            throw new DaoException(String.format("Tag with name = %s does not exist", tag.getName()), "40428", e);
         } catch (PersistenceException e) {
-            throw new DaoException(String.format("Can not check if tag with name = %s exist", tag.getName()), "19", e);
+            throw new DaoException(String.format("Can not check if tag with name = %s exist", tag.getName()), "50085", e);
         }
     }
 
@@ -69,11 +69,11 @@ public class TagDaoImpl implements TagDao {
         try {
             Tag tag = em.find(Tag.class, id);
             if (tag == null) {
-                throw new DaoException(String.format("Tag with id = %s not found.", id), "404");
+                throw new DaoException(String.format("Tag with id = %s not found.", id), "40400");
             }
             return tag;
         } catch (PersistenceException e) {
-            throw new DaoException(String.format("Can not read Tag (id = %s)", id), "12", e);
+            throw new DaoException(String.format("Can not read Tag (id = %s)", id), "50012", e);
         }
     }
 
@@ -85,9 +85,9 @@ public class TagDaoImpl implements TagDao {
             Integer id = (Integer) query.getSingleResult();
             return read(id);
         } catch (NoResultException e1) {
-            throw new DaoException("Best buyer most widely used tag not found.", "404");
+            throw new DaoException("Best buyer most widely used tag not found.", "40400");
         } catch (PersistenceException e) {
-            throw new DaoException("Can not read best buyer most widely used Tag", "40", e);
+            throw new DaoException("Can not read best buyer most widely used Tag", "40040", e);
         }
     }
 
@@ -98,7 +98,7 @@ public class TagDaoImpl implements TagDao {
             em.remove(tag);
             logger.debug("Deleted tag with id={}", id);
         } catch (PersistenceException e) {
-            throw new DaoException(String.format("Can not delete Tag (id = %s)", id), "14", e);
+            throw new DaoException(String.format("Can not delete Tag (id = %s)", id), "50014", e);
         }
     }
 
@@ -111,7 +111,7 @@ public class TagDaoImpl implements TagDao {
             query.setMaxResults(size);
             return query.getResultList();
         } catch (PersistenceException e) {
-            throw new DaoException("Can not read all Tag", "15", e);
+            throw new DaoException("Can not read all Tag", "50015", e);
         }
     }
 
@@ -123,7 +123,7 @@ public class TagDaoImpl implements TagDao {
             long count = (long) query.getSingleResult();
             return (int) count;
         } catch (PersistenceException e) {
-            throw new DaoException("Can't count tags.", "38");
+            throw new DaoException("Can't count tags.", "50038");
         }
     }
 
@@ -136,7 +136,7 @@ public class TagDaoImpl implements TagDao {
             query.setParameter("name", tagName);
             return query.getResultList();
         } catch (PersistenceException e) {
-            throw new DaoException(String.format("No tags with name = %s)", tagName), "21", e);
+            throw new DaoException(String.format("No tags with name = %s)", tagName), "40421", e);
         }
     }
 }

@@ -67,7 +67,7 @@ public class GiftCertificatePartValidator implements Validator {
         }
 
         if (certificate.getOperation() != null) {
-                errors.rejectValue("operation", "unrecognized field");
+            errors.rejectValue("operation", "unrecognized field");
         }
 
         if (certificate.getTimestamp() != null) {

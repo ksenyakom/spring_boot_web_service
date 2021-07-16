@@ -1,10 +1,15 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.*;
-import com.epam.esm.model.*;
-import com.epam.esm.service.mapper.impl.OrderMapperImpl;
+import com.epam.esm.dao.DaoException;
+import com.epam.esm.dao.GiftCertificateDao;
+import com.epam.esm.dao.OrderDao;
+import com.epam.esm.dao.UserDao;
+import com.epam.esm.model.GiftCertificate;
+import com.epam.esm.model.Order;
+import com.epam.esm.model.User;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.ServiceException;
+import com.epam.esm.service.mapper.impl.OrderMapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

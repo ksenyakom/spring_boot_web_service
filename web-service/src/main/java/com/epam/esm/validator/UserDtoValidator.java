@@ -1,7 +1,6 @@
 package com.epam.esm.validator;
 
 import com.epam.esm.dto.UserDto;
-import com.epam.esm.model.User;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;

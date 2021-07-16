@@ -1,7 +1,7 @@
 package com.epam.esm.validator;
 
-import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.dto.SearchParams;
+import com.epam.esm.model.GiftCertificate;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
@@ -62,8 +62,8 @@ public class GiftCertificateSearchValidator implements Validator {
     private void removeSpaces(SearchParams searchParams) {
         searchParams.setName(searchParams.getName() == null ? null : searchParams.getName().trim());
         searchParams.setTagPartName(searchParams.getTagPartName() == null ? null : searchParams.getTagPartName().trim());
-        searchParams.setSortFields(searchParams.getSortFields() == null? null : searchParams.getSortFields().replace(" ", "").trim());
-        searchParams.setSortOrder(searchParams.getSortOrder() == null? null :searchParams.getSortOrder().replace(" ", "").trim());
+        searchParams.setSortFields(searchParams.getSortFields() == null ? null : searchParams.getSortFields().replace(" ", "").trim());
+        searchParams.setSortOrder(searchParams.getSortOrder() == null ? null : searchParams.getSortOrder().replace(" ", "").trim());
     }
 
     private void validateOrderAscDesc(String[] orderAscDesc, Errors errors) {

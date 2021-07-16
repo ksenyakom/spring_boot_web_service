@@ -8,17 +8,15 @@
 12 - Can not read Tag
 14 - Can not delete Tag
 15 - Can not read all Tag
-16 - Can not read certificates by tag
-17 - Can not read Tag name
-18 - Can not check if tag with name = ? exist
+
 19 - Tag with name = %s already exist
 20 - validation failed
 21 - "No tags with name " + tagName
 22 - Can not read certificates by tag (tag = " + tag + ")."
 23 - "Can not read certificates by name (name = " + name + ")."
 24 - search certificate validation failed
-25 - Can not read tags id for GiftCertificate (id = %s)
-26 - Can not update list of tags id for GiftCertificate (id = %s)
+
+
 27 - No fields to change found for GiftSertificate
 28 - Tag with name = %s does not exist
 29 - You can not choose id for tag
@@ -28,7 +26,7 @@
 32 - There is no autoincremented index after trying to add record into table `user_order`
 
 33 - Can't count giftCertificates
-34 - No tags for search found
+
 35 - Can not read certificates by name and tag
 36 - Can't count active users
 37 - Can't count active orders
@@ -43,7 +41,7 @@
 50 - No tags for search found
 51 - Can not read User (id = %s)
 52 - Can not read all Users
-53 - Unrecognized property : %s.
+
 54 - Can not read User email = %s
 55 - There is an account with that email address: userDto.getEmail
 
@@ -53,14 +51,16 @@
 64 - Can not delete Order (id = %s)
 65 - Can not read all Orders
 66 - Can not read Orders for user id = %s
-67 - Unrecognized field : %s
+
 68 - Can not count orders for user
-69 - Unrecognized value : %s, must be asc or desc
+
 
 80 - Can not check if user with email = %s exist"
 81 - "Can not create new User. Email = %s"
 82 - Can not create new Tag without email. Email = %s"
 83 - Error while user registration validation 
+
+85 - Can not check if tag with name = %s exist
 
 40190 - Full authentication is required to access this resource
 40391 - Access denied
